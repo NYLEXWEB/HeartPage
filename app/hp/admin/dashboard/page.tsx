@@ -38,6 +38,12 @@ interface DashboardData {
     createdAt: string;
     expiresAt: string;
   }>;
+  totalRevenue: number;
+  todayRevenue: number;
+  successfulPayments: number;
+  pendingPayments: number;
+  failedPayments: number;
+  currentPublishPrice: number;
 }
 
 export default function AdminDashboardPage() {
@@ -202,6 +208,88 @@ export default function AdminDashboardPage() {
           <p className="text-[10px] text-zinc-500 mt-2">Estimated text footprint size</p>
         </motion.div>
 
+      </div>
+
+      {/* FINANCIAL OVERVIEW SECTION */}
+      <div className="space-y-4">
+        <h2 className="text-xs font-mono text-zinc-500 uppercase tracking-widest">Financial Overview</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          {/* Total Revenue */}
+          <motion.div
+            whileHover={{ y: -2 }}
+            className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/5 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider font-mono">Total Revenue</span>
+              <span className="text-sky-500 text-[10px] font-mono font-bold">INR</span>
+            </div>
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-3xl font-extrabold text-white font-mono">₹{data.totalRevenue.toFixed(2)}</span>
+            </div>
+            <p className="text-[10px] text-zinc-500 mt-2">Lifetime gross revenue received</p>
+          </motion.div>
+
+          {/* Today's Revenue */}
+          <motion.div
+            whileHover={{ y: -2 }}
+            className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider font-mono">Today&apos;s Revenue</span>
+              <span className="text-amber-500 text-[10px] font-mono font-bold">24H</span>
+            </div>
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-3xl font-extrabold text-white font-mono">₹{data.todayRevenue.toFixed(2)}</span>
+            </div>
+            <p className="text-[10px] text-zinc-500 mt-2">Earnings generated today</p>
+          </motion.div>
+
+          {/* Payments Breakdown */}
+          <motion.div
+            whileHover={{ y: -2 }}
+            className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-zinc-500/5 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider font-mono">Payment Status</span>
+              <span className="text-zinc-500 text-[10px] font-mono">Count</span>
+            </div>
+            <div className="mt-3 space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between">
+                <span className="text-zinc-500">Paid:</span>
+                <span className="text-emerald-400 font-bold">{data.successfulPayments}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">Pending:</span>
+                <span className="text-amber-400 font-bold">{data.pendingPayments}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-500">Failed:</span>
+                <span className="text-rose-500 font-bold">{data.failedPayments}</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Dynamic Publish Price */}
+          <motion.div
+            whileHover={{ y: -2 }}
+            className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+          >
+            <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl" />
+            <div className="flex items-center justify-between text-zinc-500">
+              <span className="text-xs font-bold uppercase tracking-wider font-mono">Publish Price</span>
+              <span className="text-teal-400 text-[10px] font-mono">ACTIVE</span>
+            </div>
+            <div className="mt-4 flex items-baseline gap-1">
+              <span className="text-3xl font-extrabold text-white font-mono">₹{data.currentPublishPrice.toFixed(2)}</span>
+            </div>
+            <p className="text-[10px] text-zinc-500 mt-2">Current pricing plan configuration</p>
+          </motion.div>
+
+        </div>
       </div>
 
       {/* DETAILED STATS & DISTRIBUTION GAUGES */}

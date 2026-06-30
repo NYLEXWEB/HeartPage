@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
+import { useEffect, useState, Suspense } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Check, 
@@ -12,7 +11,6 @@ import {
   QrCode, 
   Heart, 
   Sparkles,
-  ArrowRight,
   Download,
   X,
   Clock,
@@ -21,9 +19,22 @@ import {
 import confetti from "canvas-confetti";
 
 export default function SuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFDFE]">
+        <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
+      </div>
+    }>
+      <SuccessPageContent />
+    </Suspense>
+  );
+}
+
+function SuccessPageContent() {
   const params = useParams();
-  const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
+  const paymentId = searchParams.get("paymentId") || "N/A";
   
   const [shareUrl, setShareUrl] = useState("");
   const [copied, setCopied] = useState(false);
@@ -106,7 +117,7 @@ export default function SuccessPage() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-xl bg-white border border-sky-100 rounded-3xl p-8 text-center space-y-8 relative backdrop-blur-md shadow-xl z-10"
+        className="w-full max-w-xl bg-white border border-sky-100 rounded-3xl p-8 text-center space-y-6 relative backdrop-blur-md shadow-xl z-10"
       >
         {/* Celebration Header */}
         <div className="space-y-3">
@@ -119,11 +130,11 @@ export default function SuccessPage() {
             <Sparkles className="w-8 h-8 animate-pulse" />
           </motion.div>
           
-          <h1 className="text-3xl md:text-4xl font-luxury font-extrabold tracking-tight text-slate-900">
-            Website Generated!
+          <h1 className="text-3xl md:text-4xl font-luxury font-extrabold tracking-tight text-slate-900 leading-tight">
+            🎉 HeartPage Published Successfully
           </h1>
-          <p className="text-slate-500 text-sm md:text-base leading-relaxed">
-            Your custom HeartPage is now active and ready to share. Remember, this page is temporary and will delete automatically in 7 days.
+          <p className="text-slate-500 text-sm leading-relaxed">
+            Your custom HeartPage is now live and fully accessible. Share the magic with your loved ones!
           </p>
         </div>
 
@@ -137,7 +148,7 @@ export default function SuccessPage() {
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               copied
                 ? "bg-green-50 border border-green-200 text-green-600"
-                : "bg-white border border-sky-150 hover:bg-sky-50 text-slate-650"
+                : "bg-white border border-sky-150 hover:bg-sky-50 text-slate-655"
             }`}
           >
             {copied ? (
@@ -150,6 +161,21 @@ export default function SuccessPage() {
               </>
             )}
           </button>
+        </div>
+
+        {/* Payment Audit Logs Box */}
+        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-2.5 text-xs">
+          <div className="flex justify-between items-center pb-2 border-b border-slate-100">
+            <span className="text-slate-400 font-medium">Transaction Status</span>
+            <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-550 animate-pulse" />
+              Paid &amp; Verified
+            </span>
+          </div>
+          <div className="flex justify-between items-center font-mono">
+            <span className="text-slate-400 font-medium font-sans">Payment Reference</span>
+            <span className="text-slate-750 font-bold select-all tracking-wider">{paymentId}</span>
+          </div>
         </div>
 
         {/* Buttons Grid */}

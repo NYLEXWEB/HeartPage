@@ -13,7 +13,8 @@ import {
   Menu,
   X,
   Heart,
-  UserCheck
+  UserCheck,
+  CreditCard
 } from "lucide-react";
 import { logoutAdmin } from "@/actions/admin";
 
@@ -26,6 +27,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { name: "Dashboard", href: "/hp/admin/dashboard", icon: LayoutDashboard },
   { name: "Websites", href: "/hp/admin/websites", icon: Database },
+  { name: "Payments", href: "/hp/admin/payments", icon: CreditCard },
   { name: "Announcements", href: "/hp/admin/announcements", icon: Megaphone },
   { name: "Settings", href: "/hp/admin/settings", icon: SettingsIcon },
 ];

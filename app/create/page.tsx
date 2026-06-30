@@ -20,8 +20,13 @@ import {
   AlertCircle
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
-import { createWebsite } from "@/actions/website";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 export default function CreatePage() {
   const router = useRouter();
@@ -29,6 +34,22 @@ export default function CreatePage() {
   const [activeCategory, setActiveCategory] = useState<"couples" | "friends" | "breakup">("couples");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<
+    "idle" | "creating_order" | "processing" | "verifying" | "publishing"
+  >("idle");
+
+  // Load Razorpay Checkout SDK dynamically on mount
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
+    };
+  }, []);
 
   // Initialize react-hook-form
   const {
@@ -89,21 +110,105 @@ export default function CreatePage() {
       return;
     }
 
-    // If we are at the preview step, generate the website
+    // If we are at the preview step, initiate the secure payment flow
     if (step === "preview") {
       setIsSubmitting(true);
       setSubmitError(null);
+      setPaymentStatus("creating_order");
       
       try {
-        const response = await createWebsite(data);
-        if (response.success) {
-          router.push(`/success/${response.slug}`);
-        } else {
-          setSubmitError(response.error || "Failed to generate website.");
-          setIsSubmitting(false);
+        // 1. Create Pending Payment Order internally
+        const orderRes = await fetch("/api/payment/create-order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            formData: data,
+            images: [], // Extendable to base64 images list if added in future
+          }),
+        });
+
+        const orderData = await orderRes.json();
+        if (!orderData.success) {
+          throw new Error(orderData.error || "Failed to create secure payment order.");
         }
+
+        // 2. Open Razorpay Checkout
+        setPaymentStatus("processing");
+        if (!window.Razorpay) {
+          throw new Error("Razorpay payment gateway failed to load. Please verify your connection.");
+        }
+
+        const options = {
+          key: orderData.keyId,
+          amount: orderData.amount,
+          currency: orderData.currency,
+          name: "HeartPage",
+          description: "Publish HeartPage Webspace",
+          image: "/favicon.ico",
+          order_id: orderData.orderId,
+          handler: async function (response: any) {
+            try {
+              // 3. Verify Payment Signature
+              setPaymentStatus("verifying");
+              const verifyRes = await fetch("/api/payment/verify", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
+
+              const verifyData = await verifyRes.json();
+              if (!verifyData.success) {
+                throw new Error(verifyData.error || "Verification failed.");
+              }
+
+              // 4. Publish website
+              setPaymentStatus("publishing");
+              
+              // Success! Redirect to Success Page with payment details
+              setTimeout(() => {
+                router.push(`/success/${verifyData.slug}?paymentId=${verifyData.paymentId}`);
+              }, 1200);
+            } catch (err: any) {
+              setSubmitError(err.message || "Payment verification failed. Please contact support.");
+              setPaymentStatus("idle");
+              setIsSubmitting(false);
+            }
+          },
+          prefill: {
+            name: data.yourName,
+          },
+          theme: {
+            color: "#0ea5e9", // Theme matching Sky Blue design
+          },
+          modal: {
+            ondismiss: function () {
+              setSubmitError("Payment checkout cancelled.");
+              setPaymentStatus("idle");
+              setIsSubmitting(false);
+            },
+          },
+        };
+
+        const rzp = new window.Razorpay(options);
+        
+        rzp.on("payment.failed", function (resp: any) {
+          setSubmitError(resp.error.description || "Transaction failed. Please try again.");
+          setPaymentStatus("idle");
+          setIsSubmitting(false);
+        });
+        
+        rzp.open();
       } catch (err: any) {
-        setSubmitError(err.message || "An unexpected error occurred.");
+        setSubmitError(err.message || "An unexpected error occurred during checkout setup.");
+        setPaymentStatus("idle");
         setIsSubmitting(false);
       }
     }
@@ -150,13 +255,32 @@ export default function CreatePage() {
         </div>
       </header>
 
-      {/* ERROR BANNER */}
-      {submitError && (
-        <div className="bg-red-50 border-b border-red-150 text-red-700 px-4 py-3 flex items-center justify-center gap-2 text-sm">
-          <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
-          <span>{submitError}</span>
-        </div>
-      )}
+      {/* Premium Notification Banner */}
+      <AnimatePresence>
+        {submitError && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: "-50%" }}
+            animate={{ opacity: 1, y: 0, x: "-50%" }}
+            exit={{ opacity: 0, y: -50, x: "-50%" }}
+            className="fixed top-6 left-1/2 z-[150] w-[90%] max-w-md bg-rose-950/95 border border-rose-900/50 text-rose-250 p-4 rounded-2xl shadow-2xl flex items-start gap-3 text-xs font-mono backdrop-blur-md"
+          >
+            <AlertCircle className="w-5 h-5 text-rose-450 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <div className="flex justify-between items-center">
+                <span className="font-bold uppercase tracking-wider text-[10px] text-rose-400">Notice</span>
+                <button
+                  type="button"
+                  onClick={() => setSubmitError(null)}
+                  className="text-rose-500 hover:text-rose-300 transition-colors uppercase text-[9px] font-bold tracking-widest cursor-pointer"
+                >
+                  Dismiss
+                </button>
+              </div>
+              <p className="mt-1 leading-relaxed text-rose-200">{submitError}</p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* WIZARD CONTAINER */}
       <div className="flex-1 flex flex-col relative">
@@ -212,20 +336,34 @@ export default function CreatePage() {
                     {/* Name Inputs */}
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
-                        <label className="text-xs text-slate-500 font-medium">Your Name</label>
+                        <label className="text-xs text-slate-500 font-semibold font-mono">Your Name</label>
                         <input
                           type="text"
                           placeholder="Your Name"
                           {...register("yourName")}
-                          className="w-full bg-white border border-sky-150 focus:border-sky-500 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors text-slate-800 placeholder-slate-400"
+                          className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-800 placeholder-slate-400 ${
+                            errors.yourName
+                              ? "border-rose-300 focus:border-rose-500 bg-rose-50/5 shadow-sm shadow-rose-50"
+                              : "border-sky-150 focus:border-sky-500"
+                          }`}
                         />
-                        {errors.yourName && (
-                          <span className="text-xs text-red-500 font-medium">{errors.yourName.message}</span>
-                        )}
+                        <AnimatePresence>
+                          {errors.yourName && (
+                            <motion.span
+                              initial={{ opacity: 0, y: -6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -6 }}
+                              className="text-[11px] text-rose-600 font-bold font-mono flex items-center gap-1 mt-1"
+                            >
+                              <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                              {errors.yourName.message}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </div>
 
                       <div className="space-y-1.5">
-                        <label className="text-xs text-slate-500 font-medium">
+                        <label className="text-xs text-slate-500 font-semibold font-mono">
                           {activeCategory === "couples"
                             ? "Partner's Name"
                             : activeCategory === "friends"
@@ -242,17 +380,31 @@ export default function CreatePage() {
                               : "Ex Partner's Name"
                           }
                           {...register("partnerName")}
-                          className="w-full bg-white border border-sky-150 focus:border-sky-500 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors text-slate-800 placeholder-slate-400"
+                          className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-800 placeholder-slate-400 ${
+                            errors.partnerName
+                              ? "border-rose-300 focus:border-rose-500 bg-rose-50/5 shadow-sm shadow-rose-50"
+                              : "border-sky-150 focus:border-sky-500"
+                          }`}
                         />
-                        {errors.partnerName && (
-                          <span className="text-xs text-red-500 font-medium">{errors.partnerName.message}</span>
-                        )}
+                        <AnimatePresence>
+                          {errors.partnerName && (
+                            <motion.span
+                              initial={{ opacity: 0, y: -6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -6 }}
+                              className="text-[11px] text-rose-600 font-bold font-mono flex items-center gap-1 mt-1"
+                            >
+                              <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                              {errors.partnerName.message}
+                            </motion.span>
+                          )}
+                        </AnimatePresence>
                       </div>
                     </div>
 
                     {/* Dates */}
                     <div className="space-y-1.5">
-                      <label className="text-xs text-slate-500 font-medium">
+                      <label className="text-xs text-slate-500 font-semibold font-mono">
                         {activeCategory === "couples"
                           ? "Relationship Start Date (Optional)"
                           : activeCategory === "friends"
@@ -264,23 +416,41 @@ export default function CreatePage() {
                           type="text"
                           placeholder="e.g. 2018 - 2024"
                           {...register("relationshipDate")}
-                          className="w-full bg-white border border-sky-150 focus:border-sky-500 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors text-slate-800 placeholder-slate-400"
+                          className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-800 placeholder-slate-400 ${
+                            errors.relationshipDate
+                              ? "border-rose-300 focus:border-rose-500 bg-rose-50/5 shadow-sm shadow-rose-50"
+                              : "border-sky-150 focus:border-sky-500"
+                          }`}
                         />
                       ) : (
                         <input
                           type="date"
                           {...register("relationshipDate")}
-                          className="w-full bg-white border border-sky-150 focus:border-sky-500 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors text-slate-700"
+                          className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-700 ${
+                            errors.relationshipDate
+                              ? "border-rose-300 focus:border-rose-500 bg-rose-50/5 shadow-sm shadow-rose-50"
+                              : "border-sky-150 focus:border-sky-500"
+                          }`}
                         />
                       )}
-                      {errors.relationshipDate && (
-                        <span className="text-xs text-red-500 font-medium">{errors.relationshipDate.message}</span>
-                      )}
+                      <AnimatePresence>
+                        {errors.relationshipDate && (
+                          <motion.span
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            className="text-[11px] text-rose-600 font-bold font-mono flex items-center gap-1 mt-1"
+                          >
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                            {errors.relationshipDate.message}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                     {/* Love/Friendship/Final message */}
                     <div className="space-y-1.5">
-                      <label className="text-xs text-slate-500 font-medium">
+                      <label className="text-xs text-slate-500 font-semibold font-mono">
                         {activeCategory === "couples"
                           ? "Love Message"
                           : activeCategory === "friends"
@@ -297,19 +467,32 @@ export default function CreatePage() {
                             : "Write down your final thoughts, lessons learned, or peaceful closing note..."
                         }
                         {...register("message")}
-                        className="w-full bg-white border border-sky-150 focus:border-sky-500 rounded-xl px-4 py-3 text-sm focus:outline-none transition-colors resize-none leading-relaxed text-slate-850 placeholder-slate-400"
+                        className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all resize-none leading-relaxed text-slate-800 placeholder-slate-400 ${
+                          errors.message
+                            ? "border-rose-300 focus:border-rose-500 bg-rose-50/5 shadow-sm shadow-rose-50"
+                            : "border-sky-150 focus:border-sky-500"
+                        }`}
                       />
-                      {errors.message && (
-                        <span className="text-xs text-red-500 font-medium">{errors.message.message}</span>
-                      )}
+                      <AnimatePresence>
+                        {errors.message && (
+                          <motion.span
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            className="text-[11px] text-rose-600 font-bold font-mono flex items-center gap-1 mt-1"
+                          >
+                            <AlertCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                            {errors.message.message}
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                   </div>
 
                   <button
                     type="submit"
-                    disabled={!canProceedToTemplates}
-                    className="w-full py-4 rounded-xl text-base font-bold bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white transition-all duration-200 shadow-md shadow-sky-500/10 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:scale-100 disabled:cursor-not-allowed"
+                    className="w-full py-4 rounded-xl text-base font-bold bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white transition-all duration-200 shadow-md shadow-sky-500/10 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Select Theme &amp; Style <ArrowRight className="w-4 h-4" />
                   </button>
@@ -544,6 +727,58 @@ export default function CreatePage() {
 
         </AnimatePresence>
       </div>
+
+      {/* SECURE PAYMENT PROCESSOR MODAL */}
+      <AnimatePresence>
+        {isSubmitting && paymentStatus !== "idle" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              className="bg-white border border-sky-100 rounded-3xl p-8 max-w-md w-full text-center space-y-6 shadow-2xl relative overflow-hidden"
+            >
+              {/* Subtle background glow */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-48 bg-sky-200/20 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Loader animation */}
+              <div className="relative flex justify-center items-center h-20">
+                <div className="absolute w-16 h-16 rounded-full border-4 border-sky-100/50 animate-pulse" />
+                <div className="absolute w-16 h-16 rounded-full border-4 border-sky-500 border-t-transparent animate-spin" />
+                <Heart className="w-6 h-6 text-sky-500 fill-sky-500 animate-ping absolute" />
+              </div>
+
+              <div className="space-y-2 relative z-10">
+                <h3 className="text-xl font-bold text-slate-900 tracking-tight">
+                  {paymentStatus === "creating_order"
+                    ? "Creating Secure Payment..."
+                    : paymentStatus === "processing"
+                    ? "Secure Payment Window Open..."
+                    : paymentStatus === "verifying"
+                    ? "Verifying Payment..."
+                    : paymentStatus === "publishing"
+                    ? "Publishing Website..."
+                    : "Processing Payment..."}
+                </h3>
+                <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+                  Please do not refresh the page, close this tab, or click the back button. Your transaction is being secured.
+                </p>
+              </div>
+
+              {/* Secure lock footer */}
+              <div className="flex items-center justify-center gap-1.5 text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider bg-slate-50 py-2 rounded-xl border border-slate-100">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                SSL Secure 256-Bit Verification
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -6,6 +6,7 @@ export interface IWebsite extends Document {
   theme: "light" | "dark";
   yourName: string;
   partnerName: string;
+  names: string[];
   relationshipDate?: string;
   message: string;
   images: string[]; // Base64 data URLs
@@ -40,6 +41,11 @@ const WebsiteSchema: Schema = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    names: {
+      type: [String],
+      required: true,
+      default: [],
     },
     relationshipDate: {
       type: String,

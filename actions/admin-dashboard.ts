@@ -6,6 +6,8 @@ import { verifyToken } from "@/lib/auth";
 import { Website } from "@/models/Website";
 import { Settings, ISettings } from "@/models/Settings";
 import { Announcement, IAnnouncement } from "@/models/Announcement";
+import { Payment } from "@/models/Payment";
+import { Pricing } from "@/models/Pricing";
 import mongoose from "mongoose";
 
 // Helper to check authentication
@@ -42,6 +44,36 @@ export async function getDashboardStats() {
     const expiredWebsites = await Website.countDocuments({ expiresAt: { $lte: now } });
     const createdToday = await Website.countDocuments({ createdAt: { $gte: startOfToday } });
     const createdThisWeek = await Website.countDocuments({ createdAt: { $gte: startOfWeek } });
+
+    // Financial queries
+    const paymentStatsRaw = await Payment.aggregate([
+      {
+        $facet: {
+          totalRevenue: [
+            { $match: { status: "Paid" } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+          ],
+          todayRevenue: [
+            { $match: { status: "Paid", createdAt: { $gte: startOfToday } } },
+            { $group: { _id: null, total: { $sum: "$amount" } } }
+          ],
+          successfulPayments: [{ $match: { status: "Paid" } }, { $count: "count" }],
+          pendingPayments: [{ $match: { status: "Pending" } }, { $count: "count" }],
+          failedPayments: [{ $match: { status: "Failed" } }, { $count: "count" }]
+        }
+      }
+    ]);
+
+    const statsGroup = paymentStatsRaw[0];
+    const totalRevenue = statsGroup.totalRevenue[0]?.total || 0;
+    const todayRevenue = statsGroup.todayRevenue[0]?.total || 0;
+    const successfulPayments = statsGroup.successfulPayments[0]?.count || 0;
+    const pendingPayments = statsGroup.pendingPayments[0]?.count || 0;
+    const failedPayments = statsGroup.failedPayments[0]?.count || 0;
+
+    // Get current publish price
+    const currentPriceDoc = await Pricing.findOne().sort({ updatedAt: -1 }).lean();
+    const currentPublishPrice = currentPriceDoc ? currentPriceDoc.currentPrice : 1.00;
 
     // Category Distribution
     const categoriesRaw = await Website.aggregate([
@@ -105,6 +137,12 @@ export async function getDashboardStats() {
         mostSelectedTemplate,
         storageUsageMB,
         recentWebsites: JSON.parse(JSON.stringify(recentWebsites)),
+        totalRevenue,
+        todayRevenue,
+        successfulPayments,
+        pendingPayments,
+        failedPayments,
+        currentPublishPrice,
       }
     };
   } catch (error: any) {
