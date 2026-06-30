@@ -24,7 +24,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? "Love Space" 
       : website.category === "friends" 
       ? "Friendship Space" 
-      : "Breakup Memory";
+      : website.category === "breakup"
+      ? "Breakup Memory"
+      : website.category === "crush"
+      ? "Secret Confession"
+      : "Birthday Tribute";
 
   const title = `${website.yourName} & ${website.partnerName} | ${categoryLabel} on HeartPage`;
   const description = `${website.yourName} shared a beautiful, personalized ${categoryLabel.toLowerCase()} dedicated to ${website.partnerName}.`;

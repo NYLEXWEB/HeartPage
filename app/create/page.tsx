@@ -31,7 +31,7 @@ declare global {
 export default function CreatePage() {
   const router = useRouter();
   const [step, setStep] = useState<"details" | "template" | "preview">("details");
-  const [activeCategory, setActiveCategory] = useState<"couples" | "friends" | "breakup">("couples");
+  const [activeCategory, setActiveCategory] = useState<"couples" | "friends" | "breakup" | "crush" | "birthday">("couples");
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState<
@@ -76,7 +76,7 @@ export default function CreatePage() {
   const formValues = watch();
 
   // Handle category change - Reset form with appropriate defaults
-  const handleCategoryChange = (cat: "couples" | "friends" | "breakup") => {
+  const handleCategoryChange = (cat: "couples" | "friends" | "breakup" | "crush" | "birthday") => {
     setActiveCategory(cat);
     setSubmitError(null);
     
@@ -97,7 +97,7 @@ export default function CreatePage() {
       const params = new URLSearchParams(window.location.search);
       const isReply = params.get("isReply") === "true";
       if (isReply) {
-        const cat = (params.get("category") || "couples") as "couples" | "friends" | "breakup";
+        const cat = (params.get("category") || "couples") as "couples" | "friends" | "breakup" | "crush" | "birthday";
         const yName = params.get("yourName") || "";
         const pName = params.get("partnerName") || "";
         const rDate = params.get("relationshipDate") || "";
@@ -326,24 +326,26 @@ export default function CreatePage() {
                   <label className="text-xs uppercase tracking-widest text-slate-400 font-bold font-mono">
                     1. Select Experience Category
                   </label>
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {[
-                      { id: "couples", label: "Couples", emoji: "❤️", color: "hover:border-sky-300 text-sky-600" },
-                      { id: "friends", label: "Besties", emoji: "🤝", color: "hover:border-sky-300 text-sky-600" },
-                      { id: "breakup", label: "Breakup", emoji: "💔", color: "hover:border-sky-300 text-sky-600" }
+                      { id: "couples", label: "Couples", emoji: "❤️", color: "hover:border-sky-350 text-sky-600" },
+                      { id: "friends", label: "Besties", emoji: "🤝", color: "hover:border-sky-350 text-sky-600" },
+                      { id: "breakup", label: "Breakup", emoji: "💔", color: "hover:border-sky-350 text-sky-600" },
+                      { id: "crush", label: "Crush", emoji: "💌", color: "hover:border-sky-350 text-sky-600" },
+                      { id: "birthday", label: "Birthday", emoji: "🎂", color: "hover:border-sky-350 text-sky-600" }
                     ].map((tab) => (
                       <button
                         key={tab.id}
                         type="button"
                         onClick={() => handleCategoryChange(tab.id as any)}
-                        className={`flex flex-col items-center justify-center p-4 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${
+                        className={`flex flex-col items-center justify-center p-3 rounded-2xl border-2 transition-all duration-200 cursor-pointer ${
                           activeCategory === tab.id
                             ? "bg-white border-sky-500 shadow-sm text-sky-600 scale-[1.02]"
                             : "bg-white/60 border-sky-100 text-slate-400 " + tab.color
                         }`}
                       >
-                        <span className="text-2xl mb-1">{tab.emoji}</span>
-                        <span className="text-xs font-bold font-mono tracking-wide">{tab.label}</span>
+                        <span className="text-xl mb-0.5">{tab.emoji}</span>
+                        <span className="text-[10px] font-bold font-mono tracking-wide">{tab.label}</span>
                       </button>
                     ))}
                   </div>
@@ -390,8 +392,12 @@ export default function CreatePage() {
                           {activeCategory === "couples"
                             ? "Partner's Name"
                             : activeCategory === "friends"
-                            ? "Friend's Name"
-                            : "Ex Partner's Name"}
+                            ? "Bestie's Name"
+                            : activeCategory === "breakup"
+                            ? "Ex Partner's Name"
+                            : activeCategory === "crush"
+                            ? "Crush's Name"
+                            : "Celebrant's Name"}
                         </label>
                         <input
                           type="text"
@@ -399,8 +405,12 @@ export default function CreatePage() {
                             activeCategory === "couples"
                               ? "Partner's Name"
                               : activeCategory === "friends"
-                              ? "Friend's Name"
-                              : "Ex Partner's Name"
+                              ? "Bestie's Name"
+                              : activeCategory === "breakup"
+                              ? "Ex Partner's Name"
+                              : activeCategory === "crush"
+                              ? "Crush's Name"
+                              : "Celebrant's Name"
                           }
                           {...register("partnerName")}
                           className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-800 placeholder-slate-400 ${
@@ -424,7 +434,7 @@ export default function CreatePage() {
                         </AnimatePresence>
                       </div>
                     </div>
-
+ 
                     {/* Dates */}
                     <div className="space-y-1.5">
                       <label className="text-xs text-slate-500 font-semibold font-mono">
@@ -441,6 +451,16 @@ export default function CreatePage() {
                         {activeCategory === "breakup" && (
                           <>
                             Relationship Period <span className="text-rose-500 font-bold">(Optional)</span> <span className="text-slate-400 font-normal text-[10px]">(e.g. 2018 - 2024)</span>
+                          </>
+                        )}
+                        {activeCategory === "crush" && (
+                          <>
+                            Proposal Target Date <span className="text-rose-500 font-bold">(Optional)</span>
+                          </>
+                        )}
+                        {activeCategory === "birthday" && (
+                          <>
+                            Birth Date <span className="text-rose-500 font-bold">(Required)</span> <span className="text-slate-450 font-normal text-[10px]">(to run the birthday countdown)</span>
                           </>
                         )}
                       </label>
