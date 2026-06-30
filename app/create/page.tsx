@@ -347,7 +347,7 @@ export default function CreatePage() {
                     </div>
 
                     {/* Simulated Content */}
-                    <div className="flex-1 overflow-y-auto max-h-[calc(100vh-220px)] relative">
+                    <div className="flex-1 overflow-y-auto max-h-[calc(100vh-220px)] relative simulated-scrollable-container">
                       <TemplateDispatcher
                         category={formValues.category}
                         theme={formValues.theme}
