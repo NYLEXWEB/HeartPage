@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Playfair_Display, Fredoka, Space_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Playfair_Display, Fredoka, Space_Mono, Alex_Brush } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -28,6 +28,12 @@ const spaceMono = Space_Mono({
   weight: ["400", "700"],
 });
 
+const alexBrush = Alex_Brush({
+  variable: "--font-alex-brush",
+  subsets: ["latin"],
+  weight: "400",
+});
+
 export const metadata: Metadata = {
   title: "HeartPage | Create Beautiful Personalized Websites",
   description: "Create personalized websites for your loved ones, best friends, or breakup memories in seconds.",
@@ -41,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${fredoka.variable} ${spaceMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${fredoka.variable} ${spaceMono.variable} ${alexBrush.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
         {children}

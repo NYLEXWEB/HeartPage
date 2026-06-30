@@ -43,15 +43,18 @@ export default function BreakupTemplate({
       duration: Math.random() * 1.5 + 1.2, // speed
       opacity: Math.random() * 0.3 + 0.1, // opacity
     }));
-    setRainDrops(drops);
+    const timer = setTimeout(() => {
+      setRainDrops(drops);
+    }, 0);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Theme settings
-  const bgClass = isDark ? "bg-mesh-breakup-dark text-slate-300" : "bg-mesh-breakup-light text-slate-700";
-  const textTitleClass = isDark ? "text-slate-100 font-minimal" : "text-slate-900 font-minimal";
-  const cardBgClass = isDark ? "glass-dark border-slate-800" : "glass-light border-slate-300/40";
-  const quoteTextClass = isDark ? "text-slate-400" : "text-slate-600";
-  const dateBadgeClass = isDark ? "bg-slate-900/60 border border-slate-800 text-slate-400" : "bg-slate-200/50 border border-slate-300/40 text-slate-600";
+  // Theme settings (cream white and light blue theme)
+  const bgClass = isDark ? "bg-mesh-breakup-dark text-slate-700" : "bg-mesh-breakup-light text-slate-700";
+  const textTitleClass = isDark ? "text-slate-900 font-minimal" : "text-slate-900 font-minimal";
+  const cardBgClass = isDark ? "bg-white border border-sky-100 shadow-sm" : "bg-white border border-sky-100 shadow-sm";
+  const quoteTextClass = isDark ? "text-slate-650" : "text-slate-650";
+  const dateBadgeClass = isDark ? "bg-sky-50 border border-sky-100 text-sky-700 font-mono" : "bg-sky-50 border border-sky-100 text-sky-700 font-mono";
 
   return (
     <div className={`min-h-screen w-full relative overflow-hidden pb-20 ${bgClass} transition-colors duration-500`}>
@@ -72,7 +75,7 @@ export default function BreakupTemplate({
       </div>
 
       {isPreview && (
-        <div className="sticky top-0 z-50 w-full bg-slate-800 text-slate-300 text-center py-1 text-xs font-mono uppercase tracking-widest shadow-md">
+        <div className="sticky top-0 z-50 w-full bg-sky-500 text-white text-center py-1 text-xs font-mono uppercase tracking-widest shadow-md">
           Preview Mode
         </div>
       )}
@@ -85,12 +88,12 @@ export default function BreakupTemplate({
           transition={{ duration: 1.5, ease: "easeOut" }}
           className="space-y-6 max-w-3xl"
         >
-          <div className="inline-flex items-center justify-center p-3 rounded-full bg-slate-500/10 mb-2 border border-slate-500/20 text-slate-400">
+          <div className="inline-flex items-center justify-center p-3 rounded-full bg-sky-50 mb-2 border border-sky-100 text-sky-500">
             <Sunset className="w-6 h-6 animate-pulse" />
           </div>
           
           <h1 className={`text-4xl md:text-7xl leading-tight font-medium ${textTitleClass} uppercase tracking-widest`}>
-            {yourName} <span className="text-slate-500 font-light">&amp;</span> {partnerName}
+            {yourName} <span className="text-sky-500 font-light">&amp;</span> {partnerName}
           </h1>
 
           {relationshipDate && (
@@ -121,18 +124,16 @@ export default function BreakupTemplate({
           transition={{ duration: 1.2 }}
           className={`rounded-none p-8 md:p-12 shadow-xl border ${cardBgClass}`}
         >
-          <div className="flex items-center gap-2 mb-6 border-b border-slate-500/20 pb-4 text-xs font-mono uppercase tracking-widest text-slate-500">
+          <div className="flex items-center gap-2 mb-6 border-b border-sky-100 pb-4 text-xs font-mono uppercase tracking-widest text-sky-600">
             <Mail className="w-4 h-4" />
             <span>A Final Note</span>
           </div>
 
-          <p className="font-mono text-sm md:text-lg leading-relaxed text-slate-400 dark:text-slate-300 whitespace-pre-wrap">
+          <p className="font-mono text-sm md:text-lg leading-relaxed text-slate-700 whitespace-pre-wrap">
             {message}
           </p>
         </motion.div>
       </section>
-
-
 
       {/* CHAPTER TIMELINE */}
       <section className="container mx-auto px-4 py-16 relative z-20 max-w-3xl">
@@ -140,7 +141,7 @@ export default function BreakupTemplate({
           <h2 className={`text-2xl md:text-4xl font-minimal uppercase tracking-widest mb-4 ${textTitleClass}`}>
             The Timeline
           </h2>
-          <div className="w-8 h-[1px] bg-slate-500 mx-auto"></div>
+          <div className="w-8 h-[1px] bg-sky-400 mx-auto"></div>
         </div>
 
         <div className="space-y-12">
@@ -172,13 +173,13 @@ export default function BreakupTemplate({
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className={`p-6 border-l border-slate-500/20 ${cardBgClass} flex flex-col md:flex-row md:items-start gap-4`}
+              className={`p-6 border-l border-sky-200/50 ${cardBgClass} flex flex-col md:flex-row md:items-start gap-4`}
             >
-              <div className="text-xs font-mono uppercase tracking-widest text-slate-500 w-32 shrink-0">
+              <div className="text-xs font-mono uppercase tracking-widest text-sky-650 w-32 shrink-0">
                 {item.chapter}
               </div>
               <div className="space-y-2">
-                <h3 className={`text-lg font-bold font-minimal uppercase tracking-widest ${isDark ? "text-slate-200" : "text-slate-800"}`}>
+                <h3 className="text-lg font-bold font-minimal uppercase tracking-widest text-slate-800">
                   {item.title}
                 </h3>
                 <p className="text-slate-500 font-mono text-xs md:text-sm leading-relaxed">
@@ -199,23 +200,23 @@ export default function BreakupTemplate({
           transition={{ duration: 1.5 }}
           className="max-w-xl mx-auto space-y-6"
         >
-          <BookOpen className="w-5 h-5 mx-auto text-slate-500" />
+          <BookOpen className="w-5 h-5 mx-auto text-sky-500" />
           <h2 className={`text-xl md:text-2xl font-minimal leading-relaxed uppercase tracking-wider ${quoteTextClass}`}>
             &ldquo;Some things are beautiful precisely because they are temporary.&rdquo;
           </h2>
-          <div className="pt-6 font-mono text-xs uppercase tracking-widest text-slate-500">
+          <div className="pt-6 font-mono text-xs uppercase tracking-widest text-sky-500">
             End of Record
           </div>
         </motion.div>
       </section>
 
       {/* FOOTER */}
-      <footer className="absolute bottom-4 left-0 w-full text-center text-[10px] text-slate-600 z-20 font-mono uppercase tracking-widest">
+      <footer className="absolute bottom-4 left-0 w-full text-center text-[10px] text-slate-500 z-20 font-mono uppercase tracking-widest">
         <p className="flex items-center justify-center gap-2">
           <span>Logged via</span>
-          <span className="font-semibold text-slate-400">HeartPage</span>
+          <span className="font-semibold text-sky-500">HeartPage</span>
           <span>&middot;</span>
-          <span className="flex items-center gap-1"><Clock className="w-3 h-3" /> 7D TTL ACTIVE</span>
+          <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-sky-550" /> 7D TTL ACTIVE</span>
         </p>
       </footer>
     </div>

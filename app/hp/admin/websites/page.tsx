@@ -78,7 +78,10 @@ export default function AdminWebsitesPage() {
 
   // Reload when query constraints change
   useEffect(() => {
-    loadWebsites();
+    const timer = setTimeout(() => {
+      loadWebsites();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [page, category, status]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {

@@ -40,7 +40,7 @@ export default function SuccessPage() {
   // Burst confetti on mount
   useEffect(() => {
     const end = Date.now() + 1.5 * 1000;
-    const colors = ["#f43f5e", "#d946ef", "#a855f7", "#ec4899"];
+    const colors = ["#0ea5e9", "#38bdf8", "#0284C7", "#7dd3fc"];
 
     (function frame() {
       confetti({
@@ -91,22 +91,22 @@ export default function SuccessPage() {
     }
   };
 
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=09090b&bgcolor=ffffff&data=${encodeURIComponent(shareUrl)}`;
+  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=0f172a&bgcolor=ffffff&data=${encodeURIComponent(shareUrl)}`;
 
   return (
-    <div className="bg-[#09090b] text-zinc-100 min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="bg-[#FAFDFE] text-slate-800 min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
       
       {/* Background Mesh */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-5xl h-[600px] pointer-events-none -z-10 overflow-hidden">
-        <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] bg-rose-500/5 rounded-full blur-[100px]" />
-        <div className="absolute bottom-[20%] right-[20%] w-[350px] h-[350px] bg-purple-500/5 rounded-full blur-[100px]" />
+        <div className="absolute top-[20%] left-[20%] w-[350px] h-[350px] bg-sky-200/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[20%] right-[20%] w-[350px] h-[350px] bg-cyan-200/10 rounded-full blur-[100px]" />
       </div>
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-xl bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 text-center space-y-8 relative backdrop-blur-md shadow-2xl z-10"
+        className="w-full max-w-xl bg-white border border-sky-100 rounded-3xl p-8 text-center space-y-8 relative backdrop-blur-md shadow-xl z-10"
       >
         {/* Celebration Header */}
         <div className="space-y-3">
@@ -114,30 +114,30 @@ export default function SuccessPage() {
             initial={{ rotate: -15, scale: 0 }}
             animate={{ rotate: 0, scale: 1 }}
             transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
-            className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 flex items-center justify-center mx-auto mb-4"
+            className="w-16 h-16 rounded-2xl bg-sky-50 border border-sky-100 text-sky-600 flex items-center justify-center mx-auto mb-4"
           >
             <Sparkles className="w-8 h-8 animate-pulse" />
           </motion.div>
           
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-white uppercase">
+          <h1 className="text-3xl md:text-4xl font-luxury font-extrabold tracking-tight text-slate-900">
             Website Generated!
           </h1>
-          <p className="text-zinc-400 text-sm md:text-base leading-relaxed">
+          <p className="text-slate-500 text-sm md:text-base leading-relaxed">
             Your custom HeartPage is now active and ready to share. Remember, this page is temporary and will delete automatically in 7 days.
           </p>
         </div>
 
         {/* Link Box */}
-        <div className="bg-zinc-950 border border-zinc-800 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-inner">
-          <span className="text-sm font-mono text-zinc-300 overflow-x-auto whitespace-nowrap scrollbar-none flex-1 text-left pr-2">
+        <div className="bg-[#FCFAF7] border border-sky-100 rounded-2xl p-4 flex items-center justify-between gap-3 shadow-inner">
+          <span className="text-sm font-mono text-slate-700 overflow-x-auto whitespace-nowrap scrollbar-none flex-1 pr-2 text-left">
             {shareUrl || "Generating link..."}
           </span>
           <button
             onClick={handleCopy}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 flex items-center gap-1.5 cursor-pointer ${
               copied
-                ? "bg-green-500/10 border border-green-500/20 text-green-400"
-                : "bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300"
+                ? "bg-green-50 border border-green-200 text-green-600"
+                : "bg-white border border-sky-150 hover:bg-sky-50 text-slate-650"
             }`}
           >
             {copied ? (
@@ -158,29 +158,29 @@ export default function SuccessPage() {
             href={`/s/${slug}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="col-span-2 py-4 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold transition-all shadow-md shadow-rose-500/10 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer text-sm"
+            className="col-span-2 py-4 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl font-bold transition-all shadow-md shadow-sky-500/10 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer text-sm"
           >
             Open Website <ExternalLink className="w-4 h-4" />
           </a>
 
           <button
             onClick={handleShare}
-            className="py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+            className="py-3 bg-white hover:bg-sky-50 text-slate-700 border border-sky-150 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
           >
-            <Share2 className="w-4 h-4" /> Share Link
+            <Share2 className="w-4 h-4 text-sky-500" /> Share Link
           </button>
 
           <button
             onClick={() => setShowQr(true)}
-            className="py-3 bg-zinc-900 hover:bg-zinc-800 text-zinc-300 border border-zinc-800 hover:border-zinc-700 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
+            className="py-3 bg-white hover:bg-sky-50 text-slate-700 border border-sky-150 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer text-xs sm:text-sm"
           >
-            <QrCode className="w-4 h-4" /> QR Code
+            <QrCode className="w-4 h-4 text-sky-500" /> QR Code
           </button>
         </div>
 
         {/* Additional Expiry Ticker */}
-        <div className="flex items-center justify-center gap-2 text-xs text-zinc-500 font-medium pt-2 border-t border-zinc-900">
-          <Clock className="w-4 h-4 text-rose-500/80 animate-pulse" />
+        <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-medium pt-2 border-t border-sky-100">
+          <Clock className="w-4 h-4 text-sky-550 animate-pulse" />
           <span>Expires in 7 days (auto-clears from database)</span>
         </div>
       </motion.div>
@@ -192,13 +192,13 @@ export default function SuccessPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           >
             <motion.div
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 15 }}
-              className="bg-white text-zinc-950 rounded-3xl p-6 max-w-sm w-full space-y-6 relative shadow-2xl"
+              className="bg-white border border-sky-100 rounded-3xl p-6 max-w-sm w-full space-y-6 relative shadow-2xl"
             >
               {/* Close Button */}
               <button
@@ -206,21 +206,21 @@ export default function SuccessPage() {
                   setShowQr(false);
                   setQrLoaded(false);
                 }}
-                className="absolute top-4 right-4 p-1.5 hover:bg-zinc-100 rounded-full transition-colors text-zinc-500 hover:text-zinc-800 cursor-pointer"
+                className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-500 hover:text-slate-850 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
 
               <div className="text-center space-y-1">
-                <h3 className="text-xl font-bold tracking-tight text-zinc-900">Scan QR Code</h3>
-                <p className="text-zinc-500 text-xs">Scan using phone camera to instantly view</p>
+                <h3 className="text-xl font-luxury font-extrabold tracking-tight text-slate-900">Scan QR Code</h3>
+                <p className="text-slate-500 text-xs">Scan using phone camera to instantly view</p>
               </div>
 
               {/* QR Container */}
-              <div className="aspect-square bg-zinc-50 border border-zinc-100 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden">
+              <div className="aspect-square bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center p-4 relative overflow-hidden">
                 {!qrLoaded && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-zinc-50">
-                    <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-slate-50">
+                    <Loader2 className="w-8 h-8 animate-spin text-sky-500" />
                   </div>
                 )}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -238,13 +238,13 @@ export default function SuccessPage() {
                   download={`heartpage-qr-${slug}.png`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-1 py-3 bg-zinc-950 hover:bg-zinc-800 text-white rounded-xl text-center font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="flex-1 py-3 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl text-center font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <Download className="w-3.5 h-3.5" /> Save Image
                 </a>
                 <button
                   onClick={() => setShowQr(false)}
-                  className="flex-1 py-3 border border-zinc-200 hover:bg-zinc-50 rounded-xl text-zinc-600 font-semibold text-xs transition-colors cursor-pointer"
+                  className="flex-1 py-3 border border-sky-150 hover:bg-sky-50 rounded-xl text-slate-600 font-semibold text-xs transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -255,9 +255,9 @@ export default function SuccessPage() {
       </AnimatePresence>
 
       {/* FOOTER */}
-      <footer className="absolute bottom-6 left-0 w-full text-center text-xs text-zinc-600 z-10 font-mono">
+      <footer className="absolute bottom-6 left-0 w-full text-center text-xs text-slate-550 z-10">
         <p className="flex items-center justify-center gap-1">
-          Made with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> on <span className="font-bold text-rose-400">HeartPage</span>
+          Made with <Heart className="w-3.5 h-3.5 text-sky-500 fill-sky-500" /> on <span className="font-luxury font-bold text-sky-500">HeartPage</span>
         </p>
       </footer>
 

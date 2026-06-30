@@ -175,7 +175,7 @@ export default function AdminDashboardPage() {
         >
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl" />
           <div className="flex items-center justify-between text-zinc-500">
-            <span className="text-xs font-bold uppercase tracking-wider font-mono">Today's Volume</span>
+            <span className="text-xs font-bold uppercase tracking-wider font-mono">Today&apos;s Volume</span>
             <Flame className="w-4 h-4 text-purple-500 animate-pulse" />
           </div>
           <div className="mt-4 flex items-baseline gap-2">
