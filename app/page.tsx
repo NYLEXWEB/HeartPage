@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
@@ -16,6 +16,7 @@ import {
   HelpCircle,
   ChevronDown
 } from "lucide-react";
+import { getActiveAnnouncement, getSettings } from "@/actions/admin-dashboard";
 
 // FAQ Item Component
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -42,6 +43,27 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function LandingPage() {
+  const [announcement, setAnnouncement] = useState<any | null>(null);
+  const [settings, setSettings] = useState<any | null>(null);
+
+  useEffect(() => {
+    async function loadPublicData() {
+      try {
+        const annRes = await getActiveAnnouncement();
+        if (annRes.success && annRes.announcement) {
+          setAnnouncement(annRes.announcement);
+        }
+        const setRes = await getSettings();
+        if (setRes.success && setRes.settings) {
+          setSettings(setRes.settings);
+        }
+      } catch (err) {
+        console.error("Failed to load public settings/announcement:", err);
+      }
+    }
+    loadPublicData();
+  }, []);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,9 +77,29 @@ export default function LandingPage() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
   };
 
+  const siteTitle = settings?.siteName || "HeartPage";
+
   return (
     <div className="bg-[#09090b] text-zinc-100 min-h-screen relative overflow-x-hidden">
       
+      {/* Announcement Banner */}
+      {announcement && announcement.isActive && (
+        <div
+          style={{ backgroundColor: announcement.backgroundColor }}
+          className="text-white text-xs md:text-sm font-semibold py-3 px-4 flex items-center justify-center gap-3 relative z-50 text-center shadow-md"
+        >
+          <span>{announcement.title}: {announcement.description}</span>
+          {announcement.buttonText && announcement.buttonLink && (
+            <Link
+              href={announcement.buttonLink}
+              className="bg-white text-zinc-950 px-2.5 py-0.5 rounded text-[10px] md:text-xs font-extrabold uppercase tracking-wider hover:bg-zinc-100 transition-colors shrink-0"
+            >
+              {announcement.buttonText}
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* Background Glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none -z-10 overflow-hidden">
         <div className="absolute top-[-10%] left-[20%] w-[400px] h-[400px] bg-rose-500/10 rounded-full blur-[100px]" />
@@ -65,14 +107,14 @@ export default function LandingPage() {
       </div>
 
       {/* HEADER / NAVIGATION */}
-      <header className="border-b border-zinc-900/80 backdrop-blur-md sticky top-0 z-50">
+      <header className="border-b border-zinc-900/80 backdrop-blur-md sticky top-0 z-45">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-rose-500 flex items-center justify-center shadow-lg shadow-rose-500/20 group-hover:scale-105 transition-transform duration-200">
               <Heart className="w-4 h-4 text-white fill-white" />
             </div>
             <span className="font-bold text-xl tracking-tight text-white group-hover:text-rose-400 transition-colors duration-200">
-              HeartPage
+              {siteTitle}
             </span>
           </Link>
           <Link
@@ -407,9 +449,9 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 space-y-4">
           <div className="flex justify-center items-center gap-2">
             <Heart className="w-4 h-4 text-rose-500 fill-rose-500" />
-            <span className="font-bold text-zinc-400">HeartPage</span>
+            <span className="font-bold text-zinc-400">{siteTitle}</span>
           </div>
-          <p>&copy; {new Date().getFullYear()} HeartPage. Built for sharing special moments.</p>
+          <p>{settings?.footerText || `© ${new Date().getFullYear()} HeartPage. Built for sharing special moments.`}</p>
           <p className="text-[10px] text-zinc-700">All data automatically deletes after 7 days via TTL indexing.</p>
         </div>
       </footer>
