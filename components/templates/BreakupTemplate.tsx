@@ -132,45 +132,7 @@ export default function BreakupTemplate({
         </motion.div>
       </section>
 
-      {/* GALLERIES (MONOCHROME AND BLURRED) */}
-      <section className="container mx-auto px-4 py-16 relative z-20 max-w-5xl">
-        <div className="text-center mb-12">
-          <h2 className={`text-2xl md:text-4xl font-minimal uppercase tracking-widest mb-4 ${textTitleClass}`}>
-            Faded Chapters
-          </h2>
-          <div className="w-8 h-[1px] bg-slate-500 mx-auto"></div>
-        </div>
 
-        {images.length > 0 ? (
-          <div className={`grid gap-8 ${images.length === 1 ? "grid-cols-1 max-w-lg mx-auto" : images.length === 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
-            {images.map((img, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1, delay: idx * 0.2 }}
-                className="overflow-hidden rounded-none aspect-square shadow-lg border border-slate-500/10 grayscale contrast-125 opacity-70 hover:opacity-100 hover:grayscale-0 transition-all duration-1000 relative"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={img}
-                  alt={`Faded memory ${idx + 1}`}
-                  className="w-full h-full object-cover filter blur-[0.5px] hover:blur-none transition-all duration-700"
-                  loading="lazy"
-                />
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className={`max-w-md mx-auto p-12 border border-dashed ${isDark ? "border-slate-800 text-slate-600" : "border-slate-300 text-slate-400"} flex flex-col items-center`}>
-              <EyeOff className="w-8 h-8 mb-4" />
-              <p className="font-mono text-xs uppercase tracking-widest">No visual logs stored</p>
-            </div>
-          </div>
-        )}
-      </section>
 
       {/* CHAPTER TIMELINE */}
       <section className="container mx-auto px-4 py-16 relative z-20 max-w-3xl">

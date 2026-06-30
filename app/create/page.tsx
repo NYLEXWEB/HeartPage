@@ -20,7 +20,6 @@ import {
   AlertCircle
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
-import { compressImage } from "@/utils/image";
 import { createWebsite } from "@/actions/website";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
 
@@ -28,7 +27,6 @@ export default function CreatePage() {
   const router = useRouter();
   const [step, setStep] = useState<"details" | "template" | "preview">("details");
   const [activeCategory, setActiveCategory] = useState<"couples" | "friends" | "breakup">("couples");
-  const [imagesUploading, setImagesUploading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -50,7 +48,6 @@ export default function CreatePage() {
       partnerName: "",
       relationshipDate: "",
       message: "",
-      images: [],
     },
   });
 
@@ -70,7 +67,6 @@ export default function CreatePage() {
       partnerName: "",
       relationshipDate: cat === "breakup" ? "2021 - 2025" : "",
       message: "",
-      images: [],
     });
   };
 
@@ -78,50 +74,6 @@ export default function CreatePage() {
   useEffect(() => {
     setValue("category", activeCategory, { shouldValidate: true });
   }, [activeCategory, setValue]);
-
-  // Handle local image upload and compression
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    setImagesUploading(true);
-    setSubmitError(null);
-
-    const currentImages = [...(formValues.images || [])];
-    const maxFiles = 3;
-    const availableSlots = maxFiles - currentImages.length;
-
-    if (availableSlots <= 0) {
-      setSubmitError("You can upload a maximum of 3 photos.");
-      setImagesUploading(false);
-      return;
-    }
-
-    const filesToUpload = Array.from(files).slice(0, availableSlots);
-    const base64Promises = filesToUpload.map(async (file) => {
-      try {
-        return await compressImage(file, 800, 800, 0.7);
-      } catch (err) {
-        console.error("Compression error:", err);
-        return null;
-      }
-    });
-
-    const compressedImages = (await Promise.all(base64Promises)).filter(
-      (img): img is string => img !== null
-    );
-
-    const updatedImages = [...currentImages, ...compressedImages];
-    setValue("images", updatedImages, { shouldValidate: true });
-    setImagesUploading(false);
-  };
-
-  // Remove uploaded image
-  const removeImage = (indexToRemove: number) => {
-    const currentImages = [...(formValues.images || [])];
-    const updatedImages = currentImages.filter((_, idx) => idx !== indexToRemove);
-    setValue("images", updatedImages, { shouldValidate: true });
-  };
 
   // Submit flow
   const onFormSubmit = async (data: WebsiteInput) => {
@@ -162,7 +114,6 @@ export default function CreatePage() {
     formValues.yourName?.trim().length >= 2 &&
     formValues.partnerName?.trim().length >= 2 &&
     formValues.message?.trim().length >= 5 &&
-    formValues.images?.length > 0 &&
     (activeCategory !== "friends" || (formValues.relationshipDate && formValues.relationshipDate.trim().length >= 2));
 
   return (
@@ -350,68 +301,12 @@ export default function CreatePage() {
                       )}
                     </div>
 
-                    {/* Image Upload Block */}
-                    <div className="space-y-2">
-                      <label className="text-xs text-zinc-400 font-medium flex items-center justify-between">
-                        <span>Upload Moments (Up to 3 photos)</span>
-                        <span className="text-[10px] text-rose-400/80 font-bold">* Min 1 photo required</span>
-                      </label>
 
-                      {/* Drag & Drop Box */}
-                      <div className="relative border-2 border-dashed border-zinc-800 hover:border-zinc-700 rounded-2xl p-6 bg-zinc-950/20 text-center transition-colors">
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          disabled={imagesUploading || (formValues.images?.length || 0) >= 3}
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                        />
-                        <div className="space-y-2">
-                          <div className="mx-auto w-10 h-10 rounded-full bg-zinc-900 border border-zinc-800 flex items-center justify-center text-zinc-400">
-                            {imagesUploading ? (
-                              <Loader2 className="w-5 h-5 animate-spin text-rose-400" />
-                            ) : (
-                              <Upload className="w-5 h-5" />
-                            )}
-                          </div>
-                          <div className="text-sm font-semibold">
-                            {imagesUploading ? "Compressing & Processing..." : "Click or drag images to upload"}
-                          </div>
-                          <div className="text-xs text-zinc-500">
-                            JPG, PNG, GIF up to 5MB (auto-compressed for database storage)
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Uploaded Images Thumbnails */}
-                      {formValues.images && formValues.images.length > 0 && (
-                        <div className="grid grid-cols-3 gap-3 pt-2">
-                          {formValues.images.map((img, idx) => (
-                            <div key={idx} className="relative aspect-square rounded-xl border border-zinc-800 overflow-hidden group">
-                              {/* eslint-disable-next-line @next/next/no-img-element */}
-                              <img
-                                src={img}
-                                alt={`Thumbnail ${idx + 1}`}
-                                className="w-full h-full object-cover"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removeImage(idx)}
-                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-150 shadow-md"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
                   </div>
 
                   <button
                     type="submit"
-                    disabled={!canProceedToTemplates || imagesUploading}
+                    disabled={!canProceedToTemplates}
                     className="w-full py-4 rounded-xl text-base font-bold bg-rose-500 hover:bg-rose-600 text-white transition-all duration-200 shadow-lg shadow-rose-500/10 hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer disabled:bg-zinc-900 disabled:text-zinc-600 disabled:border disabled:border-zinc-800 disabled:shadow-none disabled:scale-100 disabled:cursor-not-allowed"
                   >
                     Select Theme &amp; Style <ArrowRight className="w-4 h-4" />
@@ -458,7 +353,7 @@ export default function CreatePage() {
                         partnerName={formValues.partnerName}
                         relationshipDate={formValues.relationshipDate}
                         message={formValues.message}
-                        images={formValues.images || []}
+                        images={[]}
                         isPreview={true}
                       />
                     </div>
@@ -648,7 +543,7 @@ export default function CreatePage() {
                   partnerName={formValues.partnerName}
                   relationshipDate={formValues.relationshipDate}
                   message={formValues.message}
-                  images={formValues.images || []}
+                  images={[]}
                   isPreview={false}
                 />
               </div>

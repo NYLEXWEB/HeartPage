@@ -207,51 +207,7 @@ export default function FriendTemplate({
         </motion.div>
       </section>
 
-      {/* PHOTO GALLERY (POLAROIDS) */}
-      <section className="container mx-auto px-4 py-16 relative z-20 max-w-5xl">
-        <div className="text-center mb-12">
-          <h2 className={`text-4xl md:text-6xl font-fun font-black uppercase ${isDark ? "text-white" : "text-black"}`}>
-            Our Crazy Memories
-          </h2>
-          <p className="text-stone-400 font-fun text-sm md:text-lg mt-2">Click or hover for a surprise!</p>
-        </div>
 
-        {images.length > 0 ? (
-          <div className={`grid gap-8 ${images.length === 1 ? "grid-cols-1 max-w-md mx-auto" : images.length === 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
-            {images.map((img, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 40, rotate: idx % 2 === 0 ? -4 : 4 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ type: "spring", damping: 12, delay: idx * 0.1 }}
-                whileHover={{ y: -10, rotate: idx % 2 === 0 ? 2 : -2, scale: 1.03 }}
-                className={`border-3 border-black bg-white p-4 pb-8 rounded-none shadow-[8px_8px_0px_#000] text-black`}
-              >
-                <div className="overflow-hidden border-2 border-black aspect-square bg-stone-100">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={img}
-                    alt={`Shenanigans ${idx + 1}`}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="mt-4 text-center font-fun font-extrabold text-lg uppercase tracking-wide">
-                  ⭐ Memorable Day #{idx + 1}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className={`max-w-md mx-auto p-12 rounded-3xl border-3 border-dashed ${isDark ? "border-stone-800 text-stone-700" : "border-stone-400 text-stone-400"} bg-black/5 flex flex-col items-center`}>
-              <Sparkles className="w-12 h-12 mb-4" />
-              <p className="font-fun font-bold text-lg">Polaroid moments will appear here!</p>
-            </div>
-          </div>
-        )}
-      </section>
 
       {/* STORY CARDS & SHENANIGANS TIMELINE */}
       <section className="container mx-auto px-4 py-16 relative z-20 max-w-4xl">

@@ -7,7 +7,6 @@ export const couplesSchema = z.object({
   partnerName: z.string().min(2, "Partner's name must be at least 2 characters"),
   relationshipDate: z.string().optional(),
   message: z.string().min(5, "Love message must be at least 5 characters"),
-  images: z.array(z.string()).min(1, "Please upload at least one image"),
 });
 
 export const friendsSchema = z.object({
@@ -17,7 +16,6 @@ export const friendsSchema = z.object({
   partnerName: z.string().min(2, "Friend's name must be at least 2 characters"),
   relationshipDate: z.string().min(2, "Friendship date is required"),
   message: z.string().min(5, "Friendship message must be at least 5 characters"),
-  images: z.array(z.string()).min(1, "Please upload at least one image"),
 });
 
 export const breakupSchema = z.object({
@@ -27,7 +25,6 @@ export const breakupSchema = z.object({
   partnerName: z.string().min(2, "Ex-partner's name must be at least 2 characters"),
   relationshipDate: z.string().optional(),
   message: z.string().min(5, "Final message must be at least 5 characters"),
-  images: z.array(z.string()).min(1, "Please upload at least one image"),
 });
 
 export const websiteFormSchema = z.discriminatedUnion("category", [
