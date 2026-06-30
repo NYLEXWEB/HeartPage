@@ -320,11 +320,11 @@ export default function FriendTemplate({
 
             constructor() {
               this.reset();
-              this.y = Math.random() * starsCanvas.height;
+              this.y = Math.random() * starsCanvas!.height;
             }
 
             reset() {
-              this.x = Math.random() * starsCanvas.width;
+              this.x = Math.random() * starsCanvas!.width;
               this.y = -20;
               this.size = Math.random() * 5 + 3;
               this.speedY = Math.random() * 0.8 + 0.4;
@@ -340,7 +340,7 @@ export default function FriendTemplate({
               this.x += this.speedX;
               this.angle += this.spin;
 
-              if (this.y > starsCanvas.height + 20 || this.x < -20 || this.x > starsCanvas.width + 20) {
+              if (this.y > starsCanvas!.height + 20 || this.x < -20 || this.x > starsCanvas!.width + 20) {
                 this.reset();
               }
             }
