@@ -534,7 +534,7 @@ export default function CreatePage() {
               </div>
 
               {/* Live Preview Column */}
-              <div className="lg:col-span-7 bg-white p-6 md:p-8 flex flex-col justify-center items-center relative overflow-hidden max-h-[calc(100vh-64px)]">
+              <div className="hidden lg:flex lg:col-span-7 bg-white p-6 md:p-8 flex-col justify-center items-center relative overflow-hidden max-h-[calc(100vh-64px)]">
                 {/* Background Grid */}
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#e0f2fe_1px,transparent_1px),linear-gradient(to_bottom,#e0f2fe_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-25 pointer-events-none" />
 

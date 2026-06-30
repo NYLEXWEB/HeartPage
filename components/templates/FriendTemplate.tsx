@@ -944,14 +944,14 @@ export default function FriendTemplate({
 
           {/* Friendship statistics card */}
           <div className="friend-glass-card rounded-2xl p-6 md:p-8 w-full max-w-3xl border border-white/10 shadow-2xl opacity-0 translate-y-8 animate-friend-init delay-4 hover-target">
-            <div className="grid grid-cols-3 divide-x divide-sky-500/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-0 md:divide-x divide-sky-500/20">
               <div className="px-4 text-center">
                 <h3 className="font-poppins text-[10px] md:text-xs text-sky-400 tracking-widest uppercase mb-2">Besties Since</h3>
                 <p className="font-luxury-serif text-base md:text-xl text-white font-medium">
                   {startDate.toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
                 </p>
               </div>
-              <div className="px-4 text-center">
+              <div className="px-4 text-center border-t border-b border-sky-500/10 py-4 md:py-0 md:border-none">
                 <h3 className="font-poppins text-[10px] md:text-xs text-sky-400 tracking-widest uppercase mb-2">Shenanigans</h3>
                 <p className="font-luxury-serif text-base md:text-xl text-white font-medium">Infinite Memories</p>
               </div>
