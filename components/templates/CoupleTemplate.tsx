@@ -686,7 +686,7 @@ export default function CoupleTemplate({
         {/* Hero Content */}
         <div className="relative z-10 text-center max-w-4xl px-4 mt-12 flex flex-col items-center">
           {/* Couple Monogram */}
-          <div className="w-16 h-16 border border-white/30 rounded-full flex items-center justify-center mb-8 backdrop-blur-md bg-white/5 opacity-0 translate-y-8 animate-init hover-target transition-all duration-500 hover:border-gold">
+          <div className="w-16 h-16 border border-white/30 rounded-full flex items-center justify-center mb-8 backdrop-blur-md bg-white/5 opacity-0 translate-y-8 animate-init hover-target transition-hover-border hover:border-gold">
             <span className="font-cormorant text-2xl text-white font-light tracking-widest">{initials}</span>
           </div>
 
@@ -1058,7 +1058,8 @@ export default function CoupleTemplate({
           transform: translate(-50%, -50%);
           pointer-events: none;
           z-index: 9998;
-          transition: transform 0.08s ease-out, width 0.3s, height 0.3s, border-color 0.3s;
+          /* Avoid CSS transition conflicts on properties animated by GSAP */
+          transition: transform 0.08s ease-out;
         }
 
         /* Grain Overlay Effect for Editorial Feel */
@@ -1140,10 +1141,21 @@ export default function CoupleTemplate({
 
         .scroll-character-boy {
           left: 0;
+          transform: translateX(-35vw) scale(0.95);
         }
 
         .scroll-character-girl {
           right: 0;
+          transform: translateX(35vw) scale(0.95);
+        }
+
+        @media (min-width: 769px) {
+          .scroll-character-boy {
+            transform: translateX(-16vw) scale(0.95);
+          }
+          .scroll-character-girl {
+            transform: translateX(16vw) scale(0.95);
+          }
         }
 
         .scroll-couple-img {
@@ -1309,7 +1321,12 @@ export default function CoupleTemplate({
         .btn-premium {
           position: relative;
           overflow: hidden;
-          transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+          /* Avoid CSS transition conflicts on transform/opacity properties animated by GSAP */
+          transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .transition-hover-border {
+          transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s cubic-bezier(0.16, 1, 0.3, 1), color 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .btn-premium::after {
