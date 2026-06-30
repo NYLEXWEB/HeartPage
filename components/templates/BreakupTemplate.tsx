@@ -931,7 +931,13 @@ export default function BreakupTemplate({
           </div>
 
           {/* Interactive Envelope layout */}
-          <div className="flex flex-col items-center justify-center py-12">
+          <div className="flex flex-col items-center justify-center py-12 relative">
+            {!envelopeOpen && (
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce pointer-events-none z-30">
+                <span className="text-[10px] md:text-xs bg-slate-800 dark:bg-slate-700 text-white font-sans font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-slate-900/30 border border-slate-650">Click to Open</span>
+                <span className="text-2xl">👇</span>
+              </div>
+            )}
             <div 
               className={`breakup-envelope-wrapper hover-target ${envelopeOpen ? 'open' : ''}`}
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
@@ -964,6 +970,16 @@ export default function BreakupTemplate({
             <p className="text-xs text-slate-500 font-mono tracking-widest uppercase mt-8 text-center">
               {envelopeOpen ? "Click envelope to close letter" : "Click envelope to open letter"}
             </p>
+            {/* Send Reply Button */}
+            <div className="mt-6 flex justify-center">
+              <a 
+                href={`/create?category=breakup&yourName=${encodeURIComponent(partnerName)}&partnerName=${encodeURIComponent(yourName)}&relationshipDate=${encodeURIComponent(relationshipDate || "")}&isReply=true`}
+                className="hover-target px-6 py-2.5 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-650 text-white font-poppins text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 shadow-md flex items-center gap-2"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                Send Reply
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -1049,6 +1065,14 @@ export default function BreakupTemplate({
             <span className={`font-luxury-serif text-lg tracking-[0.2em] ${isLight ? "text-slate-800" : "text-slate-400"}`}>{yourName ? yourName.charAt(0).toUpperCase() : 'R'}</span>
             <Sunset className="w-4 h-4 text-slate-500" />
             <span className={`font-luxury-serif text-lg tracking-[0.2em] ${isLight ? "text-slate-800" : "text-slate-400"}`}>{partnerName ? partnerName.charAt(0).toUpperCase() : 'C'}</span>
+          </div>
+          <div className="my-5">
+            <a 
+              href="/create"
+              className={`hover-target inline-flex items-center gap-2 px-5 py-2 border rounded-full font-mono text-[10px] tracking-wider uppercase transition-all duration-300 shadow-sm ${isLight ? "border-slate-300 text-slate-700 hover:bg-slate-800 hover:text-white" : "border-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"}`}
+            >
+              <span>Create Your Own Special Page ✨</span>
+            </a>
           </div>
           <p className="font-mono text-[10px] text-slate-500 tracking-widest uppercase">
             Logged via HeartPage &middot; 7D TTL Active

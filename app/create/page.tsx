@@ -91,6 +91,29 @@ export default function CreatePage() {
     });
   };
 
+  // Prefill reply fields from URL query params
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const isReply = params.get("isReply") === "true";
+      if (isReply) {
+        const cat = (params.get("category") || "couples") as "couples" | "friends" | "breakup";
+        const yName = params.get("yourName") || "";
+        const pName = params.get("partnerName") || "";
+        const rDate = params.get("relationshipDate") || "";
+        
+        setActiveCategory(cat);
+        setValue("category", cat, { shouldValidate: true });
+        setValue("yourName", yName, { shouldValidate: true });
+        setValue("partnerName", pName, { shouldValidate: true });
+        if (rDate) {
+          setValue("relationshipDate", rDate, { shouldValidate: true });
+        }
+        setValue("message", `Replying to ${pName}: `, { shouldValidate: true });
+      }
+    }
+  }, [setValue]);
+
   // Sync form category with active tab state
   useEffect(() => {
     setValue("category", activeCategory, { shouldValidate: true });
@@ -306,7 +329,7 @@ export default function CreatePage() {
                   <div className="grid grid-cols-3 gap-2">
                     {[
                       { id: "couples", label: "Couples", emoji: "❤️", color: "hover:border-sky-300 text-sky-600" },
-                      { id: "friends", label: "Friends", emoji: "🤝", color: "hover:border-sky-300 text-sky-600" },
+                      { id: "friends", label: "Besties", emoji: "🤝", color: "hover:border-sky-300 text-sky-600" },
                       { id: "breakup", label: "Breakup", emoji: "💔", color: "hover:border-sky-300 text-sky-600" }
                     ].map((tab) => (
                       <button
@@ -405,11 +428,21 @@ export default function CreatePage() {
                     {/* Dates */}
                     <div className="space-y-1.5">
                       <label className="text-xs text-slate-500 font-semibold font-mono">
-                        {activeCategory === "couples"
-                          ? "Relationship Start Date (Optional)"
-                          : activeCategory === "friends"
-                          ? "Friendship Date (e.g. When you met)"
-                          : "Relationship Period (Optional, e.g. 2018 - 2024)"}
+                        {activeCategory === "couples" && (
+                          <>
+                            Relationship Start Date <span className="text-rose-500 font-bold">(Optional)</span>
+                          </>
+                        )}
+                        {activeCategory === "friends" && (
+                          <>
+                            Friendship Date <span className="text-slate-450 font-normal text-[10px]"><span className="text-rose-500 font-bold">(Optional)</span> (e.g. When you met)</span>
+                          </>
+                        )}
+                        {activeCategory === "breakup" && (
+                          <>
+                            Relationship Period <span className="text-rose-500 font-bold">(Optional)</span> <span className="text-slate-400 font-normal text-[10px]">(e.g. 2018 - 2024)</span>
+                          </>
+                        )}
                       </label>
                       {activeCategory === "breakup" ? (
                         <input

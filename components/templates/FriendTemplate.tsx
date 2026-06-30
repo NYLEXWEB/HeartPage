@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Trophy, MessageCircle, Heart, Star, Compass, Music, Volume2, VolumeX, Share2, Award, Smile } from "lucide-react";
+import { Sparkles, Trophy, MessageCircle, Heart, Star, Compass, Music, Volume2, VolumeX, Share2, Award, Smile, Mail } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface FriendTemplateProps {
@@ -1133,7 +1133,13 @@ export default function FriendTemplate({
           </div>
 
           {/* Interactive envelope assembly */}
-          <div className="flex flex-col items-center justify-center py-12">
+          <div className="flex flex-col items-center justify-center py-12 relative">
+            {!envelopeOpen && (
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce pointer-events-none z-30">
+                <span className="text-[10px] md:text-xs bg-sky-500 text-white font-sans font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-sky-500/30 border border-sky-450">Click to Open</span>
+                <span className="text-2xl">👇</span>
+              </div>
+            )}
             <div 
               className={`friend-envelope-wrapper hover-target ${envelopeOpen ? 'open' : ''}`}
               onClick={() => setEnvelopeOpen(!envelopeOpen)}
@@ -1166,6 +1172,16 @@ export default function FriendTemplate({
             <p className="text-xs text-slate-400 font-mono tracking-widest uppercase mt-8 text-center">
               {envelopeOpen ? "Click envelope to close letter" : "Click envelope to read letter"}
             </p>
+            {/* Send Reply Button */}
+            <div className="mt-6 flex justify-center">
+              <a 
+                href={`/create?category=friends&yourName=${encodeURIComponent(partnerName)}&partnerName=${encodeURIComponent(yourName)}&relationshipDate=${encodeURIComponent(relationshipDate || "")}&isReply=true`}
+                className="hover-target px-6 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-poppins text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 shadow-md shadow-sky-500/25 flex items-center gap-2"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                Send Reply
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -1258,6 +1274,14 @@ export default function FriendTemplate({
           <p className="font-luxury-serif italic text-base text-slate-500 max-w-sm mx-auto">
             "A single loyal friend is worth more than ten thousand relatives."
           </p>
+          <div className="my-6">
+            <a 
+              href="/create"
+              className="hover-target inline-flex items-center gap-2 px-5 py-2 border border-sky-400 text-sky-650 hover:bg-sky-500 hover:text-white font-sans text-[11px] tracking-wider uppercase rounded-full transition-all duration-300 shadow-sm"
+            >
+              <span>Create Your Own Special Page ✨</span>
+            </a>
+          </div>
           <div className="w-12 h-[1px] bg-sky-500/20 mx-auto my-4"></div>
           <p className="font-sans text-[10px] text-slate-400 tracking-widest uppercase">
             Made with Love • © 2026 {yourName} &amp; {partnerName}

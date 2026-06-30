@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
+import { Mail } from "lucide-react";
 
 interface CoupleTemplateProps {
   yourName: string;
@@ -854,7 +855,13 @@ export default function CoupleTemplate({
           </div>
 
           {/* Interactive Envelope Container */}
-          <div className="flex flex-col items-center justify-center py-12">
+          <div className="flex flex-col items-center justify-center py-12 relative">
+            {!envelopeOpen && (
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 animate-bounce pointer-events-none z-30">
+                <span className="text-[10px] md:text-xs bg-rose-500 text-white font-sans font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-lg shadow-rose-500/30 border border-rose-450">Click to Open</span>
+                <span className="text-2xl">👇</span>
+              </div>
+            )}
             <div 
               className={`envelope-wrapper hover-target ${envelopeOpen ? 'open' : ''}`} 
               id="envelope-wrapper"
@@ -887,6 +894,16 @@ export default function CoupleTemplate({
             <p className="text-xs text-muted font-poppins tracking-widest uppercase mt-8 text-center" id="letter-prompt">
               {envelopeOpen ? "Click to close envelope" : "Click the envelope to read the letter"}
             </p>
+            {/* Send Reply Button */}
+            <div className="mt-6 flex justify-center">
+              <a 
+                href={`/create?category=couples&yourName=${encodeURIComponent(partnerName)}&partnerName=${encodeURIComponent(yourName)}&relationshipDate=${encodeURIComponent(relationshipDate || "")}&isReply=true`}
+                className="hover-target px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-poppins text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 shadow-md shadow-rose-500/25 flex items-center gap-2"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                Send Reply
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -958,6 +975,14 @@ export default function CoupleTemplate({
           <p className="font-cormorant italic text-base text-muted mb-4 max-w-sm mx-auto">
             "Two souls with but a single thought, two hearts that beat as one."
           </p>
+          <div className="my-6">
+            <a 
+              href="/create"
+              className="hover-target inline-flex items-center gap-2 px-5 py-2 border border-gold/40 text-gold-dark hover:bg-gold hover:text-white font-poppins text-[11px] tracking-wider uppercase rounded-full transition-all duration-300 shadow-sm"
+            >
+              <span>Create Your Own Special Page ✨</span>
+            </a>
+          </div>
           <div className="w-12 h-[1px] bg-gold/20 mx-auto my-4"></div>
           <p className="font-poppins text-[10px] text-muted/80 tracking-widest uppercase">
             Made with Love • © 2026 {yourName} &amp; {partnerName}
