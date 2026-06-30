@@ -1,26 +1,196 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  
+  --card: #18181b;
+  --card-foreground: #f4f4f5;
+  
+  --border: #27272a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card-bg: var(--card);
+  --color-card-border: var(--border);
+  
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  
+  /* Category Fonts */
+  --font-serif-luxury: var(--font-playfair);
+  --font-sans-fun: var(--font-fredoka);
+  --font-mono-custom: var(--font-space-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom Typography Utilities */
+.font-luxury {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+.font-fun {
+  font-family: var(--font-fredoka), system-ui, sans-serif;
+}
+
+.font-minimal {
+  font-family: var(--font-space-mono), monospace;
+}
+
+/* Premium UI Utilities */
+.glass-light {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(15, 15, 20, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Sticker Effect (Best Friends Template) */
+.sticker-btn {
+  box-shadow: 4px 4px 0px 0px #000000;
+  border: 2px solid #000000;
+  transition: all 0.15s ease-in-out;
+}
+
+.sticker-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px #000000;
+}
+
+.sticker-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px 0px #000000;
+}
+
+.sticker-card {
+  box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.85);
+  border: 3px solid #000000;
+}
+
+.sticker-card-yellow {
+  background-color: #fef08a; /* yellow-200 */
+}
+
+.sticker-card-pink {
+  background-color: #fbcfe8; /* pink-200 */
+}
+
+.sticker-card-teal {
+  background-color: #99f6e4; /* teal-200 */
+}
+
+.sticker-card-purple {
+  background-color: #e9d5ff; /* purple-200 */
+}
+
+/* Couple Glow Effects */
+.romantic-glow {
+  text-shadow: 0 0 15px rgba(251, 113, 133, 0.4);
+}
+
+/* Rain Effect (Breakup Template) */
+.rain-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.rain-drop {
+  position: absolute;
+  background: linear-gradient(transparent, rgba(148, 163, 184, 0.2));
+  width: 1px;
+  height: 80px;
+  animation: fall linear infinite;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100px);
+  }
+  100% {
+    transform: translateY(105vh);
+  }
+}
+
+/* Custom scrollbar for premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(9, 9, 11, 0.4);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(161, 161, 170, 0.4);
+}
+
+/* Mesh Gradients */
+.bg-mesh-couples-light {
+  background-color: #fff1f2;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(254, 205, 211, 0.5) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(253, 244, 245, 0.8) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(254, 244, 245, 0.6) 0px, transparent 50%);
+}
+
+.bg-mesh-couples-dark {
+  background-color: #0c0205;
+  background-image: 
+    radial-gradient(at 10% 20%, rgba(136, 19, 55, 0.15) 0px, transparent 50%),
+    radial-gradient(at 90% 10%, rgba(76, 5, 25, 0.2) 0px, transparent 50%),
+    radial-gradient(at 50% 80%, rgba(136, 19, 55, 0.1) 0px, transparent 50%);
+}
+
+.bg-mesh-friends-light {
+  background-color: #fafaf9;
+  background-image: 
+    radial-gradient(at 5% 5%, rgba(254, 240, 138, 0.4) 0px, transparent 40%),
+    radial-gradient(at 95% 95%, rgba(153, 246, 228, 0.4) 0px, transparent 40%),
+    radial-gradient(at 50% 50%, rgba(233, 213, 255, 0.4) 0px, transparent 40%);
+}
+
+.bg-mesh-friends-dark {
+  background-color: #0c0a09;
+  background-image: 
+    radial-gradient(at 5% 5%, rgba(113, 63, 18, 0.15) 0px, transparent 40%),
+    radial-gradient(at 95% 95%, rgba(13, 148, 136, 0.15) 0px, transparent 40%),
+    radial-gradient(at 50% 50%, rgba(107, 33, 168, 0.15) 0px, transparent 40%);
+}
+
+.bg-mesh-breakup-light {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(at 30% 20%, rgba(226, 232, 240, 0.6) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(203, 213, 225, 0.4) 0px, transparent 50%);
+}
+
+.bg-mesh-breakup-dark {
+  background-color: #020617;
+  background-image: 
+    radial-gradient(at 30% 20%, rgba(15, 23, 42, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 80%, rgba(30, 41, 59, 0.5) 0px, transparent 50%);
 }

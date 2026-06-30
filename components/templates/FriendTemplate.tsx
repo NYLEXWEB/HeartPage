@@ -1,0 +1,346 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Sparkles, Trophy, Gift, MessageCircle, Heart, Star } from "lucide-react";
+import confetti from "canvas-confetti";
+
+interface FriendTemplateProps {
+  yourName: string;
+  partnerName: string;
+  relationshipDate?: string;
+  message: string;
+  images: string[];
+  theme: "light" | "dark";
+  isPreview?: boolean;
+}
+
+interface EmojiParticle {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+  delay: number;
+  duration: number;
+  spin: number;
+}
+
+const EMOJIS = ["🥳", "🤝", "😂", "🍕", "🌟", "🎸", "🍦", "🔥", "👽", "🦄"];
+
+export default function FriendTemplate({
+  yourName = "Sam",
+  partnerName = "Taylor",
+  relationshipDate = "2020-09-15",
+  message = "You are the cheese to my macaroni, the peanut butter to my jelly, and the partner in crime for all my terrible ideas. Thanks for always being there!",
+  images = [],
+  theme = "light",
+  isPreview = false,
+}: FriendTemplateProps) {
+  const isDark = theme === "dark";
+  const [emojis, setEmojis] = useState<EmojiParticle[]>([]);
+
+  // Trigger confetti on load
+  useEffect(() => {
+    // A small burst of confetti to welcome the user
+    const duration = 2 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
+
+    const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
+
+    const interval: any = setInterval(function() {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 20 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Generate floating emojis
+  useEffect(() => {
+    const generated = Array.from({ length: 12 }).map((_, i) => ({
+      id: i,
+      emoji: EMOJIS[i % EMOJIS.length],
+      x: Math.random() * 100,
+      y: 100 + Math.random() * 20,
+      size: Math.random() * 24 + 16,
+      delay: Math.random() * 8,
+      duration: Math.random() * 8 + 6,
+      spin: Math.random() * 360 - 180,
+    }));
+    setEmojis(generated);
+  }, []);
+
+  const triggerBadgeConfetti = () => {
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.6 }
+    });
+  };
+
+  // Neo-brutalist theme configuration
+  const bgClass = isDark ? "bg-mesh-friends-dark text-stone-200" : "bg-mesh-friends-light text-stone-900";
+  const textTitleClass = isDark ? "text-yellow-400 font-fun" : "text-purple-700 font-fun";
+  const cardBorderClass = isDark ? "border-stone-800" : "border-black";
+  
+  // Custom colors for neo-brutalist cards
+  const stickerColors = [
+    isDark ? "bg-purple-950/90 border-purple-800 text-purple-200" : "sticker-card-purple text-purple-950",
+    isDark ? "bg-yellow-950/90 border-yellow-800 text-yellow-200" : "sticker-card-yellow text-yellow-950",
+    isDark ? "bg-teal-950/90 border-teal-800 text-teal-200" : "sticker-card-teal text-teal-950",
+    isDark ? "bg-pink-950/90 border-pink-800 text-pink-200" : "sticker-card-pink text-pink-950",
+  ];
+
+  return (
+    <div className={`min-h-screen w-full relative overflow-hidden pb-20 ${bgClass} transition-colors duration-500`}>
+      {/* Floating Emojis Background */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
+        <AnimatePresence>
+          {emojis.map((p) => (
+            <motion.div
+              key={p.id}
+              className="absolute select-none opacity-20 md:opacity-30"
+              style={{
+                left: `${p.x}%`,
+                fontSize: `${p.size}px`,
+              }}
+              initial={{ y: "110vh", opacity: 0, rotate: 0 }}
+              animate={{
+                y: "-10vh",
+                opacity: [0, 0.6, 0.6, 0],
+                rotate: p.spin,
+                x: [`${p.x}%`, `${p.x + (Math.random() * 8 - 4)}%`, `${p.x - (Math.random() * 8 - 4)}%`],
+              }}
+              transition={{
+                duration: p.duration,
+                delay: p.delay,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+            >
+              {p.emoji}
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {isPreview && (
+        <div className="sticky top-0 z-50 w-full bg-yellow-400 text-black text-center py-1 text-xs font-bold uppercase tracking-wider shadow-sm">
+          Live Preview Mode
+        </div>
+      )}
+
+      {/* HERO SECTION */}
+      <section className="container mx-auto px-4 pt-20 pb-16 flex flex-col items-center justify-center text-center relative z-20 min-h-[75vh]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 100, damping: 15 }}
+          className="space-y-6 max-w-4xl"
+        >
+          {/* Animated sticker badge */}
+          <motion.div
+            animate={{ rotate: [0, -5, 5, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
+            className={`inline-block px-6 py-2 border-3 ${cardBorderClass} bg-yellow-300 text-black rounded-full font-fun text-sm md:text-base uppercase tracking-wider font-extrabold shadow-[4px_4px_0px_#000]`}
+          >
+            Best Friends Forever 🤝
+          </motion.div>
+
+          <h1 className={`text-6xl md:text-9xl leading-none font-black ${textTitleClass} uppercase tracking-tight`}>
+            {yourName} <br className="hidden md:inline" />
+            <span className="text-black bg-yellow-400 px-4 py-2 border-3 border-black inline-block transform -rotate-2 my-2 shadow-[6px_6px_0px_#000] text-4xl md:text-7xl">AND</span><br className="hidden md:inline" />
+            {partnerName}
+          </h1>
+
+          {relationshipDate && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="inline-block mt-4"
+            >
+              <div className="bg-teal-400 border-2 border-black px-6 py-2 rounded-xl text-black font-fun font-bold shadow-[3px_3px_0px_rgba(0,0,0,0.85)]">
+                BESTIES SINCE {new Date(relationshipDate).getFullYear()}!
+              </div>
+            </motion.div>
+          )}
+
+          <p className="text-stone-500 font-fun text-lg md:text-2xl max-w-2xl mx-auto mt-6">
+            Two souls, one brain cell. Welcome to our secret corner of the web!
+          </p>
+        </motion.div>
+      </section>
+
+      {/* FUNNY QUOTE CARD */}
+      <section className="container mx-auto px-4 py-12 relative z-20 max-w-3xl">
+        <motion.div
+          initial={{ opacity: 0, rotate: -3 }}
+          whileInView={{ opacity: 1, rotate: 1 }}
+          viewport={{ once: true }}
+          transition={{ type: "spring", stiffness: 80 }}
+          whileHover={{ rotate: -1, scale: 1.01 }}
+          className={`border-3 ${cardBorderClass} ${isDark ? "bg-stone-900" : "bg-white"} p-8 md:p-12 rounded-3xl shadow-[8px_8px_0px_#000] relative`}
+        >
+          {/* Top-right emoji sticker */}
+          <div className="absolute -top-6 -right-4 bg-pink-400 border-2 border-black text-white p-3 rounded-full font-bold transform rotate-12 text-2xl shadow-[2px_2px_0px_#000]">
+            🍕
+          </div>
+          
+          <h2 className="text-xl md:text-2xl font-fun font-extrabold uppercase tracking-widest text-stone-400 mb-6 flex items-center gap-2">
+            <MessageCircle className="w-6 h-6 text-purple-500" />
+            A Message From {yourName}
+          </h2>
+
+          <p className="font-fun font-bold text-2xl md:text-4xl leading-relaxed text-purple-500/90 dark:text-yellow-400/90 italic">
+            &ldquo;{message}&rdquo;
+          </p>
+        </motion.div>
+      </section>
+
+      {/* PHOTO GALLERY (POLAROIDS) */}
+      <section className="container mx-auto px-4 py-16 relative z-20 max-w-5xl">
+        <div className="text-center mb-12">
+          <h2 className={`text-4xl md:text-6xl font-fun font-black uppercase ${isDark ? "text-white" : "text-black"}`}>
+            Our Crazy Memories
+          </h2>
+          <p className="text-stone-400 font-fun text-sm md:text-lg mt-2">Click or hover for a surprise!</p>
+        </div>
+
+        {images.length > 0 ? (
+          <div className={`grid gap-8 ${images.length === 1 ? "grid-cols-1 max-w-md mx-auto" : images.length === 2 ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1 md:grid-cols-3"}`}>
+            {images.map((img, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 40, rotate: idx % 2 === 0 ? -4 : 4 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", damping: 12, delay: idx * 0.1 }}
+                whileHover={{ y: -10, rotate: idx % 2 === 0 ? 2 : -2, scale: 1.03 }}
+                className={`border-3 border-black bg-white p-4 pb-8 rounded-none shadow-[8px_8px_0px_#000] text-black`}
+              >
+                <div className="overflow-hidden border-2 border-black aspect-square bg-stone-100">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img}
+                    alt={`Shenanigans ${idx + 1}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="mt-4 text-center font-fun font-extrabold text-lg uppercase tracking-wide">
+                  ⭐ Memorable Day #{idx + 1}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className={`max-w-md mx-auto p-12 rounded-3xl border-3 border-dashed ${isDark ? "border-stone-800 text-stone-700" : "border-stone-400 text-stone-400"} bg-black/5 flex flex-col items-center`}>
+              <Sparkles className="w-12 h-12 mb-4" />
+              <p className="font-fun font-bold text-lg">Polaroid moments will appear here!</p>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* STORY CARDS & SHENANIGANS TIMELINE */}
+      <section className="container mx-auto px-4 py-16 relative z-20 max-w-4xl">
+        <div className="text-center mb-16">
+          <h2 className={`text-4xl md:text-6xl font-fun font-black uppercase ${isDark ? "text-white" : "text-black"}`}>
+            Our Shenanigans
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          {[
+            {
+              title: "Partner In Crime 🕵️",
+              desc: "From sneaking out to plotting late-night taco runs, we always have each other's back, no questions asked.",
+              colorIdx: 0,
+            },
+            {
+              title: "Inside Jokes 😂",
+              desc: "We can communicate entire paragraphs with just one look. Nobody else understands our humor, and that's exactly how we like it.",
+              colorIdx: 1,
+            },
+            {
+              title: "Late Night Calls 📞",
+              desc: "Deep life talks, crying about fictional characters, or just sitting in comfortable silence for hours on FaceTime.",
+              colorIdx: 2,
+            },
+            {
+              title: "Through Thick & Thin 💖",
+              desc: "No matter how chaotic life gets or how far apart we are, nothing will ever change this legendary friendship.",
+              colorIdx: 3,
+            },
+          ].map((story, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.15 }}
+              whileHover={{ scale: 1.02 }}
+              className={`p-6 rounded-2xl border-3 border-black shadow-[6px_6px_0px_#000] ${stickerColors[story.colorIdx % stickerColors.length]}`}
+            >
+              <h3 className="text-xl md:text-2xl font-fun font-black mb-3 uppercase tracking-tight">
+                {story.title}
+              </h3>
+              <p className="font-fun font-medium leading-relaxed text-sm md:text-base">
+                {story.desc}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* FRIENDSHIP BADGE (INTERACTIVE) */}
+      <section className="container mx-auto px-4 py-16 text-center relative z-20">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          className="max-w-xl mx-auto"
+        >
+          <div className="relative inline-block">
+            {/* Interactive Badge */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={triggerBadgeConfetti}
+              className={`px-10 py-10 rounded-full border-4 border-black bg-pink-400 text-black font-fun font-black text-xl md:text-3xl shadow-[8px_8px_0px_rgba(0,0,0,1)] uppercase tracking-tighter cursor-pointer flex flex-col items-center justify-center relative overflow-hidden group`}
+            >
+              <div className="absolute inset-0 bg-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity duration-200 -z-10"></div>
+              <Trophy className="w-12 h-12 mb-2 animate-bounce" />
+              <span>Certified</span>
+              <span className="text-white text-2xl md:text-4xl block group-hover:text-black">BESTIES</span>
+              <span className="text-xs uppercase tracking-widest mt-2 bg-black text-white px-3 py-1 rounded-full">Click for joy! 🎉</span>
+            </motion.button>
+
+            {/* Explanatory badge arrow */}
+            <div className="hidden md:block absolute -right-32 top-10 transform rotate-12 text-sm text-stone-500 font-fun font-bold">
+              ← Press it!
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="absolute bottom-4 left-0 w-full text-center text-xs text-stone-500 z-20 font-fun">
+        <p className="flex items-center justify-center gap-1 font-bold">
+          Made with <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500 animate-pulse" /> on <span className="font-extrabold text-purple-500 bg-yellow-300 px-2 py-0.5 border border-black rounded shadow-[1px_1px_0px_#000]">HeartPage</span>
+        </p>
+      </footer>
+    </div>
+  );
+}
