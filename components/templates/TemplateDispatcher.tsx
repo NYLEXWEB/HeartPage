@@ -14,6 +14,8 @@ interface TemplateDispatcherProps {
   message: string;
   images: string[];
   customFields?: { label: string; value: string }[];
+  groomPhoto?: string;
+  bridePhoto?: string;
   isPreview?: boolean;
 }
 
@@ -26,6 +28,8 @@ export default function TemplateDispatcher({
   message,
   images,
   customFields = [],
+  groomPhoto,
+  bridePhoto,
   isPreview = false,
 }: TemplateDispatcherProps) {
   // Safe defaults
@@ -161,6 +165,8 @@ export default function TemplateDispatcher({
           images={images}
           theme={theme}
           customFields={customFields}
+          groomPhoto={groomPhoto}
+          bridePhoto={bridePhoto}
           isPreview={isPreview}
         />
       );

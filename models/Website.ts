@@ -16,6 +16,8 @@ export interface IWebsite extends Document {
   message: string;
   images: string[]; // Base64 data URLs
   customFields?: ICustomField[];
+  groomPhoto?: string; // Base64 data URL
+  bridePhoto?: string; // Base64 data URL
   createdAt: Date;
   expiresAt: Date;
 }
@@ -75,6 +77,14 @@ const WebsiteSchema: Schema = new Schema(
         },
       ],
       default: [],
+      required: false,
+    },
+    groomPhoto: {
+      type: String,
+      required: false,
+    },
+    bridePhoto: {
+      type: String,
       required: false,
     },
     createdAt: {

@@ -80,6 +80,8 @@ export default async function PublicWebsitePage({ params }: PageProps) {
       message={website.message}
       images={website.images}
       customFields={website.customFields || []}
+      groomPhoto={website.groomPhoto}
+      bridePhoto={website.bridePhoto}
       isPreview={false}
     />
   );

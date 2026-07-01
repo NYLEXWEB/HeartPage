@@ -96,6 +96,8 @@ export async function POST(request: NextRequest) {
       message: formData.message,
       images,
       customFields: formData.customFields || [],
+      groomPhoto: (formData as any).groomPhoto,
+      bridePhoto: (formData as any).bridePhoto,
       amount: currentPrice,
       razorpayOrderId: order.id,
       ipAddress,

@@ -15,6 +15,8 @@ interface CreatePendingParams {
   message: string;
   images: string[];
   customFields?: { label: string; value: string }[];
+  groomPhoto?: string;
+  bridePhoto?: string;
   amount: number;
   razorpayOrderId: string;
   ipAddress?: string;
@@ -48,6 +50,8 @@ export async function createPendingPayment(params: CreatePendingParams): Promise
       message: params.message,
       images: params.images,
       customFields: params.customFields || [],
+      groomPhoto: params.groomPhoto,
+      bridePhoto: params.bridePhoto,
     },
     ipAddress: params.ipAddress,
     userAgent: params.userAgent,
@@ -224,7 +228,7 @@ async function publishWebsiteFromPayment(payment: IPayment): Promise<IWebsite> {
     return existingWebsite;
   }
 
-  const { yourName, partnerName, relationshipDate, message, images, customFields } = payment.websiteData;
+  const { yourName, partnerName, relationshipDate, message, images, customFields, groomPhoto, bridePhoto } = payment.websiteData;
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 Days expiry
 
   const website = new Website({
@@ -238,6 +242,8 @@ async function publishWebsiteFromPayment(payment: IPayment): Promise<IWebsite> {
     message,
     images,
     customFields: customFields || [],
+    groomPhoto,
+    bridePhoto,
     expiresAt,
   });
 

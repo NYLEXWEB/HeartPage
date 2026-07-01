@@ -130,6 +130,46 @@ export default function CreatePage() {
   // Watch fields for live preview
   const formValues = watch();
 
+  const getCustomFieldPlaceholders = (category: string) => {
+    switch (category) {
+      case "wedding":
+        return {
+          label: "e.g. Venue Location or RSVP",
+          value: "e.g. Google Maps Link or Phone number",
+        };
+      case "couples":
+        return {
+          label: "e.g. Our Song or First Date Spot",
+          value: "e.g. Perfect by Ed Sheeran or Paris Cafe",
+        };
+      case "friends":
+        return {
+          label: "e.g. Favorite Memory or Nickname",
+          value: "e.g. That summer beach trip or Captain Chaos",
+        };
+      case "breakup":
+        return {
+          label: "e.g. Final Agreement or Shared Item",
+          value: "e.g. Returning keys or Staying friends",
+        };
+      case "crush":
+        return {
+          label: "e.g. Confession Question or Gift Spot",
+          value: "e.g. Will you meet me? or Under the oak tree",
+        };
+      case "birthday":
+        return {
+          label: "e.g. Party Location or Gift Wishlist",
+          value: "e.g. Royal Club House or Link to wishlist",
+        };
+      default:
+        return {
+          label: "e.g. Details Label",
+          value: "e.g. Link or custom text details",
+        };
+    }
+  };
+
   // Handle category change - Reset form with appropriate defaults
   const handleCategoryChange = (cat: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding") => {
     setActiveCategory(cat);
@@ -646,7 +686,7 @@ export default function CreatePage() {
                                 <div>
                                   <input
                                     type="text"
-                                    placeholder="e.g. Venue Location"
+                                    placeholder={getCustomFieldPlaceholders(activeCategory).label}
                                     {...register(`customFields.${idx}.label` as const)}
                                     className="w-full bg-white border border-sky-150 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500 transition-all text-slate-800 placeholder-slate-400"
                                   />
@@ -657,7 +697,7 @@ export default function CreatePage() {
                                 <div>
                                   <input
                                     type="text"
-                                    placeholder="e.g. Google Maps link or text"
+                                    placeholder={getCustomFieldPlaceholders(activeCategory).value}
                                     {...register(`customFields.${idx}.value` as const)}
                                     className="w-full bg-white border border-sky-150 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500 transition-all text-slate-800 placeholder-slate-400"
                                   />

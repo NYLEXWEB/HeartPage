@@ -12,6 +12,8 @@ interface WeddingTemplateProps {
   images: string[];
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
+  groomPhoto?: string;
+  bridePhoto?: string;
   isPreview?: boolean;
 }
 
@@ -23,6 +25,8 @@ export default function WeddingTemplate({
   images,
   theme,
   customFields = [],
+  groomPhoto,
+  bridePhoto,
   isPreview = false,
 }: WeddingTemplateProps) {
   const router = useRouter();
@@ -307,6 +311,71 @@ export default function WeddingTemplate({
           <span className="w-px h-10 bg-[#e4c988]/50 group-hover:h-14 transition-all duration-500" />
         </a>
       </section>
+
+      {/* ============================================================ */}
+      {/* BRIDE & GROOM PHOTOS SECTION */}
+      {/* ============================================================ */}
+      {(groomPhoto || bridePhoto) && (
+        <section className="relative px-6 py-20 bg-[#faf5eb] border-b border-[#ebdcb9]/40 z-20">
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 text-center">
+            
+            {/* Bride */}
+            {bridePhoto && (
+              <motion.div 
+                {...revealScale}
+                className="flex flex-col items-center"
+              >
+                <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-[3px] border-[#c9a24b] p-1.5 shadow-xl bg-white">
+                  <div className="w-full h-full rounded-full overflow-hidden relative">
+                    <img 
+                      src={bridePhoto} 
+                      alt={yourName || "Bride"} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <h3 className="font-display text-2xl text-[#10241a] mt-6 tracking-wide">
+                  {yourName || "Bride"}
+                </h3>
+                <span className="font-cormorant italic text-[#a9853a] text-sm tracking-wider mt-1">The Bride</span>
+              </motion.div>
+            )}
+
+            {/* Heart Divider (Only shown if both photos exist) */}
+            {bridePhoto && groomPhoto && (
+              <motion.div 
+                {...reveal}
+                className="hidden md:flex items-center text-[#c9a24b] text-4xl"
+              >
+                ❦
+              </motion.div>
+            )}
+
+            {/* Groom */}
+            {groomPhoto && (
+              <motion.div 
+                {...revealScale}
+                className="flex flex-col items-center"
+              >
+                <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-[3px] border-[#c9a24b] p-1.5 shadow-xl bg-white">
+                  <div className="w-full h-full rounded-full overflow-hidden relative">
+                    <img 
+                      src={groomPhoto} 
+                      alt={partnerName || "Groom"} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <h3 className="font-display text-2xl text-[#10241a] mt-6 tracking-wide">
+                  {partnerName || "Groom"}
+                </h3>
+                <span className="font-cormorant italic text-[#a9853a] text-sm tracking-wider mt-1">The Groom</span>
+              </motion.div>
+            )}
+
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* INVITATION MESSAGE */}

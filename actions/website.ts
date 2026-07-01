@@ -63,6 +63,8 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
       message: validatedData.message,
       images: [],
       customFields: validatedData.customFields || [],
+      groomPhoto: (validatedData as any).groomPhoto,
+      bridePhoto: (validatedData as any).bridePhoto,
       expiresAt,
     });
 
@@ -107,6 +109,8 @@ export async function getWebsiteBySlug(slug: string) {
         label: cf.label,
         value: cf.value,
       })),
+      groomPhoto: website.groomPhoto || "",
+      bridePhoto: website.bridePhoto || "",
       createdAt: website.createdAt.toISOString(),
       expiresAt: website.expiresAt.toISOString(),
     };
