@@ -11,6 +11,7 @@ interface WeddingTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -21,9 +22,21 @@ export default function WeddingTemplate({
   message,
   images,
   theme,
+  customFields = [],
   isPreview = false,
 }: WeddingTemplateProps) {
   const router = useRouter();
+
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
   
   // States
   const [isWeddingDay, setIsWeddingDay] = useState(false);
@@ -316,6 +329,40 @@ export default function WeddingTemplate({
             <span className="w-10 gold-line" />
             <span className="w-10 gold-line" />
           </motion.div>
+
+          {/* Dynamic Custom Fields */}
+          {customFields && customFields.length > 0 && (
+            <div className="mt-14 max-w-lg mx-auto space-y-6">
+              {customFields.map((field, idx) => {
+                const link = getLinkUrl(field.value);
+                return (
+                  <motion.div 
+                    key={idx} 
+                    {...reveal} 
+                    className="border border-[rgba(201,162,75,0.4)]/30 bg-[#fcfaf5] p-6 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 text-center"
+                  >
+                    <h4 className="font-cormorant tracking-[0.2em] text-xs text-[#a9853a] uppercase mb-2">
+                      {field.label}
+                    </h4>
+                    {link ? (
+                      <a 
+                        href={link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1.5 font-display italic text-lg text-[#10241a] hover:text-[#a9853a] underline underline-offset-4 decoration-[#a9853a]/60 hover:decoration-[#a9853a] transition-all duration-300 break-all"
+                      >
+                        {field.value.length > 35 ? "Click here to view details" : field.value} ↗
+                      </a>
+                    ) : (
+                      <p className="font-cormorant text-base md:text-lg text-[#10241a] leading-relaxed whitespace-pre-line">
+                        {field.value}
+                      </p>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 

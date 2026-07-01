@@ -13,6 +13,7 @@ interface TemplateDispatcherProps {
   relationshipDate?: string;
   message: string;
   images: string[];
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -24,6 +25,7 @@ export default function TemplateDispatcher({
   relationshipDate,
   message,
   images,
+  customFields = [],
   isPreview = false,
 }: TemplateDispatcherProps) {
   // Safe defaults
@@ -93,6 +95,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );
@@ -105,6 +108,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );
@@ -117,6 +121,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );
@@ -129,6 +134,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );
@@ -141,6 +147,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );
@@ -153,6 +160,7 @@ export default function TemplateDispatcher({
           message={safeMessage}
           images={images}
           theme={theme}
+          customFields={customFields}
           isPreview={isPreview}
         />
       );

@@ -11,6 +11,7 @@ interface BirthdayTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -21,9 +22,21 @@ export default function BirthdayTemplate({
   message,
   images,
   theme,
+  customFields = [],
   isPreview = false,
 }: BirthdayTemplateProps) {
   const router = useRouter();
+
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
 
   // States
   const [calculatedAge, setCalculatedAge] = useState<number | null>(null);
@@ -345,6 +358,48 @@ export default function BirthdayTemplate({
           </motion.div>
         </div>
       </section>
+
+      {/* Dynamic Custom Fields */}
+      {customFields && customFields.length > 0 && (
+        <section className="relative px-6 py-10 bg-[#fff7ed]">
+          <div className="max-w-md mx-auto space-y-4 text-center">
+            <p className="font-display tracking-[0.3em] text-xs text-[#ff5c8a] uppercase">
+              Special Information
+            </p>
+            <div className="space-y-4">
+              {customFields.map((field, idx) => {
+                const link = getLinkUrl(field.value);
+                return (
+                  <motion.div 
+                    key={idx} 
+                    {...revealPop} 
+                    className="card-tape relative bg-white rounded-xl shadow-md p-5 border border-amber-100/50"
+                    style={{ transform: `rotate(${(idx % 2 === 0 ? -1 : 1) * 0.8}deg)` }}
+                  >
+                    <h4 className="font-display font-semibold text-xs text-[#ffb84d] uppercase tracking-wider mb-1">
+                      {field.label}
+                    </h4>
+                    {link ? (
+                      <a 
+                        href={link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1 font-hand text-2xl text-[#ff5c8a] hover:text-[#ff3b70] underline decoration-[#ffb84d]/60 hover:decoration-[#ffb84d] transition-all duration-300 break-all"
+                      >
+                        {field.value.length > 30 ? "Click to Open Details" : field.value} ↗
+                      </a>
+                    ) : (
+                      <p className="font-hand text-2xl text-[#1a1030] leading-relaxed whitespace-pre-line">
+                        {field.value}
+                      </p>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* INTERACTIVE CAKE + MAKE A WISH */}

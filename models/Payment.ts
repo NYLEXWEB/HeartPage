@@ -21,6 +21,7 @@ export interface IPayment extends Document {
     relationshipDate?: string;
     message: string;
     images: string[];
+    customFields?: { label: string; value: string }[];
   };
   ipAddress?: string;
   userAgent?: string;
@@ -110,6 +111,16 @@ const PaymentSchema: Schema = new Schema(
       relationshipDate: { type: String, required: false },
       message: { type: String, required: true },
       images: { type: [String], default: [] },
+      customFields: {
+        type: [
+          {
+            label: { type: String, required: true },
+            value: { type: String, required: true },
+          },
+        ],
+        default: [],
+        required: false,
+      },
     },
     ipAddress: {
       type: String,

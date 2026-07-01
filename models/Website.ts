@@ -1,5 +1,10 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
+export interface ICustomField {
+  label: string;
+  value: string;
+}
+
 export interface IWebsite extends Document {
   slug: string;
   category: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding";
@@ -10,6 +15,7 @@ export interface IWebsite extends Document {
   relationshipDate?: string;
   message: string;
   images: string[]; // Base64 data URLs
+  customFields?: ICustomField[];
   createdAt: Date;
   expiresAt: Date;
 }
@@ -60,6 +66,16 @@ const WebsiteSchema: Schema = new Schema(
     images: {
       type: [String],
       default: [],
+    },
+    customFields: {
+      type: [
+        {
+          label: { type: String, required: true },
+          value: { type: String, required: true },
+        },
+      ],
+      default: [],
+      required: false,
     },
     createdAt: {
       type: Date,

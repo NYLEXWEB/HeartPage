@@ -95,6 +95,7 @@ export async function POST(request: NextRequest) {
       relationshipDate: formData.relationshipDate,
       message: formData.message,
       images,
+      customFields: formData.customFields || [],
       amount: currentPrice,
       razorpayOrderId: order.id,
       ipAddress,

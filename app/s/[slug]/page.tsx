@@ -79,6 +79,7 @@ export default async function PublicWebsitePage({ params }: PageProps) {
       relationshipDate={website.relationshipDate}
       message={website.message}
       images={website.images}
+      customFields={website.customFields || []}
       isPreview={false}
     />
   );

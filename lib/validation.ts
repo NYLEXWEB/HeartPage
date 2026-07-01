@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const customFieldSchema = z.object({
+  label: z.string().min(1, "Field name is required"),
+  value: z.string().min(1, "Value is required"),
+});
+
 export const couplesSchema = z.object({
   category: z.literal("couples"),
   theme: z.enum(["light", "dark"]),
@@ -8,6 +13,7 @@ export const couplesSchema = z.object({
   relationshipDate: z.string().optional(),
   message: z.string().min(5, "Love message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const friendsSchema = z.object({
@@ -18,6 +24,7 @@ export const friendsSchema = z.object({
   relationshipDate: z.string().min(2, "Friendship date is required"),
   message: z.string().min(5, "Friendship message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const breakupSchema = z.object({
@@ -28,6 +35,7 @@ export const breakupSchema = z.object({
   relationshipDate: z.string().optional(),
   message: z.string().min(5, "Final message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const crushSchema = z.object({
@@ -38,6 +46,7 @@ export const crushSchema = z.object({
   relationshipDate: z.string().optional(),
   message: z.string().min(5, "Proposal message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const birthdaySchema = z.object({
@@ -48,6 +57,7 @@ export const birthdaySchema = z.object({
   relationshipDate: z.string().min(2, "Birth date is required"),
   message: z.string().min(5, "Birthday message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const weddingSchema = z.object({
@@ -58,6 +68,7 @@ export const weddingSchema = z.object({
   relationshipDate: z.string().min(2, "Wedding date is required"),
   message: z.string().min(5, "Wedding message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
+  customFields: z.array(customFieldSchema).optional(),
 });
 
 export const websiteFormSchema = z.discriminatedUnion("category", [

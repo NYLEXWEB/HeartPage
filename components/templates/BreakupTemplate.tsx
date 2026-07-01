@@ -11,6 +11,7 @@ interface BreakupTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -21,8 +22,19 @@ export default function BreakupTemplate({
   message = "Sometimes things fall apart so that better things can fall together. Thank you for the lessons, the laughter, and the time we shared. I will always wish you the best, wherever your path leads.",
   images = [],
   theme = "dark",
+  customFields = [],
   isPreview = false,
 }: BreakupTemplateProps) {
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -1060,6 +1072,46 @@ export default function BreakupTemplate({
           </div>
         </motion.div>
       </section>
+
+      {/* Dynamic Custom Fields */}
+      {customFields && customFields.length > 0 && (
+        <section className={`py-20 px-4 relative z-20 border-t ${isLight ? "border-slate-200" : "border-slate-900/40"}`}>
+          <div className="max-w-xl mx-auto text-center">
+            <span className={`font-luxury-serif italic text-xl tracking-wider mb-2 block ${isLight ? "text-slate-650" : "text-slate-500"}`}>Details</span>
+            <h2 className={`font-luxury-serif text-3xl md:text-4xl font-normal tracking-wide mb-10 ${isLight ? "text-slate-900" : "text-white"}`}>Additional Records</h2>
+            
+            <div className="space-y-6">
+              {customFields.map((field, idx) => {
+                const link = getLinkUrl(field.value);
+                return (
+                  <div 
+                    key={idx} 
+                    className="breakup-glass-card rounded-2xl p-6 border shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    <h4 className="font-poppins font-semibold text-[10px] text-slate-500 uppercase tracking-widest mb-2">
+                      {field.label}
+                    </h4>
+                    {link ? (
+                      <a 
+                        href={link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className={`inline-flex items-center gap-1.5 font-luxury-serif italic text-lg hover:text-slate-500 underline underline-offset-4 decoration-slate-500/40 hover:decoration-slate-500 transition-all duration-300 break-all ${isLight ? "text-slate-800" : "text-slate-250"}`}
+                      >
+                        {field.value.length > 35 ? "Click to view details" : field.value} ↗
+                      </a>
+                    ) : (
+                      <p className={`font-luxury-serif text-base md:text-lg leading-relaxed whitespace-pre-line ${isLight ? "text-slate-750" : "text-slate-350"}`}>
+                        {field.value}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Dynamic Gallery Section */}
       {images && images.length > 0 && (

@@ -12,6 +12,7 @@ interface CrushTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -29,9 +30,21 @@ export default function CrushTemplate({
   message,
   images,
   theme,
+  customFields = [],
   isPreview = false,
 }: CrushTemplateProps) {
   const router = useRouter();
+
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
   
   // Navigation & States
   const [stage, setStage] = useState<"envelope" | "suspense" | "proposal" | "accepted">("envelope");
@@ -410,7 +423,41 @@ export default function CrushTemplate({
                   </div>
                 </div>
 
-
+                {/* Dynamic Custom Fields */}
+                {customFields && customFields.length > 0 && (
+                  <div className="space-y-3 pt-2 text-left">
+                    <span className="text-[10px] uppercase font-mono tracking-widest font-bold text-slate-500 dark:text-slate-400 block">Additional Details</span>
+                    <div className="space-y-2">
+                      {customFields.map((field, idx) => {
+                        const link = getLinkUrl(field.value);
+                        return (
+                          <div 
+                            key={idx} 
+                            className="bg-white/40 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 p-4 rounded-xl shadow-sm"
+                          >
+                            <h4 className="font-poppins font-semibold text-[10px] text-slate-450 dark:text-slate-400 uppercase tracking-wider mb-1">
+                              {field.label}
+                            </h4>
+                            {link ? (
+                              <a 
+                                href={link} 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                className="inline-flex items-center gap-1 font-serif text-sm text-pink-500 hover:text-pink-600 underline underline-offset-2 break-all"
+                              >
+                                {field.value.length > 30 ? "Click to view link" : field.value} ↗
+                              </a>
+                            ) : (
+                              <p className="font-serif text-sm text-slate-700 dark:text-slate-200 whitespace-pre-line">
+                                {field.value}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
 
                 <div className="w-full h-[1px] bg-pink-500/15 pt-2" />
 

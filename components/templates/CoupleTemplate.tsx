@@ -10,6 +10,7 @@ interface CoupleTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -20,8 +21,19 @@ export default function CoupleTemplate({
   message = "Every single day with you is a gift. From the quiet mornings to the wild adventures, you are my home. Here's to us, our past, and our beautiful future.",
   images = [],
   theme = "light",
+  customFields = [],
   isPreview = false,
 }: CoupleTemplateProps) {
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -910,6 +922,46 @@ export default function CoupleTemplate({
           </div>
         </div>
       </section>
+
+      {/* Dynamic Custom Fields Section */}
+      {customFields && customFields.length > 0 && (
+        <section className="py-20 px-4 relative z-20 bg-beige-light border-t border-gold/10">
+          <div className="max-w-xl mx-auto text-center">
+            <span className="font-cormorant italic text-xl text-gold tracking-wider mb-2 block">Additional Details</span>
+            <h2 className="serif-title text-3xl md:text-4xl text-dark font-normal tracking-wide mb-10">Useful Information</h2>
+            
+            <div className="space-y-6">
+              {customFields.map((field, idx) => {
+                const link = getLinkUrl(field.value);
+                return (
+                  <div 
+                    key={idx} 
+                    className="glass-card rounded-2xl p-6 border border-white/40 shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    <h4 className="font-poppins text-[10px] md:text-xs text-gold-dark tracking-widest uppercase mb-2">
+                      {field.label}
+                    </h4>
+                    {link ? (
+                      <a 
+                        href={link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1.5 font-cormorant italic text-lg text-dark hover:text-gold-dark underline underline-offset-4 decoration-gold/45 hover:decoration-gold transition-all duration-300 break-all"
+                      >
+                        {field.value.length > 35 ? "Click to view link" : field.value} ↗
+                      </a>
+                    ) : (
+                      <p className="font-cormorant text-base md:text-lg text-dark leading-relaxed whitespace-pre-line">
+                        {field.value}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Reasons I Love You Section */}
       <section className="py-24 md:py-32 px-4 relative z-20 bg-beige/30">

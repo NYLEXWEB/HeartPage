@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -105,6 +105,7 @@ export default function CreatePage() {
     setValue,
     watch,
     reset,
+    control,
     formState: { errors, isValid },
   } = useForm<WebsiteInput>({
     resolver: zodResolver(websiteFormSchema),
@@ -117,7 +118,13 @@ export default function CreatePage() {
       relationshipDate: "",
       message: "",
       images: [],
+      customFields: [],
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "customFields",
   });
 
   // Watch fields for live preview
@@ -137,6 +144,7 @@ export default function CreatePage() {
       relationshipDate: cat === "breakup" ? "2021 - 2025" : "",
       message: "",
       images: [],
+      customFields: [],
     });
   };
 
@@ -612,6 +620,65 @@ export default function CreatePage() {
                       </AnimatePresence>
                     </div>
 
+                    {/* Dynamic Custom Fields Section */}
+                    <div className="space-y-3 pt-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs text-slate-500 font-semibold font-mono">
+                          Add Additional Details <span className="text-slate-400 font-normal">(Optional)</span>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => append({ label: "", value: "" })}
+                          className="text-[10px] text-sky-600 hover:text-sky-700 font-bold uppercase tracking-wider bg-sky-50 hover:bg-sky-100 px-2.5 py-1 rounded-full border border-sky-200/50 flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add Detail
+                        </button>
+                      </div>
+                      <p className="text-[11px] text-slate-400 -mt-1 leading-relaxed">
+                        Add details like event location links, dress code, RSVP contacts, or timing details!
+                      </p>
+
+                      {fields.length > 0 && (
+                        <div className="space-y-3 bg-slate-50/50 p-4 rounded-2xl border border-sky-100/30">
+                          {fields.map((item, idx) => (
+                            <div key={item.id} className="flex gap-2 items-start">
+                              <div className="flex-1 grid grid-cols-2 gap-2">
+                                <div>
+                                  <input
+                                    type="text"
+                                    placeholder="e.g. Venue Location"
+                                    {...register(`customFields.${idx}.label` as const)}
+                                    className="w-full bg-white border border-sky-150 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500 transition-all text-slate-800 placeholder-slate-400"
+                                  />
+                                  {errors.customFields?.[idx]?.label && (
+                                    <span className="text-[10px] text-rose-500 font-semibold mt-1 block">Name is required</span>
+                                  )}
+                                </div>
+                                <div>
+                                  <input
+                                    type="text"
+                                    placeholder="e.g. Google Maps link or text"
+                                    {...register(`customFields.${idx}.value` as const)}
+                                    className="w-full bg-white border border-sky-150 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-sky-500 transition-all text-slate-800 placeholder-slate-400"
+                                  />
+                                  {errors.customFields?.[idx]?.value && (
+                                    <span className="text-[10px] text-rose-500 font-semibold mt-1 block">Value is required</span>
+                                  )}
+                                </div>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => remove(idx)}
+                                className="p-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-500 hover:text-rose-600 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
                     {/* Gallery Image Upload (Optional) */}
                     <div className="space-y-3 pt-2">
                       <div className="flex justify-between items-center">
@@ -740,6 +807,7 @@ export default function CreatePage() {
                         relationshipDate={formValues.relationshipDate}
                         message={formValues.message}
                         images={formValues.images || []}
+                        customFields={formValues.customFields || []}
                         isPreview={true}
                       />
                     </div>
@@ -924,6 +992,7 @@ export default function CreatePage() {
                   relationshipDate={formValues.relationshipDate}
                   message={formValues.message}
                   images={formValues.images || []}
+                  customFields={formValues.customFields || []}
                   isPreview={false}
                 />
               </div>

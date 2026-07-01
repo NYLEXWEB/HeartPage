@@ -12,6 +12,7 @@ interface FriendTemplateProps {
   message: string;
   images: string[];
   theme: "light" | "dark";
+  customFields?: { label: string; value: string }[];
   isPreview?: boolean;
 }
 
@@ -22,8 +23,19 @@ export default function FriendTemplate({
   message = "You are the cheese to my macaroni, the partner in crime for all my terrible ideas. Thanks for always being there!",
   images = [],
   theme = "light",
+  customFields = [],
   isPreview = false,
 }: FriendTemplateProps) {
+  // Helper to parse potential links
+  const getLinkUrl = (val: string) => {
+    if (val.startsWith("http://") || val.startsWith("https://")) {
+      return val;
+    }
+    if (val.match(/^[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+/)) {
+      return `https://${val}`;
+    }
+    return null;
+  };
   const [envelopeOpen, setEnvelopeOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -1188,6 +1200,46 @@ export default function FriendTemplate({
           </div>
         </div>
       </section>
+
+      {/* Dynamic Custom Fields */}
+      {customFields && customFields.length > 0 && (
+        <section className="py-20 px-4 relative z-20">
+          <div className="max-w-xl mx-auto text-center">
+            <span className="font-luxury-serif italic text-xl text-sky-500 tracking-wider mb-2 block">Useful Details</span>
+            <h2 className="font-luxury-serif text-3xl md:text-4xl text-slate-900 dark:text-white font-normal tracking-wide mb-10">Important Information</h2>
+            
+            <div className="space-y-6">
+              {customFields.map((field, idx) => {
+                const link = getLinkUrl(field.value);
+                return (
+                  <div 
+                    key={idx} 
+                    className="friend-glass-card rounded-2xl p-6 border shadow-md hover:shadow-lg transition-all duration-300"
+                  >
+                    <h4 className="font-poppins font-semibold text-[10px] text-sky-550 dark:text-sky-400 uppercase tracking-widest mb-2">
+                      {field.label}
+                    </h4>
+                    {link ? (
+                      <a 
+                        href={link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="inline-flex items-center gap-1.5 font-luxury-serif italic text-lg text-slate-800 dark:text-slate-200 hover:text-sky-500 underline underline-offset-4 decoration-sky-500/40 hover:decoration-sky-500 transition-all duration-300 break-all"
+                      >
+                        {field.value.length > 35 ? "Click to view details" : field.value} ↗
+                      </a>
+                    ) : (
+                      <p className="font-luxury-serif text-base md:text-lg text-slate-700 dark:text-slate-350 leading-relaxed whitespace-pre-line">
+                        {field.value}
+                      </p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* SHENANIGANS BENTO GRID */}
       <section className="py-24 md:py-32 px-4 relative z-20">

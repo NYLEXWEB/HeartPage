@@ -62,6 +62,7 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
       relationshipDate: validatedData.relationshipDate,
       message: validatedData.message,
       images: [],
+      customFields: validatedData.customFields || [],
       expiresAt,
     });
 
@@ -102,6 +103,10 @@ export async function getWebsiteBySlug(slug: string) {
       relationshipDate: website.relationshipDate || "",
       message: website.message,
       images: website.images || [],
+      customFields: (website.customFields || []).map((cf: any) => ({
+        label: cf.label,
+        value: cf.value,
+      })),
       createdAt: website.createdAt.toISOString(),
       expiresAt: website.expiresAt.toISOString(),
     };
