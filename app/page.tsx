@@ -601,6 +601,11 @@ export default function LandingPage() {
           </div>
           <p>{settings?.footerText || `© ${new Date().getFullYear()} HeartPage. Built for sharing special moments.`}</p>
           <p className="text-[10px] text-slate-400 font-medium">All data automatically deletes after 7 days via TTL indexing.</p>
+          <div className="flex justify-center items-center gap-4 text-[11px] font-semibold text-slate-400 pt-2">
+            <Link href="/privacy" className="hover:text-sky-500 hover:underline transition-colors">Privacy Policy</Link>
+            <span className="text-slate-350 select-none">•</span>
+            <Link href="/terms" className="hover:text-sky-500 hover:underline transition-colors">Terms &amp; Conditions</Link>
+          </div>
         </div>
       </footer>
 
