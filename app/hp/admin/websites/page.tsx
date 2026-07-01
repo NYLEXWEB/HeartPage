@@ -23,7 +23,7 @@ import Link from "next/link";
 interface WebsiteItem {
   _id: string;
   slug: string;
-  category: "couples" | "friends" | "breakup" | "crush" | "birthday";
+  category: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding";
   theme: "light" | "dark";
   yourName: string;
   partnerName: string;
@@ -184,7 +184,7 @@ export default function AdminWebsitesPage() {
                 <Filter className="w-3.5 h-3.5" /> Category:
               </span>
               <div className="bg-zinc-900 border border-zinc-800/80 rounded-lg p-0.5 flex flex-wrap gap-0.5">
-                {["all", "couples", "friends", "breakup", "crush", "birthday"].map((cat) => (
+                {["all", "couples", "friends", "breakup", "crush", "birthday", "wedding"].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => {
@@ -288,6 +288,8 @@ export default function AdminWebsitesPage() {
                             ? "bg-pink-950/40 text-pink-400 border border-pink-900/30"
                             : web.category === "birthday"
                             ? "bg-sky-950/40 text-sky-400 border border-sky-900/30"
+                            : web.category === "wedding"
+                            ? "bg-purple-950/40 text-purple-400 border border-purple-900/30"
                             : "bg-zinc-800 text-zinc-300 border border-zinc-700/50"
                         }`}>
                           {web.category}

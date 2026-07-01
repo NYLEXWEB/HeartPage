@@ -2,7 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IWebsite extends Document {
   slug: string;
-  category: "couples" | "friends" | "breakup" | "crush" | "birthday";
+  category: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding";
   theme: "light" | "dark";
   yourName: string;
   partnerName: string;
@@ -25,7 +25,7 @@ const WebsiteSchema: Schema = new Schema(
     category: {
       type: String,
       required: true,
-      enum: ["couples", "friends", "breakup", "crush", "birthday"],
+      enum: ["couples", "friends", "breakup", "crush", "birthday", "wedding"],
     },
     theme: {
       type: String,

@@ -172,6 +172,8 @@ export default function FriendTemplate({
     let mouseOverRoot: ((e: MouseEvent) => void) | null = null;
     let mouseOutRoot: ((e: MouseEvent) => void) | null = null;
 
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     const mainContainer = document.getElementById('friend-website-root');
 
     const init = async () => {
@@ -190,8 +192,8 @@ export default function FriendTemplate({
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // Smooth scroll engine setup
-      if (!isPreview) {
+      // Smooth scroll engine setup (Bypass on mobile)
+      if (!isPreview && !isMobile) {
         lenisInstance = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -213,7 +215,7 @@ export default function FriendTemplate({
       const follower = document.getElementById('friend-cursor-follower');
 
       let cursorX: any, cursorY: any, followerX: any, followerY: any;
-      if (cursor && follower && !isPreview) {
+      if (cursor && follower && !isPreview && !isMobile) {
         cursorX = gsap.quickTo(cursor, "left", { duration: 0.08, ease: "power3.out" });
         cursorY = gsap.quickTo(cursor, "top", { duration: 0.08, ease: "power3.out" });
         followerX = gsap.quickTo(follower, "left", { duration: 0.25, ease: "power3.out" });
@@ -235,8 +237,8 @@ export default function FriendTemplate({
         window.addEventListener('mousemove', mouseMoveCursor);
       }
 
-      // Event delegation for cursor hover state
-      if (mainContainer && !isPreview) {
+      // Event delegation for cursor hover state (Bypass on mobile)
+      if (mainContainer && !isPreview && !isMobile) {
         mouseOverRoot = (e: MouseEvent) => {
           const target = (e.target as HTMLElement).closest('.hover-target');
           if (target && cursor && follower) {
@@ -298,7 +300,7 @@ export default function FriendTemplate({
         const sCtx = starsCanvas.getContext("2d");
         if (sCtx) {
           let stars: StarParticle[] = [];
-          const maxStars = 40;
+          const maxStars = isMobile ? 10 : 40;
 
           resizeStars = () => {
             starsCanvas.width = window.innerWidth;
@@ -385,7 +387,7 @@ export default function FriendTemplate({
         const ptCtx = friendParticlesCanvas.getContext("2d");
         if (ptCtx) {
           let particles: SparkDust[] = [];
-          let baseCount = 45;
+          let baseCount = isMobile ? 12 : 45;
           let burstActivated = false;
 
           resizeParticles = () => {
@@ -472,7 +474,8 @@ export default function FriendTemplate({
           }
 
           const triggerBurst = () => {
-            for (let i = 0; i < 100; i++) {
+            const burstCount = isMobile ? 25 : 100;
+            for (let i = 0; i < burstCount; i++) {
               particles.push(new SparkDust(true));
             }
           };

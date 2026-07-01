@@ -3,9 +3,10 @@ import FriendTemplate from "./FriendTemplate";
 import BreakupTemplate from "./BreakupTemplate";
 import CrushTemplate from "./CrushTemplate";
 import BirthdayTemplate from "./BirthdayTemplate";
+import WeddingTemplate from "./WeddingTemplate";
 
 interface TemplateDispatcherProps {
-  category: "couples" | "friends" | "breakup" | "crush" | "birthday";
+  category: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding";
   theme: "light" | "dark";
   yourName: string;
   partnerName: string;
@@ -35,6 +36,8 @@ export default function TemplateDispatcher({
       ? "Riley"
       : category === "crush"
       ? "Confessor"
+      : category === "wedding"
+      ? "Groom"
       : "Wisher"
   );
   
@@ -47,6 +50,8 @@ export default function TemplateDispatcher({
       ? "Casey"
       : category === "crush"
       ? "My Crush"
+      : category === "wedding"
+      ? "Bride"
       : "Birthday Star"
   );
   
@@ -59,6 +64,8 @@ export default function TemplateDispatcher({
       ? "2021 - 2025"
       : category === "crush"
       ? "2026-02-14"
+      : category === "wedding"
+      ? "2026-12-25"
       : "2000-01-01"
   );
   
@@ -71,6 +78,8 @@ export default function TemplateDispatcher({
       ? "Sometimes things fall apart so that better things can fall together. Thank you for the lessons, the laughter, and the time we shared. I will always wish you the best, wherever your path leads."
       : category === "crush"
       ? "I've been holding onto this feeling for a while now, and I couldn't keep it to myself anymore. You are incredible, and I would love the chance to make beautiful memories with you."
+      : category === "wedding"
+      ? "We invite you to share in our joy and celebrate our union as we take our vows and start our forever together. Save the date and join us on our special day!"
       : "Happy Birthday! May your day be filled with laughter, love, cake, and all the beautiful things you deserve. Thank you for being such an amazing person!"
   );
 
@@ -126,6 +135,18 @@ export default function TemplateDispatcher({
     case "birthday":
       return (
         <BirthdayTemplate
+          yourName={safeYourName}
+          partnerName={safePartnerName}
+          relationshipDate={safeRelationshipDate}
+          message={safeMessage}
+          images={images}
+          theme={theme}
+          isPreview={isPreview}
+        />
+      );
+    case "wedding":
+      return (
+        <WeddingTemplate
           yourName={safeYourName}
           partnerName={safePartnerName}
           relationshipDate={safeRelationshipDate}

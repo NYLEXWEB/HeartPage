@@ -28,6 +28,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       ? "Breakup Memory"
       : website.category === "crush"
       ? "Secret Confession"
+      : website.category === "wedding"
+      ? "Wedding Invitation"
       : "Birthday Tribute";
 
   const title = `${website.yourName} & ${website.partnerName} | ${categoryLabel} on HeartPage`;

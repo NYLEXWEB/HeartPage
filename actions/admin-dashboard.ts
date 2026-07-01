@@ -80,7 +80,7 @@ export async function getDashboardStats() {
       { $group: { _id: "$category", count: { $sum: 1 } } }
     ]);
 
-    const categories = { couples: 0, friends: 0, breakup: 0, crush: 0, birthday: 0 };
+    const categories = { couples: 0, friends: 0, breakup: 0, crush: 0, birthday: 0, wedding: 0 };
     categoriesRaw.forEach((c) => {
       if (c._id in categories) {
         categories[c._id as keyof typeof categories] = c.count;

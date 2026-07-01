@@ -45,12 +45,22 @@ export const birthdaySchema = z.object({
   message: z.string().min(5, "Birthday message must be at least 5 characters"),
 });
 
+export const weddingSchema = z.object({
+  category: z.literal("wedding"),
+  theme: z.enum(["light", "dark"]),
+  yourName: z.string().min(2, "Groom/Bride's name must be at least 2 characters"),
+  partnerName: z.string().min(2, "Partner's name must be at least 2 characters"),
+  relationshipDate: z.string().min(2, "Wedding date is required"),
+  message: z.string().min(5, "Wedding message must be at least 5 characters"),
+});
+
 export const websiteFormSchema = z.discriminatedUnion("category", [
   couplesSchema,
   friendsSchema,
   breakupSchema,
   crushSchema,
   birthdaySchema,
+  weddingSchema,
 ]);
 
 export type CouplesInput = z.infer<typeof couplesSchema>;
@@ -58,4 +68,5 @@ export type FriendsInput = z.infer<typeof friendsSchema>;
 export type BreakupInput = z.infer<typeof breakupSchema>;
 export type CrushInput = z.infer<typeof crushSchema>;
 export type BirthdayInput = z.infer<typeof birthdaySchema>;
+export type WeddingInput = z.infer<typeof weddingSchema>;
 export type WebsiteInput = z.infer<typeof websiteFormSchema>;

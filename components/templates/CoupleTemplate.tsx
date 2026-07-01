@@ -63,11 +63,11 @@ export default function CoupleTemplate({
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : 'A'}&${partnerName ? partnerName.charAt(0).toUpperCase() : 'I'}`;
 
   // Map images with fallbacks
-  const heroMobileImg = images && images.length > 0 ? images[0] : "/mobile hero section.png";
-  const heroDesktopImg = images && images.length > 0 ? images[0] : "/hero section background.png";
-  const boyImg = images && images.length > 1 ? images[1] : "/boy.png";
-  const girlImg = images && images.length > 2 ? images[2] : "/girl.png";
-  const coupleImg = images && images.length > 3 ? images[3] : "/couple.png";
+  const heroMobileImg = images && images.length > 0 ? images[0] : "/mobile_hero_section.webp";
+  const heroDesktopImg = images && images.length > 0 ? images[0] : "/hero_section_background.webp";
+  const boyImg = images && images.length > 1 ? images[1] : "/boy.webp";
+  const girlImg = images && images.length > 2 ? images[2] : "/girl.webp";
+  const coupleImg = images && images.length > 3 ? images[3] : "/couple.webp";
 
   // Load external scripts helper
   const loadScript = (src: string): Promise<void> => {
@@ -185,6 +185,8 @@ export default function CoupleTemplate({
     let mouseOverRoot: ((e: MouseEvent) => void) | null = null;
     let mouseOutRoot: ((e: MouseEvent) => void) | null = null;
 
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     const mainContainer = document.getElementById('couple-website-root');
 
     const init = async () => {
@@ -203,8 +205,8 @@ export default function CoupleTemplate({
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // 1. Lenis Smooth Scroll Configuration (Only if not in preview to avoid scroll conflicts)
-      if (!isPreview) {
+      // 1. Lenis Smooth Scroll Configuration (Only if not in preview and not on mobile to avoid scroll conflicts/lag)
+      if (!isPreview && !isMobile) {
         lenisInstance = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -222,12 +224,12 @@ export default function CoupleTemplate({
         gsap.ticker.lagSmoothing(0);
       }
 
-      // 2. Custom Cursor Follower Engine
+      // 2. Custom Cursor Follower Engine (Only on desktop)
       const cursor = document.getElementById('cursor');
       const follower = document.getElementById('cursor-follower');
 
       let cursorX: any, cursorY: any, followerX: any, followerY: any;
-      if (cursor && follower && !isPreview) {
+      if (cursor && follower && !isPreview && !isMobile) {
         cursorX = gsap.quickTo(cursor, "left", { duration: 0.08, ease: "power3.out" });
         cursorY = gsap.quickTo(cursor, "top", { duration: 0.08, ease: "power3.out" });
         followerX = gsap.quickTo(follower, "left", { duration: 0.25, ease: "power3.out" });
@@ -249,8 +251,8 @@ export default function CoupleTemplate({
         window.addEventListener('mousemove', mouseMoveCursor);
       }
 
-      // Event delegation for cursor hover effects
-      if (mainContainer && !isPreview) {
+      // Event delegation for cursor hover effects (Only on desktop)
+      if (mainContainer && !isPreview && !isMobile) {
         mouseOverRoot = (e: MouseEvent) => {
           const target = (e.target as HTMLElement).closest('.hover-target');
           if (target && cursor && follower) {
@@ -312,7 +314,7 @@ export default function CoupleTemplate({
         const pCtx = petalsCanvas.getContext("2d");
         if (pCtx) {
           let petals: Petal[] = [];
-          const maxPetals = 45;
+          const maxPetals = isMobile ? 12 : 45;
 
           resizePetals = () => {
             petalsCanvas.width = window.innerWidth;
@@ -397,7 +399,7 @@ export default function CoupleTemplate({
         const ptCtx = particlesCanvas.getContext("2d");
         if (ptCtx) {
           let scrollParticles: GoldenDustParticle[] = [];
-          let baseParticlesCount = 50;
+          let baseParticlesCount = isMobile ? 12 : 50;
           let particleIntensity = 0;
           let exploded = false;
 
@@ -491,7 +493,8 @@ export default function CoupleTemplate({
           }
 
           const triggerSparkBurst = () => {
-            for (let i = 0; i < 120; i++) {
+            const burstCount = isMobile ? 30 : 120;
+            for (let i = 0; i < burstCount; i++) {
               scrollParticles.push(new GoldenDustParticle(true));
             }
           };

@@ -75,6 +75,8 @@ export default function BreakupTemplate({
     let mouseOverRoot: ((e: MouseEvent) => void) | null = null;
     let mouseOutRoot: ((e: MouseEvent) => void) | null = null;
 
+    const isMobile = window.innerWidth < 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+
     const mainContainer = document.getElementById('breakup-website-root');
 
     const init = async () => {
@@ -93,8 +95,8 @@ export default function BreakupTemplate({
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // Smooth scroll engine setup
-      if (!isPreview) {
+      // Smooth scroll engine setup (Bypass on mobile)
+      if (!isPreview && !isMobile) {
         lenisInstance = new Lenis({
           duration: 1.2,
           easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -116,7 +118,7 @@ export default function BreakupTemplate({
       const follower = document.getElementById('breakup-cursor-follower');
 
       let cursorX: any, cursorY: any, followerX: any, followerY: any;
-      if (cursor && follower && !isPreview) {
+      if (cursor && follower && !isPreview && !isMobile) {
         cursorX = gsap.quickTo(cursor, "left", { duration: 0.08, ease: "power3.out" });
         cursorY = gsap.quickTo(cursor, "top", { duration: 0.08, ease: "power3.out" });
         followerX = gsap.quickTo(follower, "left", { duration: 0.25, ease: "power3.out" });
@@ -138,8 +140,8 @@ export default function BreakupTemplate({
         window.addEventListener('mousemove', mouseMoveCursor);
       }
 
-      // Event delegation for cursor hover state
-      if (mainContainer && !isPreview) {
+      // Event delegation for cursor hover state (Bypass on mobile)
+      if (mainContainer && !isPreview && !isMobile) {
         mouseOverRoot = (e: MouseEvent) => {
           const target = (e.target as HTMLElement).closest('.hover-target');
           if (target && cursor && follower) {
@@ -201,7 +203,7 @@ export default function BreakupTemplate({
         const rCtx = rainCanvas.getContext("2d");
         if (rCtx) {
           let drops: RainDrop[] = [];
-          const maxDrops = 60;
+          const maxDrops = isMobile ? 15 : 60;
           let scrollSpeedMultiplier = 1.0;
 
           resizeRain = () => {
@@ -285,7 +287,7 @@ export default function BreakupTemplate({
         const ptCtx = breakupParticlesCanvas.getContext("2d");
         if (ptCtx) {
           let particles: SparkDust[] = [];
-          let baseCount = 35;
+          let baseCount = isMobile ? 10 : 35;
           let burstActivated = false;
 
           resizeParticles = () => {
@@ -372,7 +374,8 @@ export default function BreakupTemplate({
           }
 
           const triggerBurst = () => {
-            for (let i = 0; i < 70; i++) {
+            const burstCount = isMobile ? 20 : 70;
+            for (let i = 0; i < burstCount; i++) {
               particles.push(new SparkDust(true));
             }
           };
