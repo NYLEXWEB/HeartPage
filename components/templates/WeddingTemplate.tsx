@@ -270,13 +270,13 @@ export default function WeddingTemplate({
           </svg>
         </motion.div>
 
-        <motion.h1 {...reveal} className="font-script text-5xl md:text-7xl leading-none text-[#e4c988] mb-3">
+        <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-7xl text-[#e4c988] mb-3">
           {yourName || "Bride"}
         </motion.h1>
         <motion.div {...reveal} className="font-display italic text-2xl md:text-3xl text-[#efe6d1]/80 my-1">
           and
         </motion.div>
-        <motion.h1 {...reveal} className="font-script text-5xl md:text-7xl leading-none text-[#e4c988] mb-8">
+        <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-7xl text-[#e4c988] mb-8">
           {partnerName || "Groom"}
         </motion.h1>
 
@@ -371,7 +371,7 @@ export default function WeddingTemplate({
               </svg>
             </div>
             <p className="font-cormorant tracking-[0.35em] text-[11px] text-[#a9853a] uppercase mb-3">The Host</p>
-            <h3 className="font-script text-4xl md:text-5xl mb-4 text-[#10241a]">{yourName || "Bride"}</h3>
+            <h3 className="font-display font-medium text-3xl md:text-4xl mb-4 text-[#10241a]">{yourName || "Bride"}</h3>
             <p className="font-cormorant text-[#10241a]/70 leading-relaxed max-w-sm mx-auto">
               Beloved Family &amp; Friends of {yourName || "Bride"}
             </p>
@@ -384,7 +384,7 @@ export default function WeddingTemplate({
               </svg>
             </div>
             <p className="font-cormorant tracking-[0.35em] text-[11px] text-[#a9853a] uppercase mb-3">The Partner</p>
-            <h3 className="font-script text-4xl md:text-5xl mb-4 text-[#10241a]">{partnerName || "Groom"}</h3>
+            <h3 className="font-display font-medium text-3xl md:text-4xl mb-4 text-[#10241a]">{partnerName || "Groom"}</h3>
             <p className="font-cormorant text-[#10241a]/70 leading-relaxed max-w-sm mx-auto">
               Beloved Family &amp; Friends of {partnerName || "Groom"}
             </p>
@@ -487,7 +487,7 @@ export default function WeddingTemplate({
             <path d="M20 35 C 25 28, 25 28, 20 21 C 15 28, 15 28, 20 35 Z" fill="none" stroke="var(--gold)" strokeWidth="1" />
           </svg>
         </motion.div>
-        <motion.p {...reveal} className="font-script text-3xl text-[#e4c988] mb-2">
+        <motion.p {...reveal} className="font-display text-3xl text-[#e4c988] mb-2">
           {yourName || "Bride"} &amp; {partnerName || "Groom"}
         </motion.p>
         <motion.p {...reveal} className="font-cormorant text-xs tracking-[0.35em] uppercase text-[#efe6d1]/50">

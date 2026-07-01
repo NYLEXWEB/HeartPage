@@ -14,7 +14,9 @@ import {
   ChevronDown,
   ShieldAlert,
   Lock,
-  Star
+  Star,
+  Gift,
+  Mail
 } from "lucide-react";
 import { getActiveAnnouncement, getSettings } from "@/actions/admin-dashboard";
 
@@ -328,13 +330,12 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-16 space-y-4">
             <h2 className="text-3xl md:text-5xl font-luxury-serif font-bold text-slate-900 tracking-tight">
-              Three Completely Different Experiences
+              Six Completely Different Experiences
             </h2>
-            <p className="text-slate-500 max-w-2xl mx-auto text-base">
+            <p className="text-slate-550 max-w-2xl mx-auto text-base">
               These are not just simple color themes. Every template has its own unique animation logic, layout sequence, custom typography, and atmospheric flow.
             </p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {/* Couples */}
             <motion.div
@@ -366,7 +367,7 @@ export default function LandingPage() {
                 <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 mb-6">
                   <Users className="w-6 h-6" />
                 </div>
-                <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Best Friends 🤝</h3>
+                <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Besties 🤝</h3>
                 <p className="text-slate-500 text-sm leading-relaxed mb-6">
                   Energetic neo-brutalism layout, playful typography, and poppy stickers. Features interactive emojis, Polaroid photo cards, and a certified bestie badge with confetti triggers.
                 </p>
@@ -375,6 +376,69 @@ export default function LandingPage() {
                 <li>• Particle Emojis &amp; Confetti</li>
                 <li>• Polaroid Mockups</li>
                 <li>• Neo-brutalist Thick Borders</li>
+              </ul>
+            </motion.div>
+
+            {/* Interactive Response Loop */}
+            <motion.div
+              whileHover={{ y: -6 }}
+              className="p-8 rounded-3xl bg-white border border-sky-100 shadow-sm transition-all duration-300 flex flex-col justify-between h-full hover:shadow-md hover:shadow-sky-500/5"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 mb-6">
+                  <Mail className="w-6 h-6 animate-pulse" />
+                </div>
+                <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Response Loop 📬</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                  Build pages that talk back! All templates feature a dynamic response trigger so your partner, ex, bestie, or crush can click to instantly reply, creating a beautiful messaging loop.
+                </p>
+              </div>
+              <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-100 pt-4 font-semibold">
+                <li>• Dynamic Prefilled Reply Actions</li>
+                <li>• Automatic Inverted Names Routing</li>
+                <li>• Single-Click Creator Hand-Back</li>
+              </ul>
+            </motion.div>
+
+            {/* Birthday Scrapbook */}
+            <motion.div
+              whileHover={{ y: -6 }}
+              className="p-8 rounded-3xl bg-white border border-sky-100 shadow-sm transition-all duration-300 flex flex-col justify-between h-full hover:shadow-md hover:shadow-sky-500/5"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 mb-6">
+                  <Gift className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Birthday Scrapbook 🎂</h3>
+                <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                  Unwrap a ribboned present! Features a live birthday countdown clock, taped polaroid memories gallery, and a popping balloon playground game with custom wish popups.
+                </p>
+              </div>
+              <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-100 pt-4 font-semibold">
+                <li>• Live Anniversary Countdown</li>
+                <li>• Gamified Balloon Popper Game</li>
+                <li>• Ribbon Gift Unwrap Animation</li>
+              </ul>
+            </motion.div>
+
+            {/* Crush Confession */}
+            <motion.div
+              whileHover={{ y: -6 }}
+              className="p-8 rounded-3xl bg-white border border-sky-100 shadow-sm transition-all duration-300 flex flex-col justify-between h-full hover:shadow-md hover:shadow-sky-500/5"
+            >
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-100 flex items-center justify-center text-sky-500 mb-6">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Crush Proposal 💌</h3>
+                <p className="text-slate-550 text-sm leading-relaxed mb-6">
+                  Interactive proposal game! Features a runaway "No" button that dodges interactions, warning speech bubbles, shrinking/growing button sizes, and floating click heart sparks.
+                </p>
+              </div>
+              <ul className="space-y-2 text-xs text-slate-400 border-t border-slate-100 pt-4 font-semibold">
+                <li>• Runaway "No" Button Animation</li>
+                <li>• Dynamic Warning Speech Bubbles</li>
+                <li>• Floating Heart Click Particles</li>
               </ul>
             </motion.div>
 
@@ -388,7 +452,7 @@ export default function LandingPage() {
                   <Clock className="w-6 h-6" />
                 </div>
                 <h3 className="text-2xl font-luxury-serif font-bold text-slate-900 mb-3">Breakup Memories 💔</h3>
-                <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                <p className="text-slate-550 text-sm leading-relaxed mb-6">
                   Deep slate hues, monospace typography, and quiet spacing. Features a falling rain particle background, monochrome galleries, and structured chapter blocks for acceptance.
                 </p>
               </div>
@@ -398,6 +462,39 @@ export default function LandingPage() {
                 <li>• Cinematic Quiet Chapters</li>
               </ul>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* CUSTOM WEBSITE SECTION */}
+      <section className="py-16 bg-white relative z-10 border-t border-sky-100/30">
+        <div className="container mx-auto px-6 max-w-5xl">
+          <div className="relative rounded-[32px] p-8 md:p-12 bg-gradient-to-br from-[#10241a] to-[#16301f] text-white border border-[#efe6d1]/20 shadow-xl overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Decorative background monogram */}
+            <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/5 rounded-full blur-2xl pointer-events-none" />
+            
+            <div className="space-y-4 max-w-xl text-left font-sans">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#efe6d1]/10 border border-[#efe6d1]/20 text-[#efe6d1] text-[11px] font-bold tracking-wider uppercase font-mono">
+                ✨ Custom Design Service
+              </span>
+              <h3 className="text-2xl md:text-3xl font-luxury-serif font-bold text-[#efe6d1] leading-tight">
+                Want a fully customized template or dedicated site?
+              </h3>
+              <p className="text-white/80 text-sm md:text-base leading-relaxed">
+                Connect directly with our design team on WhatsApp. Share your custom ideas, audio song tracks, designs, or theme colors, and we will build a unique premium site for you!
+              </p>
+            </div>
+            
+            <div className="shrink-0 w-full md:w-auto">
+              <a
+                href="https://wa.me/918921442748?text=Hi,%20I'm%20interested%20in%20creating%20a%20custom%20website%20on%20HeartPage!"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full md:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-b from-[#e4c987] to-[#c29b47] hover:from-[#efe6d1] hover:to-[#e4c987] text-[#0e1912] font-bold text-sm tracking-widest uppercase rounded-full shadow-lg transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+              >
+                <span>💬 Request Custom Site</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -471,7 +568,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-4 gap-6 relative">
             {[
-              { step: "01", title: "Select Category", desc: "Choose Couples, Best Friends, or Breakup memories." },
+              { step: "01", title: "Select Category", desc: "Choose Couples, Besties, Crush, Birthday, or Breakup." },
               { step: "02", title: "Enter Details", desc: "Fill in names, dates, custom letter, and upload photos." },
               { step: "03", title: "Pick Style", desc: "Select from beautifully designed Light or Dark themes." },
               { step: "04", title: "Generate & Share", desc: "Instantly launch your link. Keep it active for 7 days." },

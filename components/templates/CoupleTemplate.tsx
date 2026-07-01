@@ -62,12 +62,12 @@ export default function CoupleTemplate({
   // Generate initials
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : 'A'}&${partnerName ? partnerName.charAt(0).toUpperCase() : 'I'}`;
 
-  // Map images with fallbacks
-  const heroMobileImg = images && images.length > 0 ? images[0] : "/mobile_hero_section.webp";
-  const heroDesktopImg = images && images.length > 0 ? images[0] : "/hero_section_background.webp";
-  const boyImg = images && images.length > 1 ? images[1] : "/boy.webp";
-  const girlImg = images && images.length > 2 ? images[2] : "/girl.webp";
-  const coupleImg = images && images.length > 3 ? images[3] : "/couple.webp";
+  // Map images with fallbacks - Uploaded images will only render in the bottom gallery section
+  const heroMobileImg = "/mobile_hero_section.webp";
+  const heroDesktopImg = "/hero_section_background.webp";
+  const boyImg = "/boy.webp";
+  const girlImg = "/girl.webp";
+  const coupleImg = "/couple.webp";
 
   // Load external scripts helper
   const loadScript = (src: string): Promise<void> => {

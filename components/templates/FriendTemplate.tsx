@@ -63,11 +63,11 @@ export default function FriendTemplate({
   // Initials configuration
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : 'S'}&${partnerName ? partnerName.charAt(0).toUpperCase() : 'T'}`;
 
-  // Image assets mapping
-  const heroBg = images && images.length > 0 ? images[0] : null;
-  const friend1Img = images && images.length > 1 ? images[1] : null;
-  const friend2Img = images && images.length > 2 ? images[2] : null;
-  const collageImg = images && images.length > 3 ? images[3] : null;
+  // Image assets mapping - Disabled in favor of beautiful fallback gradients and badges
+  const heroBg = null;
+  const friend1Img = null;
+  const friend2Img = null;
+  const collageImg = null;
 
   // Load external scripts helper
   const loadScript = (src: string): Promise<void> => {
@@ -1266,47 +1266,7 @@ export default function FriendTemplate({
         </motion.div>
       </section>
 
-      {/* Dynamic Gallery Section */}
-      {images && images.length > 0 && (
-        <section className="py-24 md:py-32 px-4 relative z-20 border-t border-sky-500/10 bg-slate-500/5">
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <span className="font-luxury-serif italic text-2xl text-sky-500 tracking-wider mb-2 block">Captured Shenanigans</span>
-              <h2 className="font-luxury-serif text-4xl md:text-6xl text-slate-900 dark:text-white font-normal tracking-wide">Our Gallery</h2>
-              <p className="font-sans text-[10px] text-slate-400 tracking-widest uppercase mt-2">
-                A snapshot of our best memories together
-              </p>
-              <div className="w-24 h-[1px] bg-sky-500/30 mx-auto mt-6"></div>
-            </div>
 
-            <div className={`grid gap-6 ${
-              images.length === 1 
-                ? "grid-cols-1 max-w-xl mx-auto" 
-                : images.length === 2 
-                ? "grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto" 
-                : images.length === 3 
-                ? "grid-cols-1 sm:grid-cols-3 max-w-5xl mx-auto" 
-                : "grid-cols-2 md:grid-cols-4"
-            }`}>
-              {images.map((img, idx) => (
-                <div 
-                  key={idx} 
-                  className="friend-glass-card overflow-hidden rounded-2xl border aspect-[4/5] relative group"
-                >
-                  <img 
-                    src={img} 
-                    alt={`Gallery ${idx + 1}`} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                    <span className="font-luxury-serif text-white italic text-lg">Chaos #0{idx + 1}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* FOOTER */}
       <footer className="py-12 bg-slate-950/5 relative z-20 border-t border-sky-500/10">

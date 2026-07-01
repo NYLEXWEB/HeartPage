@@ -254,9 +254,6 @@ export default function CreatePage() {
               setIsSubmitting(false);
             }
           },
-          prefill: {
-            name: data.yourName,
-          },
           theme: {
             color: "#0ea5e9", // Theme matching Sky Blue design
           },

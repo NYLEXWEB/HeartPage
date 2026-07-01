@@ -40,11 +40,11 @@ export default function BreakupTemplate({
   // Setup initials
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : 'R'}&${partnerName ? partnerName.charAt(0).toUpperCase() : 'C'}`;
 
-  // Image assets mapping
-  const heroBg = images && images.length > 0 ? images[0] : null;
-  const partner1Img = images && images.length > 1 ? images[1] : null;
-  const partner2Img = images && images.length > 2 ? images[2] : null;
-  const sunsetImg = images && images.length > 3 ? images[3] : null;
+  // Image assets mapping - Uploaded images will only render in the bottom gallery section
+  const heroBg = null;
+  const partner1Img = null;
+  const partner2Img = null;
+  const sunsetImg = null;
 
   // Load external scripts helper
   const loadScript = (src: string): Promise<void> => {
