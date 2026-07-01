@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Gift, Sparkles, Send, Clock, Cake, Star, Award } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface BirthdayTemplateProps {
@@ -15,16 +14,6 @@ interface BirthdayTemplateProps {
   isPreview?: boolean;
 }
 
-interface Balloon {
-  id: number;
-  x: number; // percentage width
-  color: string;
-  size: number;
-  speed: number;
-  label: string;
-  popped: boolean;
-}
-
 export default function BirthdayTemplate({
   yourName,
   partnerName,
@@ -35,111 +24,123 @@ export default function BirthdayTemplate({
   isPreview = false,
 }: BirthdayTemplateProps) {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [hasPrompterBeenClicked, setHasPrompterBeenClicked] = useState(false);
-  const [isCelebrationDay, setIsCelebrationDay] = useState(false);
-  const [balloons, setBalloons] = useState<Balloon[]>([]);
-  const [poppedCount, setPoppedCount] = useState(0);
-  const [activeWish, setActiveWish] = useState("");
-  
-  const [countdown, setCountdown] = useState({
-    days: 0,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
 
-  const isDark = theme === "dark";
+  // States
+  const [calculatedAge, setCalculatedAge] = useState<number | null>(null);
+  const [wished, setWished] = useState(false);
+  const [blownFlames, setBlownFlames] = useState<boolean[]>([false, false, false]);
+  const [confetti, setConfetti] = useState<{
+    id: number;
+    dx: number;
+    dy: number;
+    rot: number;
+    style: React.CSSProperties;
+  }[]>([]);
 
-  // Birthday Wishes Phrases when popping balloons
-  const wishPhrases = [
-    "Make a wish! 🌟",
-    "May all your dreams come true! ✨",
-    "You are awesome! 🎂",
-    "Eat more cake! 🍰",
-    "Cheers to another year! 🥂",
-    "Have a blast! 🎉",
-    "Stay golden! 💛"
-  ];
+  // Parallax Scroll FX
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [balloonY, setBalloonY] = useState(0);
+  const [balloonOpacity, setBalloonOpacity] = useState(1);
 
-  // Calculate Next Birthday
   useEffect(() => {
-    if (!relationshipDate) return;
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+      setScrollProgress(pct);
 
-    const calculateTimeLeft = () => {
-      const birthDate = new Date(relationshipDate);
-      const now = new Date();
-      
-      const birthMonth = birthDate.getMonth();
-      const birthDay = birthDate.getDate();
-
-      let nextBirthday = new Date(now.getFullYear(), birthMonth, birthDay);
-      
-      if (now > nextBirthday && now.toDateString() !== nextBirthday.toDateString()) {
-        nextBirthday.setFullYear(now.getFullYear() + 1);
-      }
-
-      const isToday = now.getMonth() === birthMonth && now.getDate() === birthDay;
-      setIsCelebrationDay(isToday);
-
-      if (isToday) {
-        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
-
-      const difference = nextBirthday.getTime() - now.getTime();
-      
-      const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-      const h = Math.floor((difference / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((difference / 1000 / 60) % 60);
-      const s = Math.floor((difference / 1000) % 60);
-
-      setCountdown({ days: d, hours: h, minutes: m, seconds: s });
+      const heroHeight = window.innerHeight;
+      const progress = Math.min(scrollTop / heroHeight, 1);
+      setBalloonY(progress * -40);
+      setBalloonOpacity(1 - progress * 0.7);
     };
 
-    calculateTimeLeft();
-    const interval = setInterval(calculateTimeLeft, 1000);
-    return () => clearInterval(interval);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Calculate Age Dynamically
+  useEffect(() => {
+    if (relationshipDate) {
+      const birthDate = new Date(relationshipDate);
+      if (!isNaN(birthDate.getTime())) {
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+        }
+        setCalculatedAge(age > 0 && age < 120 ? age : null);
+      }
+    }
   }, [relationshipDate]);
 
-  // Spawn balloons on open
-  const handleOpenGift = () => {
-    setIsOpen(true);
-    setHasPrompterBeenClicked(true);
+  // Make a Wish: blow out candles + confetti burst
+  const burstConfetti = () => {
+    const colors = ["#ff5c8a", "#ffb84d", "#4fe0c5", "#c9a8ff", "#fff7ed"];
+    const newConfetti = Array.from({ length: 60 }).map((_, i) => {
+      const size = 6 + Math.random() * 6;
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 120 + Math.random() * 220;
+      const dx = Math.cos(angle) * dist;
+      const dy = -Math.abs(Math.sin(angle) * dist) - 80 - Math.random() * 120;
+      const rot = Math.random() * 720 - 360;
 
-    const colors = [
-      "from-rose-450 to-pink-550 shadow-pink-500/30",
-      "from-amber-400 to-yellow-500 shadow-yellow-500/30",
-      "from-sky-400 to-blue-500 shadow-blue-500/30",
-      "from-emerald-400 to-green-500 shadow-green-500/30",
-      "from-purple-400 to-indigo-500 shadow-purple-500/30",
-    ];
+      return {
+        id: i,
+        dx,
+        dy: dy + 260,
+        rot,
+        style: {
+          position: "absolute" as const,
+          left: `${45 + Math.random() * 10}%`,
+          top: "55%",
+          width: `${size}px`,
+          height: `${size * (Math.random() > 0.5 ? 1 : 2.2)}px`,
+          background: colors[Math.floor(Math.random() * colors.length)],
+          borderRadius: Math.random() > 0.5 ? "50%" : "2px",
+          opacity: 1,
+          transform: "translate(0,0) rotate(0deg)",
+          transition: `transform ${1.2 + Math.random()}s cubic-bezier(.2,.6,.3,1), opacity 1.6s ease`,
+          pointerEvents: "none" as const,
+        } as React.CSSProperties,
+      };
+    });
+    setConfetti(newConfetti);
 
-    // Generate 12 balloons
-    const newBalloons = Array.from({ length: 12 }).map((_, i) => ({
-      id: i,
-      x: 10 + Math.random() * 80, // 10% to 90%
-      color: colors[i % colors.length],
-      size: 40 + Math.random() * 30, // 40px to 70px
-      speed: 8 + Math.random() * 8, // 8s to 16s float speed
-      label: wishPhrases[i % wishPhrases.length],
-      popped: false,
-    }));
-    setBalloons(newBalloons);
+    // Apply animation positioning shortly after creation
+    setTimeout(() => {
+      setConfetti((prev) =>
+        prev.map((c) => ({
+          ...c,
+          style: {
+            ...c.style,
+            transform: `translate(${c.dx}px, ${c.dy}px) rotate(${c.rot}deg)`,
+            opacity: 0,
+          },
+        }))
+      );
+    }, 50);
   };
 
-  const handlePopBalloon = (id: number, label: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setBalloons((prev) =>
-      prev.map((b) => (b.id === id ? { ...b, popped: true } : b))
-    );
-    setPoppedCount((c) => c + 1);
-    setActiveWish(label);
+  const handleMakeWish = () => {
+    if (wished) return;
+    setWished(true);
 
-    // Reset wish text after 2 seconds
+    // sequential blow flames
+    [0, 1, 2].forEach((idx) => {
+      setTimeout(() => {
+        setBlownFlames((prev) => {
+          const next = [...prev];
+          next[idx] = true;
+          return next;
+        });
+      }, idx * 150);
+    });
+
     setTimeout(() => {
-      setActiveWish("");
-    }, 2000);
+      burstConfetti();
+    }, 550);
   };
 
   const handleReplyClick = () => {
@@ -155,227 +156,395 @@ export default function BirthdayTemplate({
     router.push(`/create?${params.toString()}`);
   };
 
-  // Base Theme Styles
-  const bgClass = isDark
-    ? "bg-gradient-to-br from-[#0c0602] via-[#1e0e02] to-[#040100] text-[#fef3c7]"
-    : "bg-gradient-to-br from-[#fffbeb] via-[#fffdf5] to-[#fef3c7] text-[#78350f]";
+  // Motion Reveal Presets
+  const reveal = {
+    initial: { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.9, ease: [0.22, 0.61, 0.36, 1] as const },
+  };
 
-  const cardClass = isDark
-    ? "bg-[#1d0e04]/85 border-amber-900/40 text-amber-100 shadow-[0_0_60px_rgba(245,158,11,0.2)] backdrop-blur-xl"
-    : "bg-white/95 border-amber-200 text-slate-800 shadow-[0_20px_45px_rgba(245,158,11,0.08)] backdrop-blur-xl";
+  const revealPop = {
+    initial: { opacity: 0, scale: 0.85, rotate: -3 },
+    whileInView: { opacity: 1, scale: 1, rotate: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.8, ease: [0.34, 1.56, 0.64, 1] as const },
+  };
+
+  const revealScale = {
+    initial: { opacity: 0, scale: 0.92 },
+    whileInView: { opacity: 1, scale: 1 },
+    viewport: { once: true },
+    transition: { duration: 1.1, ease: [0.22, 0.61, 0.36, 1] as const },
+  };
 
   return (
-    <div className={`min-h-screen w-full relative flex flex-col items-center justify-center overflow-hidden py-16 px-4 ${bgClass}`}>
-      
-      {/* Balloon Popper Playground (Render floating balloons) */}
-      <div className="absolute inset-0 pointer-events-none z-20">
-        {balloons.map((b) => (
-          <AnimatePresence key={b.id}>
-            {!b.popped && (
-              <motion.div
-                initial={{ y: "105vh", x: `${b.x}vw` }}
-                animate={{ y: "-10vh" }}
-                exit={{ scale: 1.4, opacity: 0 }}
-                transition={{ duration: b.speed, ease: "linear" }}
-                style={{ 
-                  position: "absolute", 
-                  width: b.size, 
-                  height: b.size * 1.2,
-                  pointerEvents: "auto"
-                }}
-                onClick={(e) => handlePopBalloon(b.id, b.label, e)}
-                className="cursor-pointer"
-              >
-                {/* Balloon Body */}
-                <div className={`w-full h-[85%] rounded-full bg-gradient-to-b ${b.color} relative shadow-lg`}>
-                  {/* Highlight sheen */}
-                  <div className="absolute top-2 left-3 w-3 h-6 bg-white/30 rounded-full rotate-[25deg]" />
-                </div>
-                {/* Balloon string knot */}
-                <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-b-[8px] border-b-amber-500/45 mx-auto -mt-1" />
-                <div className="w-[1px] h-12 bg-white/20 mx-auto" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        ))}
-      </div>
+    <div className="antialiased relative select-none w-full min-h-screen bg-[#fff7ed] text-[#1a1030] font-nunito overflow-x-hidden">
+      {/* Custom Styles Injection */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
+        
+        :root {
+          --night:      #1a1030;
+          --night-2:    #2a1653;
+          --night-3:    #150c26;
+          --pink:       #ff5c8a;
+          --pink-soft:  #ff9db8;
+          --marigold:   #ffb84d;
+          --mint:       #4fe0c5;
+          --lilac:      #c9a8ff;
+          --cream:      #fff7ed;
+        }
+        
+        .font-display { font-family: 'Baloo 2', sans-serif; }
+        .font-hand { font-family: 'Caveat', cursive; }
 
-      {/* Floating Sparkles & Wishes Banner */}
-      <AnimatePresence>
-        {activeWish && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            className="fixed top-8 z-50 bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold px-6 py-3 rounded-full shadow-2xl flex items-center gap-2 border border-white/20 uppercase tracking-widest text-xs font-mono"
+        .bg-night {
+          background: radial-gradient(120% 140% at 50% 0%, var(--night-2) 0%, var(--night) 55%, var(--night-3) 100%);
+        }
+
+        .text-outline {
+          -webkit-text-stroke: 1.5px var(--marigold);
+          color: transparent;
+        }
+
+        /* Balloons bob animation */
+        .balloon {
+          position: absolute;
+          animation: bob 6s ease-in-out infinite;
+          will-change: transform;
+        }
+        .balloon.d2 { animation-duration: 7.5s; animation-delay: .3s; }
+        .balloon.d3 { animation-duration: 5.5s; animation-delay: .6s; }
+        .balloon.d4 { animation-duration: 8s; animation-delay: .15s; }
+        @keyframes bob {
+          0%, 100% { transform: translateY(0) rotate(-2deg); }
+          50% { transform: translateY(-22px) rotate(2deg); }
+        }
+
+        /* Candle flame flicker */
+        .flame {
+          animation: flicker 1.1s ease-in-out infinite alternate;
+          transform-origin: bottom center;
+        }
+        @keyframes flicker {
+          0% { transform: scale(1) rotate(-2deg); opacity: 1; }
+          50% { transform: scale(1.08) rotate(2deg); opacity: .92; }
+          100% { transform: scale(0.96) rotate(-1deg); opacity: 1; }
+        }
+
+        .card-tape::before {
+          content: '';
+          position: absolute;
+          top: -10px;
+          left: 50%;
+          transform: translateX(-50%) rotate(-3deg);
+          width: 70px;
+          height: 22px;
+          background: rgba(255,184,77,0.55);
+        }
+
+        .grain {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          opacity: .045;
+          mix-blend-mode: overlay;
+          background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        }
+      `}} />
+
+      {/* ============================================================ */}
+      {/* HERO SECTION */}
+      {/* ============================================================ */}
+      <section className="relative min-h-screen bg-night text-white flex flex-col items-center justify-center px-6 py-24 overflow-hidden">
+        <div className="grain" />
+
+        {/* Floating Balloons Parallax Wrapper */}
+        <div 
+          className="absolute inset-0 pointer-events-none transition-transform duration-300 ease-out z-10"
+          style={{
+            transform: `translateY(${balloonY}px)`,
+            opacity: balloonOpacity,
+          }}
+        >
+          <svg className="balloon absolute left-[6%] top-[14%] w-14 md:w-20" viewBox="0 0 60 80" fill="none">
+            <ellipse cx="30" cy="30" rx="28" ry="30" fill="var(--pink)" />
+            <path d="M30 60 L30 78" stroke="rgba(255,255,255,.4)" strokeWidth="1.5" />
+            <path d="M25 60 Q30 66 35 60" fill="var(--pink)" />
+          </svg>
+          <svg className="balloon d2 absolute right-[8%] top-[10%] w-16 md:w-24" viewBox="0 0 60 80" fill="none">
+            <ellipse cx="30" cy="30" rx="28" ry="30" fill="var(--mint)" />
+            <path d="M30 60 L30 78" stroke="rgba(255,255,255,.4)" strokeWidth="1.5" />
+            <path d="M25 60 Q30 66 35 60" fill="var(--mint)" />
+          </svg>
+          <svg className="balloon d3 absolute left-[14%] bottom-[12%] w-12 md:w-16" viewBox="0 0 60 80" fill="none">
+            <ellipse cx="30" cy="30" rx="28" ry="30" fill="var(--marigold)" />
+            <path d="M30 60 L30 78" stroke="rgba(255,255,255,.4)" strokeWidth="1.5" />
+            <path d="M25 60 Q30 66 35 60" fill="var(--marigold)" />
+          </svg>
+          <svg className="balloon d4 absolute right-[12%] bottom-[16%] w-14 md:w-20" viewBox="0 0 60 80" fill="none">
+            <ellipse cx="30" cy="30" rx="28" ry="30" fill="var(--lilac)" />
+            <path d="M30 60 L30 78" stroke="rgba(255,255,255,.4)" strokeWidth="1.5" />
+            <path d="M25 60 Q30 66 35 60" fill="var(--lilac)" />
+          </svg>
+        </div>
+
+        <motion.p 
+          {...reveal} 
+          className="font-display tracking-[0.3em] text-xs md:text-sm text-[#ffb84d] uppercase mb-6"
+        >
+          A little celebration for
+        </motion.p>
+
+        <motion.h1 
+          {...reveal} 
+          className="font-display font-extrabold text-5xl sm:text-6xl md:text-8xl leading-[0.95] text-center mb-4"
+        >
+          Happy Birthday,<br />
+          <span className="text-outline">{partnerName || "Zara"}</span> <span>🎉</span>
+        </motion.h1>
+
+        {calculatedAge !== null ? (
+          <motion.div 
+            {...reveal} 
+            className="inline-flex items-center gap-2 font-hand text-3xl md:text-4xl text-[#ff9db8] mb-10"
           >
-            <Sparkles className="w-4 h-4 text-white fill-white animate-spin" /> {activeWish}
+            <span>turning</span>
+            <span className="font-display font-bold text-white text-4xl md:text-5xl">{calculatedAge}</span>
+            <span>today</span>
+          </motion.div>
+        ) : (
+          <motion.div 
+            {...reveal} 
+            className="inline-flex items-center gap-2 font-hand text-3xl md:text-4xl text-[#ff9db8] mb-10"
+          >
+            <span>celebrating today</span>
           </motion.div>
         )}
-      </AnimatePresence>
 
-      <div className="max-w-md w-full relative z-10 flex flex-col items-center">
-        <AnimatePresence mode="wait">
-          
-          {/* STAGE 1: CLOSED GIFT PRESENT */}
-          {!isOpen ? (
-            <motion.div
-              key="envelope"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, y: -50 }}
-              className="w-full flex flex-col items-center"
-            >
-              <h2 className="font-poppins text-xs tracking-[0.25em] text-amber-600 font-bold uppercase mb-8 text-center animate-pulse">
-                🎁 Unbox Your Birthday Gift 🎁
-              </h2>
+        <a href="#message-card" className="absolute bottom-10 flex flex-col items-center gap-2 text-white/60 group">
+          <span className="font-display text-[10px] tracking-widest uppercase">Scroll down</span>
+          <span className="w-px h-10 bg-[#ffb84d]/60 group-hover:h-14 transition-all duration-500" />
+        </a>
+      </section>
 
-              {/* Pointing Hand Prompter */}
-              {!hasPrompterBeenClicked && (
-                <div className="mb-4 flex flex-col items-center cursor-pointer" onClick={handleOpenGift}>
-                  <div className="animate-bounce text-4xl">👇</div>
-                  <span className="text-[10px] uppercase font-mono tracking-widest font-bold bg-amber-500 text-white px-3.5 py-1.5 rounded-full shadow-lg shadow-amber-500/20 mt-1 animate-pulse">
-                    Tap to Unwrap
-                  </span>
-                </div>
-              )}
+      {/* ============================================================ */}
+      {/* MESSAGE CARD */}
+      {/* ============================================================ */}
+      <section id="message-card" className="relative px-6 py-24 md:py-32 bg-[#fff7ed]">
+        <div className="max-w-xl mx-auto">
+          <motion.div 
+            {...revealPop} 
+            className="card-tape relative bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(26,16,48,0.25)] px-8 py-12 md:px-12 md:py-14 rotate-[-1deg]"
+          >
+            <p className="font-hand text-3xl md:text-4xl leading-relaxed text-[#1a1030] whitespace-pre-line">
+              "{message || "Wishing you a day as wonderful as you are, and a year ahead full of laughter, adventure, and every little thing that makes you smile. Here's to you!"}"
+            </p>
+            <p className="font-display text-sm text-[#1a1030]/50 mt-8 uppercase tracking-widest">— With love, always, {yourName}</p>
+          </motion.div>
+        </div>
+      </section>
 
-              {/* Premium Gift Box wrapper */}
-              <div 
-                onClick={handleOpenGift}
-                className="w-[300px] h-[210px] bg-amber-100 dark:bg-amber-950/60 border-2 border-amber-400/40 rounded-2xl relative shadow-2xl cursor-pointer hover:scale-[1.03] transition-transform duration-300 flex flex-col justify-center items-center group overflow-hidden"
-              >
-                <div className="absolute inset-x-0 top-[47%] h-6 bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 border-y border-amber-400/30 z-10" />
-                <div className="absolute inset-y-0 left-[47%] w-6 bg-gradient-to-b from-amber-500 via-yellow-500 to-amber-600 border-x border-amber-400/30 z-10" />
-                
-                <div className="w-14 h-14 rounded-full bg-white/80 dark:bg-zinc-900 border border-amber-500/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 z-20 shadow-md">
-                  <Gift className="w-7 h-7 text-amber-500 animate-pulse" />
-                </div>
-                <p className="font-serif italic text-xs text-amber-700 dark:text-amber-300 mt-6 tracking-wider z-20 bg-amber-50 dark:bg-zinc-900/60 px-3 py-1 rounded-full border border-amber-500/10">
-                  Surprise for {partnerName}
-                </p>
-              </div>
-            </motion.div>
-          ) : (
-            
-            /* STAGE 2: SURPRISE OPENED */
-            <motion.div
-              key="content"
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full flex flex-col items-center"
-            >
+      {/* ============================================================ */}
+      {/* INTERACTIVE CAKE + MAKE A WISH */}
+      {/* ============================================================ */}
+      <section className="relative px-6 py-24 md:py-32 bg-night text-white overflow-hidden">
+        <div className="grain" />
+        
+        {/* React Confetti Burst Layer */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+          {confetti.map((conf) => (
+            <div key={conf.id} style={conf.style} />
+          ))}
+        </div>
+
+        <div className="max-w-lg mx-auto text-center relative z-10">
+          <motion.p {...reveal} className="font-display tracking-[0.3em] text-xs text-[#ffb84d] uppercase mb-3">
+            Make a wish
+          </motion.p>
+          <motion.h2 {...reveal} className="font-display font-bold text-3xl md:text-4xl mb-12">
+            Blow out the candles
+          </motion.h2>
+
+          <motion.div {...revealPop} className="relative mx-auto mb-10 w-[220px]">
+            <svg viewBox="0 0 220 200" className="w-full h-auto">
+              {/* plate */}
+              <ellipse cx="110" cy="175" rx="95" ry="12" fill="rgba(255,255,255,0.08)"/>
               
-              {/* Balloon Game Helper Label */}
-              {poppedCount < 3 && (
-                <div className="mb-4 bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-full text-[10px] font-bold text-amber-600 dark:text-amber-400 flex items-center gap-1.5 animate-pulse">
-                  <Award className="w-3.5 h-3.5" /> Tap the floating balloons to make wishes! ({poppedCount}/3)
-                </div>
-              )}
+              {/* cake base */}
+              <rect x="35" y="120" width="150" height="55" rx="10" fill="var(--pink)"/>
+              <rect x="35" y="120" width="150" height="14" rx="7" fill="var(--pink-soft)"/>
+              
+              {/* cake middle */}
+              <rect x="50" y="80" width="120" height="45" rx="9" fill="var(--mint)"/>
+              <rect x="50" y="80" width="120" height="12" rx="6" fill="#8ff0dd"/>
+              
+              {/* drips */}
+              <circle cx="70" cy="120" r="6" fill="var(--marigold)"/>
+              <circle cx="110" cy="123" r="7" fill="var(--marigold)"/>
+              <circle cx="150" cy="119" r="6" fill="var(--marigold)"/>
+              
+              {/* candle 1 */}
+              <g id="candle-1">
+                <rect x="75" y="55" width="6" height="26" rx="2" fill="var(--marigold)"/>
+                <ellipse 
+                  className={`transition-all duration-[1200ms] ease-out pointer-events-none ${blownFlames[0] ? "opacity-50 -translate-y-8 scale-150" : "opacity-0"}`} 
+                  cx="78" cy="45" rx="4" ry="8" fill="white"
+                />
+                <path 
+                  className={`flame transition-all duration-500 ease-out ${blownFlames[0] ? "opacity-0 scale-0 pointer-events-none" : ""}`} 
+                  d="M78 40 C 74 46, 74 52, 78 55 C 82 52, 82 46, 78 40 Z" fill="#ffd15c"
+                />
+              </g>
 
-              {/* Birthday Greeting Banner */}
-              {isCelebrationDay ? (
-                <div className="w-full p-6 bg-gradient-to-r from-amber-400 to-amber-500 text-white text-center rounded-2xl mb-6 shadow-xl animate-pulse flex items-center justify-center gap-2">
-                  <Cake className="w-6 h-6 animate-bounce" />
-                  <span className="font-bold text-sm tracking-wide uppercase">Happy Birthday {partnerName}! 🎂✨</span>
-                </div>
-              ) : (
-                /* Countdown Timer widget */
-                <div className="w-full p-5 bg-amber-500/10 border border-amber-500/25 text-center rounded-2xl mb-6 shadow-inner flex flex-col items-center justify-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-amber-600 dark:text-amber-400 font-bold flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" /> Countdown to Birthday
-                  </span>
-                  
-                  <div className="flex gap-4 text-center items-center mt-2">
-                    <div>
-                      <span className="block font-serif text-2xl md:text-3xl text-amber-500 font-bold">{countdown.days}</span>
-                      <span className="block text-[8px] font-mono text-amber-600/70 tracking-wider uppercase">Days</span>
-                    </div>
-                    <span className="text-amber-500 font-light text-xl">:</span>
-                    <div>
-                      <span className="block font-serif text-2xl md:text-3xl text-amber-500 font-bold">{countdown.hours}</span>
-                      <span className="block text-[8px] font-mono text-amber-600/70 tracking-wider uppercase">Hrs</span>
-                    </div>
-                    <span className="text-amber-500 font-light text-xl">:</span>
-                    <div>
-                      <span className="block font-serif text-2xl md:text-3xl text-amber-500 font-bold">{countdown.minutes}</span>
-                      <span className="block text-[8px] font-mono text-amber-600/70 tracking-wider uppercase">Mins</span>
-                    </div>
-                    <span className="text-amber-500 font-light text-xl">:</span>
-                    <div>
-                      <span className="block font-serif text-2xl md:text-3xl text-amber-500 font-bold">{countdown.seconds}</span>
-                      <span className="block text-[8px] font-mono text-amber-600/70 tracking-wider uppercase">Secs</span>
-                    </div>
-                  </div>
-                </div>
-              )}
+              {/* candle 2 */}
+              <g id="candle-2">
+                <rect x="107" y="45" width="6" height="36" rx="2" fill="var(--lilac)"/>
+                <ellipse 
+                  className={`transition-all duration-[1200ms] ease-out pointer-events-none ${blownFlames[1] ? "opacity-50 -translate-y-8 scale-150" : "opacity-0"}`} 
+                  cx="110" cy="35" rx="4" ry="8" fill="white"
+                />
+                <path 
+                  className={`flame transition-all duration-500 ease-out ${blownFlames[1] ? "opacity-0 scale-0 pointer-events-none" : ""}`} 
+                  d="M110 30 C 106 36, 106 42, 110 45 C 114 42, 114 36, 110 30 Z" fill="#ffd15c"
+                />
+              </g>
 
-              {/* Main Birthday wishes Card */}
-              <div className={`w-full border p-8 rounded-3xl backdrop-blur-md transition-all duration-300 relative overflow-hidden ${cardClass}`}>
-                
-                {/* Decorative golden star overlay */}
-                <div className="absolute -top-10 -right-10 w-24 h-24 bg-gradient-to-br from-amber-400/20 to-transparent rounded-full pointer-events-none" />
+              {/* candle 3 */}
+              <g id="candle-3">
+                <rect x="139" y="55" width="6" height="26" rx="2" fill="var(--mint)"/>
+                <ellipse 
+                  className={`transition-all duration-[1200ms] ease-out pointer-events-none ${blownFlames[2] ? "opacity-50 -translate-y-8 scale-150" : "opacity-0"}`} 
+                  cx="142" cy="45" rx="4" ry="8" fill="white"
+                />
+                <path 
+                  className={`flame transition-all duration-500 ease-out ${blownFlames[2] ? "opacity-0 scale-0 pointer-events-none" : ""}`} 
+                  d="M142 40 C 138 46, 138 52, 142 55 C 146 52, 146 46, 142 40 Z" fill="#ffd15c"
+                />
+              </g>
+            </svg>
+          </motion.div>
 
-                <div className="text-center space-y-5">
-                  
-                  <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-2 animate-bounce">
-                    <Cake className="w-6 h-6 text-amber-500" />
-                  </div>
-                  
-                  <h3 className="font-luxury-serif text-3xl font-normal leading-tight text-amber-500">
-                    To {partnerName} 💖
-                  </h3>
-                  
-                  {/* Greeting Message Letter */}
-                  <div className="bg-amber-550/[0.03] dark:bg-amber-500/10 border border-amber-400/20 p-6 rounded-2xl text-left space-y-4 shadow-inner relative">
-                    <span className="text-[10px] uppercase font-mono tracking-widest font-bold text-amber-500 block">Surprise Scrapbook Letter</span>
-                    <p className="font-serif text-sm italic leading-relaxed text-slate-750 dark:text-slate-200 whitespace-pre-line relative z-10">
-                      "{message}"
-                    </p>
-                    <div className="w-full text-right text-xs font-serif text-amber-500 relative z-10">
-                      — With all my love, {yourName}
-                    </div>
-                  </div>
+          <motion.button 
+            {...reveal} 
+            disabled={wished}
+            onClick={handleMakeWish}
+            className="btn-wish font-display font-bold tracking-wide text-sm md:text-base rounded-full px-8 py-4 shadow-lg transition-transform active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-default"
+          >
+            🎂 Make a Wish
+          </motion.button>
+          
+          <AnimatePresence>
+            {wished && (
+              <motion.p 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="font-hand text-2xl text-[#ffb84d] mt-6 h-8"
+              >
+                May all your wishes come true, {partnerName}! ✨
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
 
-                  {relationshipDate && (
-                    <div className="flex items-center justify-center gap-1.5 text-[10px] font-mono text-amber-600 dark:text-amber-400">
-                      <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500 animate-spin" />
-                      <span>Birth Date: {new Date(relationshipDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
-                    </div>
-                  )}
+      {/* ============================================================ */}
+      {/* BIRTHDAY MEMORIES GALLERY (OPTIONAL) */}
+      {/* ============================================================ */}
+      {images && images.length > 0 && (
+        <section className="relative px-6 py-24 md:py-32 bg-[#fff7ed] border-t border-[#1a1030]/5">
+          <div className="max-w-4xl mx-auto text-center">
+            <motion.p {...reveal} className="font-display tracking-[0.3em] text-xs text-[#ff5c8a] uppercase mb-3">
+              Captured Moments
+            </motion.p>
+            <motion.h2 {...reveal} className="font-display font-bold text-3xl md:text-4xl mb-12 text-[#1a1030]">
+              Our Memory Scrapbook
+            </motion.h2>
 
-                  <div className="w-full h-[1px] bg-amber-500/15 pt-2" />
-
-                  {/* Return Thank You Message Button */}
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={handleReplyClick}
-                      className="w-full py-3.5 bg-sky-500 hover:bg-sky-600 text-white rounded-full text-xs font-bold font-poppins tracking-wider uppercase transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                    >
-                      <Send className="w-3.5 h-3.5" /> Return Thank You Message
-                    </button>
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* Creator CTA footer link */}
-              <div className="mt-12 text-center">
-                <a
-                  href="/create"
-                  className="font-poppins text-xs tracking-wider text-amber-500 hover:text-amber-600 transition-colors flex items-center gap-1 bg-white/20 px-4 py-2 rounded-full border border-amber-500/20 backdrop-blur-md"
+            <motion.div 
+              {...revealScale}
+              className={`grid gap-8 ${
+                images.length === 1 
+                  ? "grid-cols-1 max-w-md mx-auto" 
+                  : images.length === 2 
+                  ? "grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto" 
+                  : images.length === 3 
+                  ? "grid-cols-1 sm:grid-cols-3 max-w-4xl mx-auto" 
+                  : "grid-cols-2 md:grid-cols-4"
+              }`}
+            >
+              {images.map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className="relative group bg-white p-3 rounded-xl shadow-[0_10px_30px_rgba(26,16,48,0.08)] transition-all duration-300 hover:scale-[1.03] hover:rotate-1"
+                  style={{ transform: `rotate(${(idx % 2 === 0 ? -1.5 : 1.5) * (idx + 1)}deg)` }}
                 >
-                  Create Your Own Birthday Scrapbook ✨
-                </a>
-              </div>
-
+                  {/* Tape decorator */}
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-14 h-5 bg-[rgba(255,184,77,0.4)] rotate-[-2deg] pointer-events-none" />
+                  
+                  <div className="aspect-square rounded-lg overflow-hidden bg-slate-50 relative">
+                    <img 
+                      src={img} 
+                      alt={`Memory ${idx + 1}`} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    />
+                  </div>
+                  <div className="mt-3 text-center">
+                    <span className="font-hand text-xl text-[#1a1030]/70">Moment #{idx + 1}</span>
+                  </div>
+                </div>
+              ))}
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+        </section>
+      )}
 
-      </div>
+      {/* ============================================================ */}
+      {/* RSVP / THANK YOU REPLY ACTION */}
+      {/* ============================================================ */}
+      <section className="relative px-6 py-20 bg-[#fff7ed] text-center border-t border-[#1a1030]/5">
+        <div className="max-w-md mx-auto space-y-6">
+          <motion.div {...reveal} className="space-y-3">
+            <h3 className="font-display font-bold text-2xl text-[#1a1030]">
+              Send a reply to {yourName || "someone special"}?
+            </h3>
+            <p className="font-display text-sm text-[#1a1030]/60">
+              Let them know you loved the birthday surprise!
+            </p>
+          </motion.div>
+
+          <motion.div {...reveal} className="pt-2">
+            <button
+              onClick={handleReplyClick}
+              className="px-8 py-4 bg-gradient-to-b from-[#ffb84d] to-[#ff9d3d] text-[#150c26] rounded-full text-xs font-bold tracking-widest uppercase transition-all duration-300 hover:brightness-105 hover:scale-[1.02] active:scale-[0.98] shadow-md shadow-amber-500/10 cursor-pointer"
+            >
+              Return Thank You Message
+            </button>
+          </motion.div>
+          
+          <motion.div {...reveal} className="pt-4">
+            <a
+              href="/create"
+              className="inline-block font-display text-[10px] tracking-widest uppercase border-b border-[#ffb84d] pb-0.5 text-[#1a1030]/60 hover:text-[#ff5c8a] transition-colors"
+            >
+              Create Your Own Birthday Scrapbook ✨
+            </a>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* FOOTER */}
+      {/* ============================================================ */}
+      <footer className="relative px-6 py-16 bg-[#fff7ed] text-center">
+        <motion.p {...reveal} className="font-hand text-3xl text-[#1a1030]/80 mb-2">
+          Happy Birthday, {partnerName || "Zara"}! 🎈
+        </motion.p>
+        <motion.p {...reveal} className="font-display text-[10px] tracking-widest uppercase text-[#1a1030]/40">
+          Made with love, just for you
+        </motion.p>
+      </footer>
     </div>
   );
 }

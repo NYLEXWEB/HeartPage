@@ -1061,6 +1061,48 @@ export default function BreakupTemplate({
         </motion.div>
       </section>
 
+      {/* Dynamic Gallery Section */}
+      {images && images.length > 0 && (
+        <section className={`py-24 md:py-32 px-4 relative z-20 border-t ${isLight ? "border-slate-200" : "border-slate-900/40"}`}>
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <span className={`font-luxury-serif italic text-2xl tracking-wider mb-2 block ${isLight ? "text-slate-650" : "text-slate-500"}`}>Echoes of Yesterday</span>
+              <h2 className={`font-luxury-serif text-4xl md:text-6xl font-normal tracking-wide ${textTitle}`}>Our Gallery</h2>
+              <p className={`font-sans text-[10px] tracking-widest uppercase mt-2 ${isLight ? "text-slate-500" : "text-slate-500"}`}>
+                Moments recorded in the pages of our time
+              </p>
+              <div className={`w-24 h-[1px] mx-auto mt-6 ${isLight ? "bg-slate-200" : "bg-slate-800"}`}></div>
+            </div>
+
+            <div className={`grid gap-6 ${
+              images.length === 1 
+                ? "grid-cols-1 max-w-xl mx-auto" 
+                : images.length === 2 
+                ? "grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto" 
+                : images.length === 3 
+                ? "grid-cols-1 sm:grid-cols-3 max-w-5xl mx-auto" 
+                : "grid-cols-2 md:grid-cols-4"
+            }`}>
+              {images.map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className="breakup-glass-card overflow-hidden rounded-2xl border aspect-[4/5] relative group"
+                >
+                  <img 
+                    src={img} 
+                    alt={`Gallery ${idx + 1}`} 
+                    className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105 filter grayscale-[30%]" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <span className="font-luxury-serif text-white italic text-lg">Record #0{idx + 1}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* FOOTER */}
       <footer className={`py-12 relative z-20 border-t ${isLight ? "bg-slate-100 border-slate-200" : "bg-slate-950/10 border-slate-900"}`}>
         <div className="max-w-6xl mx-auto px-4 text-center">

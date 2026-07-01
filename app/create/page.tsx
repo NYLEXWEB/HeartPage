@@ -17,7 +17,8 @@ import {
   Clock, 
   Loader2,
   Image as ImageIcon,
-  AlertCircle
+  AlertCircle,
+  Plus
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
@@ -28,6 +29,51 @@ declare global {
   }
 }
 
+const compressImage = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(event.target?.result as string);
+          return;
+        }
+
+        const MAX_WIDTH = 800;
+        const MAX_HEIGHT = 800;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height *= MAX_WIDTH / width;
+            width = MAX_WIDTH;
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width *= MAX_HEIGHT / height;
+            height = MAX_HEIGHT;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        resolve(compressedBase64);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
+
 export default function CreatePage() {
   const router = useRouter();
   const [step, setStep] = useState<"details" | "template" | "preview">("details");
@@ -37,6 +83,7 @@ export default function CreatePage() {
   const [paymentStatus, setPaymentStatus] = useState<
     "idle" | "creating_order" | "processing" | "verifying" | "publishing"
   >("idle");
+  const [uploading, setUploading] = useState(false);
 
   // Load Razorpay Checkout SDK dynamically on mount
   useEffect(() => {
@@ -69,6 +116,7 @@ export default function CreatePage() {
       partnerName: "",
       relationshipDate: "",
       message: "",
+      images: [],
     },
   });
 
@@ -88,6 +136,7 @@ export default function CreatePage() {
       partnerName: "",
       relationshipDate: cat === "breakup" ? "2021 - 2025" : "",
       message: "",
+      images: [],
     });
   };
 
@@ -148,7 +197,7 @@ export default function CreatePage() {
           },
           body: JSON.stringify({
             formData: data,
-            images: [], // Extendable to base64 images list if added in future
+            images: data.images || [],
           }),
         });
 
@@ -566,6 +615,83 @@ export default function CreatePage() {
                       </AnimatePresence>
                     </div>
 
+                    {/* Gallery Image Upload (Optional) */}
+                    <div className="space-y-3 pt-2">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs text-slate-500 font-semibold font-mono">
+                          3. Add Photos to Your Gallery <span className="text-slate-400 font-normal">(Optional - Max 2)</span>
+                        </label>
+                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider bg-sky-50 px-2 py-0.5 rounded border border-sky-100/50">
+                          {(watch("images") || []).length}/2 Photos
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-400 -mt-1 leading-relaxed">
+                        Add your favorite photos together to showcase them in a special dynamic photo gallery on your website!
+                      </p>
+                      
+                      <div className="grid grid-cols-4 gap-2">
+                        {(watch("images") || []).map((img: string, idx: number) => (
+                          <div key={idx} className="relative aspect-square rounded-xl border border-sky-100 overflow-hidden bg-slate-50 group">
+                            <img src={img} alt="Preview" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const currentImages = watch("images") || [];
+                                setValue("images", currentImages.filter((_, i) => i !== idx), { shouldValidate: true });
+                              }}
+                              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-md cursor-pointer transition-colors"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ))}
+                        
+                        {(watch("images") || []).length < 2 && (
+                          <label className="relative aspect-square rounded-xl border-2 border-dashed border-sky-200 hover:border-sky-400 bg-sky-50/10 hover:bg-sky-50/30 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 group">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              multiple
+                              onChange={async (e) => {
+                                const files = e.target.files;
+                                if (!files) return;
+
+                                setUploading(true);
+                                const currentImages = watch("images") || [];
+                                const newBase64s: string[] = [];
+
+                                for (let i = 0; i < files.length; i++) {
+                                  if (currentImages.length + newBase64s.length >= 2) {
+                                    alert("You can upload a maximum of 2 gallery photos.");
+                                    break;
+                                  }
+                                  try {
+                                    const compressed = await compressImage(files[i]);
+                                    newBase64s.push(compressed);
+                                  } catch (err) {
+                                    console.error("Compression failed:", err);
+                                  }
+                                }
+
+                                setValue("images", [...currentImages, ...newBase64s], { shouldValidate: true });
+                                setUploading(false);
+                              }}
+                              className="hidden"
+                              disabled={uploading}
+                            />
+                            {uploading ? (
+                              <Loader2 className="w-4 h-4 text-sky-500 animate-spin" />
+                            ) : (
+                              <>
+                                <Plus className="w-5 h-5 text-sky-400 group-hover:text-sky-600 transition-colors" />
+                                <span className="text-[9px] font-bold text-sky-500 mt-1 uppercase font-mono tracking-wider">Upload</span>
+                              </>
+                            )}
+                          </label>
+                        )}
+                      </div>
+                    </div>
+
                   </div>
 
                   <button
@@ -616,7 +742,7 @@ export default function CreatePage() {
                         partnerName={formValues.partnerName}
                         relationshipDate={formValues.relationshipDate}
                         message={formValues.message}
-                        images={[]}
+                        images={formValues.images || []}
                         isPreview={true}
                       />
                     </div>
@@ -800,7 +926,7 @@ export default function CreatePage() {
                   partnerName={formValues.partnerName}
                   relationshipDate={formValues.relationshipDate}
                   message={formValues.message}
-                  images={[]}
+                  images={formValues.images || []}
                   isPreview={false}
                 />
               </div>

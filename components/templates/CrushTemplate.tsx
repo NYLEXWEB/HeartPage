@@ -410,6 +410,20 @@ export default function CrushTemplate({
                   </div>
                 </div>
 
+                {/* Optional Gallery inside Proposal accepted card */}
+                {images && images.length > 0 && (
+                  <div className="space-y-3 text-left pt-2">
+                    <span className="text-[10px] uppercase font-mono tracking-widest font-bold text-pink-505 block">Our Memory Gallery</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      {images.map((img, idx) => (
+                        <div key={idx} className="aspect-square rounded-2xl overflow-hidden border border-pink-400/25 bg-slate-50 relative group">
+                          <img src={img} alt={`Memory ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="w-full h-[1px] bg-pink-500/15 pt-2" />
 
                 {/* Reply action button */}
