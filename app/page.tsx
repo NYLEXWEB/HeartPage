@@ -48,6 +48,7 @@ export default function LandingPage() {
   const [announcement, setAnnouncement] = useState<any | null>(null);
   const [settings, setSettings] = useState<any | null>(null);
   const [hearts, setHearts] = useState<any[]>([]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     async function loadPublicData() {
@@ -106,9 +107,9 @@ export default function LandingPage() {
 
       <div className="relative">
         {/* HEADER / NAVIGATION */}
-        <header className="absolute top-0 left-0 right-0 z-45 bg-transparent">
+        <header className="absolute top-0 left-0 right-0 z-[45] bg-transparent">
           <div className="container mx-auto px-6 h-20 flex items-center justify-between max-w-7xl">
-            <Link href="/" className="flex items-center gap-2 group">
+            <Link href="/" className="flex items-center gap-2 group relative z-[60]">
               <div className="w-10 h-10 rounded-xl bg-[#4ba3f7] flex items-center justify-center shadow-md shadow-sky-400/20 group-hover:scale-105 transition-transform duration-200">
                 <Heart className="w-5 h-5 text-white fill-white" />
               </div>
@@ -127,14 +128,103 @@ export default function LandingPage() {
               <Link href="#faq" className="hover:text-[#4ba3f7] transition-colors">FAQ</Link>
             </nav>
 
+            {/* Desktop CTA */}
             <Link
               href="/create"
-              className="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#4ba3f7] hover:bg-[#357abd] text-white transition-all duration-200 shadow-md shadow-sky-500/10 flex items-center gap-1.5 group hover:scale-[1.01]"
+              className="hidden md:flex px-6 py-2.5 rounded-full text-sm font-semibold bg-[#4ba3f7] hover:bg-[#357abd] text-white transition-all duration-200 shadow-md shadow-sky-500/10 items-center gap-1.5 group hover:scale-[1.01]"
             >
               Create Your Website <ArrowRight className="w-4 h-4 text-white/80 group-hover:translate-x-1 transition-transform" />
             </Link>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(true)}
+              className="md:hidden p-2.5 rounded-xl bg-white/80 border border-sky-100/50 text-slate-700 hover:text-[#4ba3f7] transition-all hover:bg-white shadow-sm flex flex-col gap-1.5 justify-center items-center cursor-pointer focus:outline-none"
+              aria-label="Toggle Menu"
+            >
+              <span className="block w-6 h-0.5 bg-current rounded-full" />
+              <span className="block w-6 h-0.5 bg-current rounded-full" />
+              <span className="block w-6 h-0.5 bg-current rounded-full" />
+            </button>
           </div>
         </header>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-white z-[100] flex flex-col p-6 md:hidden"
+            >
+              {/* Header in overlay */}
+              <div className="flex items-center justify-between pb-6 border-b border-sky-50">
+                <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2">
+                  <div className="w-10 h-10 rounded-xl bg-[#4ba3f7] flex items-center justify-center shadow-md shadow-sky-400/20">
+                    <Heart className="w-5 h-5 text-white fill-white" />
+                  </div>
+                  <span className="font-luxury font-extrabold text-2xl tracking-tight text-slate-900">
+                    Heart<span className="text-[#4ba3f7]">Page</span>
+                  </span>
+                </Link>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2 text-slate-500 hover:text-slate-950 transition-colors focus:outline-none"
+                  aria-label="Close Menu"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Menu Links */}
+              <nav className="flex-1 flex flex-col justify-center items-center gap-8 py-12 text-center">
+                <Link
+                  href="#features"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-luxury font-bold text-slate-800 hover:text-[#4ba3f7] transition-colors"
+                >
+                  Features
+                </Link>
+                <Link
+                  href="#examples"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-luxury font-bold text-slate-800 hover:text-[#4ba3f7] transition-colors"
+                >
+                  Examples
+                </Link>
+                <Link
+                  href="#how-it-works"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-luxury font-bold text-slate-800 hover:text-[#4ba3f7] transition-colors"
+                >
+                  How It Works
+                </Link>
+                <Link
+                  href="#faq"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-2xl font-luxury font-bold text-slate-800 hover:text-[#4ba3f7] transition-colors"
+                >
+                  FAQ
+                </Link>
+              </nav>
+
+              {/* Mobile CTA */}
+              <div className="pt-6 border-t border-sky-50">
+                <Link
+                  href="/create"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="w-full py-4 rounded-full text-center text-base font-bold bg-[#4ba3f7] hover:bg-[#357abd] text-white transition-colors shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2"
+                >
+                  Create Your Website <ArrowRight className="w-5 h-5 text-white" />
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* HERO SECTION (100% Identical Background & Look) */}
         <section className="relative w-full min-h-[90vh] flex flex-col justify-between overflow-hidden">

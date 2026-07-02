@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -129,6 +129,9 @@ export default function CreatePage() {
 
   // Watch fields for live preview
   const formValues = watch();
+
+  const stableImages = useMemo(() => formValues.images || [], [formValues.images]);
+  const stableCustomFields = useMemo(() => formValues.customFields || [], [formValues.customFields]);
 
   const getCustomFieldPlaceholders = (category: string) => {
     switch (category) {
@@ -924,7 +927,7 @@ export default function CreatePage() {
                   </div>
 
                   {/* Simulated Device Browser Frame */}
-                  <div className="flex-1 rounded-2xl border border-slate-200 bg-white shadow-xl flex flex-col overflow-hidden relative">
+                  <div className="w-full h-[600px] xl:h-[680px] rounded-2xl border border-slate-200 bg-white shadow-xl flex flex-col overflow-hidden relative">
                     {/* Browser Address Bar */}
                     <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 flex items-center gap-2">
                       <div className="flex gap-1.5 shrink-0">
@@ -938,7 +941,7 @@ export default function CreatePage() {
                     </div>
 
                     {/* Simulated Content */}
-                    <div className="flex-1 overflow-y-auto max-h-[calc(100vh-220px)] relative simulated-scrollable-container">
+                    <div className="flex-1 overflow-y-auto relative simulated-scrollable-container">
                       <TemplateDispatcher
                         category={formValues.category}
                         theme={formValues.theme}
@@ -946,8 +949,8 @@ export default function CreatePage() {
                         partnerName={formValues.partnerName}
                         relationshipDate={formValues.relationshipDate}
                         message={formValues.message}
-                        images={formValues.images || []}
-                        customFields={formValues.customFields || []}
+                        images={stableImages}
+                        customFields={stableCustomFields}
                         groomPhoto={formValues.groomPhoto}
                         bridePhoto={formValues.bridePhoto}
                         isPreview={true}
@@ -1133,11 +1136,11 @@ export default function CreatePage() {
                   partnerName={formValues.partnerName}
                   relationshipDate={formValues.relationshipDate}
                   message={formValues.message}
-                  images={formValues.images || []}
-                  customFields={formValues.customFields || []}
+                  images={stableImages}
+                  customFields={stableCustomFields}
                   groomPhoto={formValues.groomPhoto}
                   bridePhoto={formValues.bridePhoto}
-                  isPreview={false}
+                  isPreview={true}
                 />
               </div>
             </motion.div>

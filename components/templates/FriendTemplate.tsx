@@ -542,7 +542,7 @@ export default function FriendTemplate({
                 scrub: 1.2,
                 pin: true,
                 anticipatePin: 1,
-                scroller: isPreview ? ".simulated-scrollable-container" : window,
+                scroller: (isPreview && typeof document !== "undefined" && document.querySelector(".simulated-scrollable-container")) ? ".simulated-scrollable-container" : window,
                 onUpdate: (self: any) => {
                   handleScrollBurst(self.progress);
                 }

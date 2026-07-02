@@ -282,7 +282,7 @@ export default function BreakupTemplate({
 
           // Speed up rain slightly based on scroll speed
           ScrollTrigger.create({
-            scroller: isPreview ? ".simulated-scrollable-container" : window,
+            scroller: (isPreview && typeof document !== "undefined" && document.querySelector(".simulated-scrollable-container")) ? ".simulated-scrollable-container" : window,
             onUpdate: (self: any) => {
               scrollSpeedMultiplier = 1.0 + Math.abs(self.getVelocity() / 300);
               setTimeout(() => {
@@ -443,7 +443,7 @@ export default function BreakupTemplate({
                 scrub: 1.2,
                 pin: true,
                 anticipatePin: 1,
-                scroller: isPreview ? ".simulated-scrollable-container" : window,
+                scroller: (isPreview && typeof document !== "undefined" && document.querySelector(".simulated-scrollable-container")) ? ".simulated-scrollable-container" : window,
                 onUpdate: (self: any) => {
                   handleScrollBurst(self.progress);
                 }
