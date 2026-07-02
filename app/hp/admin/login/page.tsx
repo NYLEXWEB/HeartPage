@@ -104,7 +104,7 @@ export default function AdminLoginPage() {
               </span>
               <input
                 type="text"
-                placeholder="njanadmin"
+                placeholder="Enter the admin name"
                 disabled={isLoading}
                 {...register("username")}
                 className="w-full bg-zinc-900/60 border border-zinc-800 focus:border-rose-500/80 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-colors text-white disabled:opacity-50"
