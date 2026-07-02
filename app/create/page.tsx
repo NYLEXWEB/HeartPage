@@ -722,6 +722,62 @@ export default function CreatePage() {
                       )}
                     </div>
 
+                    {/* Birthday Star Photo Upload (Only for Birthday) */}
+                    {activeCategory === "birthday" && (
+                      <div className="space-y-4 pt-2 border-t border-sky-100/50">
+                        <label className="text-xs text-slate-500 font-semibold font-mono block">
+                          3. Upload Birthday Person's Photo <span className="text-slate-400 font-normal">(Optional)</span>
+                        </label>
+                        <p className="text-[11px] text-slate-400 -mt-1 leading-relaxed">
+                          Upload a photo of the birthday person to feature them in a special highlight section of the website.
+                        </p>
+
+                        <div className="w-1/2">
+                          <div className="space-y-2">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-slate-500 block">Photo</span>
+                            {watch("partnerName") && (
+                              <span className="text-[9px] text-slate-400 font-mono -mt-1 block">({watch("partnerName")})</span>
+                            )}
+                            
+                            <div className="relative aspect-square rounded-2xl border border-sky-100 overflow-hidden bg-slate-50 flex items-center justify-center group">
+                              {watch("groomPhoto") ? (
+                                <>
+                                  <img src={watch("groomPhoto")} alt="Birthday Star Preview" className="w-full h-full object-cover" />
+                                  <button
+                                    type="button"
+                                    onClick={() => setValue("groomPhoto", "", { shouldValidate: true })}
+                                    className="absolute top-2 right-2 w-6 h-6 rounded-full bg-rose-500 hover:bg-rose-600 text-white flex items-center justify-center shadow-md cursor-pointer transition-colors"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </>
+                              ) : (
+                                <label className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer hover:bg-sky-50/20 transition-colors">
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (!file) return;
+                                      try {
+                                        const compressed = await compressImage(file);
+                                        setValue("groomPhoto", compressed, { shouldValidate: true });
+                                      } catch (err) {
+                                        console.error(err);
+                                      }
+                                    }}
+                                    className="hidden"
+                                  />
+                                  <Upload className="w-5 h-5 text-sky-400 mb-1" />
+                                  <span className="text-[9px] font-bold text-sky-500 uppercase tracking-wider">Select Photo</span>
+                                </label>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Groom & Bride Photo Upload (Only for Wedding) */}
                     {activeCategory === "wedding" && (
                       <div className="space-y-4 pt-2 border-t border-sky-100/50">
@@ -826,7 +882,7 @@ export default function CreatePage() {
                     <div className="space-y-3 pt-2">
                       <div className="flex justify-between items-center">
                         <label className="text-xs text-slate-500 font-semibold font-mono">
-                          3. Add Photos to Your Gallery <span className="text-slate-400 font-normal">(Optional - Max 2)</span>
+                          {(activeCategory === "wedding" || activeCategory === "birthday") ? "4" : "3"}. Add Photos to Your Gallery <span className="text-slate-400 font-normal">(Optional - Max 2)</span>
                         </label>
                         <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider bg-sky-50 px-2 py-0.5 rounded border border-sky-100/50">
                           {(watch("images") || []).length}/2 Photos

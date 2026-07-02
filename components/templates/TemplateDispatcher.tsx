@@ -153,6 +153,7 @@ export default function TemplateDispatcher({
           theme={theme}
           customFields={customFields}
           isPreview={isPreview}
+          birthdayPhoto={groomPhoto}
         />
       );
     case "wedding":

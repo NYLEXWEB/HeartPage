@@ -59,6 +59,18 @@ export default function WeddingTemplate({
   const [parallaxOpacity, setParallaxOpacity] = useState(1);
   const [cornersY, setCornersY] = useState(0);
 
+  // Dynamically load Google Fonts on mount to avoid re-renders reloading the fonts and causing page flickering/layout shifts
+  useEffect(() => {
+    const linkId = "google-fonts-wedding";
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Cormorant:ital,wght@0,300;0,400;0,600;1,400&family=Parisienne&family=Jost:wght@300;400;500&display=swap";
+      document.head.appendChild(link);
+    }
+  }, []);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -157,8 +169,6 @@ export default function WeddingTemplate({
     <div id="wedding-website-root" className={`antialiased relative select-none w-full min-h-screen bg-[var(--ivory)] text-[var(--ink)] font-jost overflow-x-hidden ${isDark ? "dark" : ""}`}>
       {/* Custom Styles Injection */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Cormorant:ital,wght@0,300;0,400;0,600;1,400&family=Parisienne&family=Jost:wght@300;400;500&display=swap');
-        
         :root {
           --ink:        ${isDark ? "#f7f1e4" : "#0e1912"};
           --emerald:    #10241a;

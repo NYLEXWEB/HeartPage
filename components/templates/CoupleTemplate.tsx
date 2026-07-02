@@ -183,6 +183,18 @@ export default function CoupleTemplate({
     };
   }, [startDate]);
 
+  // Dynamically load Google Fonts on mount to avoid re-renders reloading the fonts and causing page flickering/layout shifts
+  useEffect(() => {
+    const linkId = "google-fonts-couple";
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap";
+      document.head.appendChild(link);
+    }
+  }, []);
+
   // Main interactive scripts (GSAP, Lenis, Petals, Dust Particles)
   useEffect(() => {
     let active = true;
@@ -896,9 +908,6 @@ export default function CoupleTemplate({
 
       {/* Premium Cinematic Styles */}
       <style dangerouslySetInnerHTML={{ __html: `
-        /* Premium Typography & Fonts Import */
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&display=swap');
-
         /* Root Variable Settings based on Theme selection */
         :root {
           --color-luxury: ${theme === "dark" ? "#1E1B18" : "#FAF9F6"};

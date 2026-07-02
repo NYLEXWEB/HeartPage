@@ -13,6 +13,7 @@ interface BirthdayTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  birthdayPhoto?: string;
 }
 
 export default function BirthdayTemplate({
@@ -24,6 +25,7 @@ export default function BirthdayTemplate({
   theme,
   customFields = [],
   isPreview = false,
+  birthdayPhoto,
 }: BirthdayTemplateProps) {
   const router = useRouter();
   const isDark = theme === "dark";
@@ -55,6 +57,18 @@ export default function BirthdayTemplate({
   const [scrollProgress, setScrollProgress] = useState(0);
   const [balloonY, setBalloonY] = useState(0);
   const [balloonOpacity, setBalloonOpacity] = useState(1);
+
+  // Dynamically load Google Fonts on mount to avoid re-renders reloading the fonts and causing page flickering/layout shifts
+  useEffect(() => {
+    const linkId = "google-fonts-birthday";
+    if (!document.getElementById(linkId)) {
+      const link = document.createElement("link");
+      link.id = linkId;
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@500;600;700&family=Nunito:wght@300;400;600;700&display=swap";
+      document.head.appendChild(link);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -196,8 +210,6 @@ export default function BirthdayTemplate({
     <div className={`antialiased relative select-none w-full min-h-screen ${isDark ? "bg-[#0c071f] text-slate-100 dark" : "bg-[#fff7ed] text-[#1a1030]"} font-nunito overflow-x-hidden`}>
       {/* Custom Styles Injection */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
-        
         :root {
           --night:      ${isDark ? "#090414" : "#1a1030"};
           --night-2:    ${isDark ? "#170a2f" : "#2a1653"};
@@ -342,6 +354,59 @@ export default function BirthdayTemplate({
           <span className="w-px h-10 bg-[#ffb84d]/60 group-hover:h-14 transition-all duration-500" />
         </a>
       </section>
+
+      {/* ============================================================ */}
+      {/* BIRTHDAY STAR PHOTO SHOWCASE SECTION */}
+      {/* ============================================================ */}
+      {birthdayPhoto && (
+        <section className={`relative px-6 py-20 ${isDark ? "bg-[#0a061b] border-t border-purple-950/20" : "bg-[#fffaf0] border-t border-amber-100/50"} overflow-hidden`}>
+          {/* Decorative ambient blobs */}
+          <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-pink-500/10 blur-2xl pointer-events-none" />
+          <div className="absolute bottom-10 right-10 w-40 h-40 rounded-full bg-purple-500/10 blur-3xl pointer-events-none" />
+          
+          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-16">
+            {/* Left: Polaroid/Paper Frame for Photo */}
+            <motion.div 
+              {...revealPop}
+              className={`relative p-4 md:p-5 ${isDark ? "bg-[#18112d] border border-purple-900/35 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.6)]" : "bg-white shadow-[0_25px_60px_-15px_rgba(26,16,48,0.15)]"} rounded-lg rotate-[-2deg] max-w-[320px] w-full`}
+            >
+              <div className="aspect-[3/4] overflow-hidden rounded relative">
+                <img 
+                  src={birthdayPhoto} 
+                  alt={partnerName || "Birthday Star"} 
+                  className="w-full h-full object-cover select-none" 
+                />
+              </div>
+              <div className="pt-5 pb-2 text-center">
+                <p className="font-hand text-2xl text-[#ff5c8a] tracking-wider">
+                  {partnerName || "Birthday Star"} ✨
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Right: Content details */}
+            <motion.div 
+              {...reveal}
+              className="max-w-md text-center md:text-left space-y-5"
+            >
+              <span className="font-display tracking-[0.25em] text-xs font-semibold text-[#ffb84d] uppercase bg-[#ffb84d]/10 px-3 py-1 rounded-full">
+                Celebrating Our Favorite Person
+              </span>
+              <h2 className={`font-display font-black text-4xl md:text-5xl ${isDark ? "text-white" : "text-[#1a1030]"} tracking-tight leading-tight`}>
+                Here's to <span className={isDark ? "text-[#ff5c8a]" : "text-[#ff3b70]"}>another year</span> of shining bright!
+              </h2>
+              <p className={`font-display text-sm leading-relaxed ${isDark ? "text-slate-350" : "text-slate-600"}`}>
+                Today we celebrate you, {partnerName}! Your laughter, your spirit, and the joy you bring into all of our lives. May this year be filled with dream-chasing and beautiful new beginnings.
+              </p>
+              <div className="flex justify-center md:justify-start gap-2 pt-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#ff5c8a] animate-ping" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#ffb84d]" />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#4fe0c5]" />
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* ============================================================ */}
       {/* MESSAGE CARD */}
