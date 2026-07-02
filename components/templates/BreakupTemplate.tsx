@@ -513,7 +513,7 @@ export default function BreakupTemplate({
   };
 
   return (
-    <div id="breakup-website-root" className={`min-h-screen w-full relative overflow-x-hidden font-poppins transition-colors duration-550 ${isLight ? "bg-slate-50 text-slate-800" : "bg-[#020617] text-slate-300"}`}>
+    <div id="breakup-website-root" className={`min-h-screen w-full relative overflow-x-hidden font-poppins transition-colors duration-550 ${isLight ? "bg-slate-50 text-slate-800" : "bg-[#020617] text-slate-300 dark"}`}>
       
       {/* Dynamic Scoped CSS Stylesheets */}
       <style dangerouslySetInnerHTML={{ __html: `

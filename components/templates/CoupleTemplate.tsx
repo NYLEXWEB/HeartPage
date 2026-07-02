@@ -500,7 +500,7 @@ export default function CoupleTemplate({
           </p>
 
           {/* CTA Button */}
-          <a href="#scroll-animation-container" className="btn-premium hover-target px-8 py-4 bg-white/10 backdrop-blur-md border border-white/40 text-white font-poppins text-xs tracking-[0.25em] uppercase rounded-full hover:bg-gold hover:border-gold hover:text-dark transition-all duration-500 mb-16 opacity-0 translate-y-8 animate-init delay-3">
+          <a href="#journey" className="btn-premium hover-target px-8 py-4 bg-white/10 backdrop-blur-md border border-white/40 text-white font-poppins text-xs tracking-[0.25em] uppercase rounded-full hover:bg-gold hover:border-gold hover:text-dark transition-all duration-500 mb-16 opacity-0 translate-y-8 animate-init delay-3">
             Begin Our Journey
           </a>
 
@@ -529,7 +529,7 @@ export default function CoupleTemplate({
       </section>
 
       {/* Couple Journey Section (Replaces Scroll Animation) */}
-      <section className="py-24 px-4 relative z-20 overflow-hidden flex flex-col items-center justify-center border-t border-b border-gold/10 bg-beige-light/10">
+      <section id="journey" className="py-24 px-4 relative z-20 overflow-hidden flex flex-col items-center justify-center border-t border-b border-gold/10 bg-beige-light/10">
         <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
           {/* Couple Image */}
           <div className="max-w-md md:max-w-xl w-full mb-8 overflow-hidden rounded-2xl border-4 border-white shadow-2xl bg-white/5 backdrop-blur-sm p-1">

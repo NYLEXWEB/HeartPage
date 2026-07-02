@@ -26,6 +26,7 @@ export default function BirthdayTemplate({
   isPreview = false,
 }: BirthdayTemplateProps) {
   const router = useRouter();
+  const isDark = theme === "dark";
 
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -192,21 +193,21 @@ export default function BirthdayTemplate({
   };
 
   return (
-    <div className="antialiased relative select-none w-full min-h-screen bg-[#fff7ed] text-[#1a1030] font-nunito overflow-x-hidden">
+    <div className={`antialiased relative select-none w-full min-h-screen ${isDark ? "bg-[#0c071f] text-slate-100 dark" : "bg-[#fff7ed] text-[#1a1030]"} font-nunito overflow-x-hidden`}>
       {/* Custom Styles Injection */}
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Caveat:wght@500;600;700&family=Nunito:wght@300;400;600;700&display=swap');
         
         :root {
-          --night:      #1a1030;
-          --night-2:    #2a1653;
-          --night-3:    #150c26;
+          --night:      ${isDark ? "#090414" : "#1a1030"};
+          --night-2:    ${isDark ? "#170a2f" : "#2a1653"};
+          --night-3:    ${isDark ? "#05010a" : "#150c26"};
           --pink:       #ff5c8a;
           --pink-soft:  #ff9db8;
           --marigold:   #ffb84d;
           --mint:       #4fe0c5;
           --lilac:      #c9a8ff;
-          --cream:      #fff7ed;
+          --cream:      ${isDark ? "#0c071f" : "#fff7ed"};
         }
         
         .font-display { font-family: 'Baloo 2', sans-serif; }
@@ -345,23 +346,23 @@ export default function BirthdayTemplate({
       {/* ============================================================ */}
       {/* MESSAGE CARD */}
       {/* ============================================================ */}
-      <section id="message-card" className="relative px-6 py-24 md:py-32 bg-[#fff7ed]">
+      <section id="message-card" className={`relative px-6 py-24 md:py-32 ${isDark ? "bg-[#0c071f]" : "bg-[#fff7ed]"}`}>
         <div className="max-w-xl mx-auto">
           <motion.div 
             {...revealPop} 
-            className="card-tape relative bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(26,16,48,0.25)] px-8 py-12 md:px-12 md:py-14 rotate-[-1deg]"
+            className={`card-tape relative ${isDark ? "bg-[#18112d] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5)] border border-purple-900/35" : "bg-white shadow-[0_20px_60px_-15px_rgba(26,16,48,0.25)]"} px-8 py-12 md:px-12 md:py-14 rotate-[-1deg]`}
           >
-            <p className="font-hand text-3xl md:text-4xl leading-relaxed text-[#1a1030] whitespace-pre-line">
+            <p className={`font-hand text-3xl md:text-4xl leading-relaxed ${isDark ? "text-slate-100" : "text-[#1a1030]"} whitespace-pre-line`}>
               "{message || "Wishing you a day as wonderful as you are, and a year ahead full of laughter, adventure, and every little thing that makes you smile. Here's to you!"}"
             </p>
-            <p className="font-display text-sm text-[#1a1030]/50 mt-8 uppercase tracking-widest">— With love, always, {yourName}</p>
+            <p className={`font-display text-sm ${isDark ? "text-slate-400" : "text-[#1a1030]/50"} mt-8 uppercase tracking-widest`}>— With love, always, {yourName}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Dynamic Custom Fields */}
       {customFields && customFields.length > 0 && (
-        <section className="relative px-6 py-10 bg-[#fff7ed]">
+        <section className={`relative px-6 py-10 ${isDark ? "bg-[#0c071f]" : "bg-[#fff7ed]"}`}>
           <div className="max-w-md mx-auto space-y-4 text-center">
             <p className="font-display tracking-[0.3em] text-xs text-[#ff5c8a] uppercase">
               Special Information
@@ -373,7 +374,7 @@ export default function BirthdayTemplate({
                   <motion.div 
                     key={idx} 
                     {...revealPop} 
-                    className="card-tape relative bg-white rounded-xl shadow-md p-5 border border-amber-100/50"
+                    className={`card-tape relative ${isDark ? "bg-[#18112d] border border-purple-900/35 shadow-lg" : "bg-white shadow-md border border-amber-100/50"} p-5`}
                     style={{ transform: `rotate(${(idx % 2 === 0 ? -1 : 1) * 0.8}deg)` }}
                   >
                     <h4 className="font-display font-semibold text-xs text-[#ffb84d] uppercase tracking-wider mb-1">
@@ -389,7 +390,7 @@ export default function BirthdayTemplate({
                         {field.value.length > 30 ? "Click to Open Details" : field.value} ↗
                       </a>
                     ) : (
-                      <p className="font-hand text-2xl text-[#1a1030] leading-relaxed whitespace-pre-line">
+                      <p className={`font-hand text-2xl ${isDark ? "text-slate-200" : "text-[#1a1030]"} leading-relaxed whitespace-pre-line`}>
                         {field.value}
                       </p>
                     )}
@@ -508,12 +509,12 @@ export default function BirthdayTemplate({
       {/* BIRTHDAY MEMORIES GALLERY (OPTIONAL) */}
       {/* ============================================================ */}
       {images && images.length > 0 && (
-        <section className="relative px-6 py-24 md:py-32 bg-[#fff7ed] border-t border-[#1a1030]/5">
+        <section className={`relative px-6 py-24 md:py-32 ${isDark ? "bg-[#0b061d] border-t border-slate-900" : "bg-[#fff7ed] border-t border-[#1a1030]/5"}`}>
           <div className="max-w-4xl mx-auto text-center">
             <motion.p {...reveal} className="font-display tracking-[0.3em] text-xs text-[#ff5c8a] uppercase mb-3">
               Captured Moments
             </motion.p>
-            <motion.h2 {...reveal} className="font-display font-bold text-3xl md:text-4xl mb-12 text-[#1a1030]">
+            <motion.h2 {...reveal} className={`font-display font-bold text-3xl md:text-4xl mb-12 ${isDark ? "text-slate-100" : "text-[#1a1030]"}`}>
               Our Memory Scrapbook
             </motion.h2>
 
@@ -532,7 +533,7 @@ export default function BirthdayTemplate({
               {images.map((img, idx) => (
                 <div 
                   key={idx} 
-                  className="relative group bg-white p-3 rounded-xl shadow-[0_10px_30px_rgba(26,16,48,0.08)] transition-all duration-300 hover:scale-[1.03] hover:rotate-1"
+                  className={`relative group ${isDark ? "bg-[#18112d] border border-purple-900/35" : "bg-white"} p-3 rounded-xl shadow-[0_10px_30px_rgba(26,16,48,0.08)] transition-all duration-300 hover:scale-[1.03] hover:rotate-1`}
                   style={{ transform: `rotate(${(idx % 2 === 0 ? -1.5 : 1.5) * (idx + 1)}deg)` }}
                 >
                   {/* Tape decorator */}
@@ -546,7 +547,7 @@ export default function BirthdayTemplate({
                     />
                   </div>
                   <div className="mt-3 text-center">
-                    <span className="font-hand text-xl text-[#1a1030]/70">Moment #{idx + 1}</span>
+                    <span className={`font-hand text-xl ${isDark ? "text-slate-350" : "text-[#1a1030]/70"}`}>Moment #{idx + 1}</span>
                   </div>
                 </div>
               ))}
@@ -558,13 +559,13 @@ export default function BirthdayTemplate({
       {/* ============================================================ */}
       {/* RSVP / THANK YOU REPLY ACTION */}
       {/* ============================================================ */}
-      <section className="relative px-6 py-20 bg-[#fff7ed] text-center border-t border-[#1a1030]/5">
+      <section className={`relative px-6 py-20 ${isDark ? "bg-[#0c071f] border-t border-slate-900" : "bg-[#fff7ed] border-t border-[#1a1030]/5"} text-center`}>
         <div className="max-w-md mx-auto space-y-6">
           <motion.div {...reveal} className="space-y-3">
-            <h3 className="font-display font-bold text-2xl text-[#1a1030]">
+            <h3 className={`font-display font-bold text-2xl ${isDark ? "text-slate-100" : "text-[#1a1030]"}`}>
               Send a reply to {yourName || "someone special"}?
             </h3>
-            <p className="font-display text-sm text-[#1a1030]/60">
+            <p className={`font-display text-sm ${isDark ? "text-slate-400" : "text-[#1a1030]/60"}`}>
               Let them know you loved the birthday surprise!
             </p>
           </motion.div>
@@ -581,7 +582,7 @@ export default function BirthdayTemplate({
           <motion.div {...reveal} className="pt-4">
             <a
               href="/create"
-              className="inline-block font-display text-[10px] tracking-widest uppercase border-b border-[#ffb84d] pb-0.5 text-[#1a1030]/60 hover:text-[#ff5c8a] transition-colors"
+              className={`inline-block font-display text-[10px] tracking-widest uppercase border-b border-[#ffb84d] pb-0.5 ${isDark ? "text-slate-400 hover:text-pink-400" : "text-[#1a1030]/60 hover:text-[#ff5c8a]"} transition-colors`}
             >
               Create Your Own Birthday Scrapbook ✨
             </a>
@@ -592,11 +593,11 @@ export default function BirthdayTemplate({
       {/* ============================================================ */}
       {/* FOOTER */}
       {/* ============================================================ */}
-      <footer className="relative px-6 py-16 bg-[#fff7ed] text-center">
-        <motion.p {...reveal} className="font-hand text-3xl text-[#1a1030]/80 mb-2">
+      <footer className={`relative px-6 py-16 ${isDark ? "bg-[#0c071f]" : "bg-[#fff7ed]"} text-center`}>
+        <motion.p {...reveal} className={`font-hand text-3xl ${isDark ? "text-slate-200" : "text-[#1a1030]/80"} mb-2`}>
           Happy Birthday, {partnerName || "Zara"}! 🎈
         </motion.p>
-        <motion.p {...reveal} className="font-display text-[10px] tracking-widest uppercase text-[#1a1030]/40">
+        <motion.p {...reveal} className={`font-display text-[10px] tracking-widest uppercase ${isDark ? "text-slate-500" : "text-[#1a1030]/40"}`}>
           Made with love, just for you
         </motion.p>
       </footer>

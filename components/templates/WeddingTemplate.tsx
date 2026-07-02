@@ -30,6 +30,7 @@ export default function WeddingTemplate({
   isPreview = false,
 }: WeddingTemplateProps) {
   const router = useRouter();
+  const isDark = theme === "dark";
 
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -153,20 +154,25 @@ export default function WeddingTemplate({
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : "A"} & ${partnerName ? partnerName.charAt(0).toUpperCase() : "R"}`;
 
   return (
-    <div className="antialiased relative select-none w-full min-h-screen bg-[#f7f1e4] text-[#0e1912] font-jost overflow-x-hidden">
+    <div id="wedding-website-root" className={`antialiased relative select-none w-full min-h-screen bg-[var(--ivory)] text-[var(--ink)] font-jost overflow-x-hidden ${isDark ? "dark" : ""}`}>
       {/* Custom Styles Injection */}
       <style dangerouslySetInnerHTML={{ __html: `
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Cormorant:ital,wght@0,300;0,400;0,600;1,400&family=Parisienne&family=Jost:wght@300;400;500&display=swap');
         
         :root {
-          --ink:        #0e1912;
+          --ink:        ${isDark ? "#f7f1e4" : "#0e1912"};
           --emerald:    #10241a;
           --emerald-2:  #16301f;
-          --ivory:      #f7f1e4;
-          --ivory-2:    #efe6d1;
+          --ivory:      ${isDark ? "#10241a" : "#f7f1e4"};
+          --ivory-2:    ${isDark ? "#0b1610" : "#efe6d1"};
           --gold:       #c9a24b;
           --gold-soft:  #e4c988;
           --gold-line:  rgba(201,162,75,0.55);
+        }
+
+        #wedding-website-root {
+          background-color: var(--ivory) !important;
+          color: var(--ink) !important;
         }
         
         .font-display { font-family: 'Cormorant Garamond', serif; }
@@ -302,9 +308,7 @@ export default function WeddingTemplate({
         <motion.p {...reveal} className="font-cormorant text-lg md:text-xl tracking-[0.25em] uppercase text-[#efe6d1]/90">
           {formattedDate}
         </motion.p>
-        <motion.p {...reveal} className="font-cormorant text-sm tracking-[0.2em] uppercase text-[#efe6d1]/50 mt-2">
-          Kozhikode, Kerala
-        </motion.p>
+       
 
         <a href="#message-section" className="absolute bottom-10 flex flex-col items-center gap-2 text-[#efe6d1]/70 group">
           <span className="font-cormorant text-[10px] tracking-[0.25em] uppercase">Scroll</span>
@@ -532,7 +536,7 @@ export default function WeddingTemplate({
       {/* ============================================================ */}
       {/* COUPLE NAMES DETAIL */}
       {/* ============================================================ */}
-      <section className="relative px-6 py-28 md:py-36 bg-[#f7f1e4]">
+      <section className={`relative px-6 py-28 md:py-36 ${isDark ? "bg-[var(--ivory)]" : "bg-[#f7f1e4]"}`}>
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-16 md:gap-8 text-center">
           <motion.div {...reveal}>
             <div className="mx-auto mb-6 w-14 h-14 rounded-full border border-[rgba(201,162,75,0.55)] flex items-center justify-center">
@@ -541,8 +545,8 @@ export default function WeddingTemplate({
               </svg>
             </div>
             <p className="font-cormorant tracking-[0.35em] text-[11px] text-[#a9853a] uppercase mb-3">The Host</p>
-            <h3 className="font-display font-medium text-3xl md:text-4xl mb-4 text-[#10241a]">{yourName || "Bride"}</h3>
-            <p className="font-cormorant text-[#10241a]/70 leading-relaxed max-w-sm mx-auto">
+            <h3 className={`font-display font-medium text-3xl md:text-4xl mb-4 ${isDark ? "text-[#efe6d1]" : "text-[#10241a]"}`}>{yourName || "Bride"}</h3>
+            <p className={`font-cormorant leading-relaxed max-w-sm mx-auto ${isDark ? "text-[#efe6d1]/70" : "text-[#10241a]/70"}`}>
               Beloved Family &amp; Friends of {yourName || "Bride"}
             </p>
           </motion.div>
@@ -554,8 +558,8 @@ export default function WeddingTemplate({
               </svg>
             </div>
             <p className="font-cormorant tracking-[0.35em] text-[11px] text-[#a9853a] uppercase mb-3">The Partner</p>
-            <h3 className="font-display font-medium text-3xl md:text-4xl mb-4 text-[#10241a]">{partnerName || "Groom"}</h3>
-            <p className="font-cormorant text-[#10241a]/70 leading-relaxed max-w-sm mx-auto">
+            <h3 className={`font-display font-medium text-3xl md:text-4xl mb-4 ${isDark ? "text-[#efe6d1]" : "text-[#10241a]"}`}>{partnerName || "Groom"}</h3>
+            <p className={`font-cormorant leading-relaxed max-w-sm mx-auto ${isDark ? "text-[#efe6d1]/70" : "text-[#10241a]/70"}`}>
               Beloved Family &amp; Friends of {partnerName || "Groom"}
             </p>
           </motion.div>
@@ -566,12 +570,12 @@ export default function WeddingTemplate({
       {/* MEMORY GALLERY (OPTIONAL) */}
       {/* ============================================================ */}
       {images && images.length > 0 && (
-        <section className="relative px-6 py-28 md:py-36 bg-[#f7f1e4] border-t border-[rgba(201,162,75,0.55)]/30">
+        <section className={`relative px-6 py-28 md:py-36 bg-[var(--ivory)] border-t border-[rgba(201,162,75,0.55)]/30`}>
           <div className="max-w-6xl mx-auto text-center">
             <motion.p {...reveal} className="font-cormorant tracking-[0.35em] text-xs text-[#a9853a] uppercase mb-4">
               Captured Moments
             </motion.p>
-            <motion.h2 {...reveal} className="font-display italic text-3xl md:text-5xl mb-14 text-[#10241a]">
+            <motion.h2 {...reveal} className={`font-display italic text-3xl md:text-5xl mb-14 ${isDark ? "text-[#efe6d1]" : "text-[#10241a]"}`}>
               Our Gallery
             </motion.h2>
 
@@ -590,7 +594,7 @@ export default function WeddingTemplate({
               {images.map((img, idx) => (
                 <div 
                   key={idx} 
-                  className="relative group aspect-[4/5] overflow-hidden border border-[rgba(201,162,75,0.55)] bg-[#fcfaf5] p-2 transition-transform duration-500 hover:scale-[1.02] shadow-sm"
+                  className={`relative group aspect-[4/5] overflow-hidden border border-[rgba(201,162,75,0.55)] ${isDark ? "bg-[#16301f]" : "bg-[#fcfaf5]"} p-2 transition-transform duration-500 hover:scale-[1.02] shadow-sm`}
                 >
                   <div className="w-full h-full overflow-hidden relative">
                     <img 
@@ -612,13 +616,13 @@ export default function WeddingTemplate({
       {/* ============================================================ */}
       {/* RSVP / ACTION SECTION */}
       {/* ============================================================ */}
-      <section className="relative px-6 py-20 bg-[#f7f1e4] text-center border-t border-[rgba(201,162,75,0.55)]/20">
+      <section className={`relative px-6 py-20 bg-[var(--ivory)] text-center border-t border-[rgba(201,162,75,0.55)]/20`}>
         <div className="max-w-md mx-auto space-y-6">
           <motion.div {...reveal} className="space-y-4">
-            <h3 className="font-display italic text-2xl md:text-3xl text-[#10241a]">
+            <h3 className={`font-display italic text-2xl md:text-3xl ${isDark ? "text-[#efe6d1]" : "text-[#10241a]"}`}>
               Are you joining us?
             </h3>
-            <p className="font-cormorant text-sm text-[#10241a]/70 tracking-wide">
+            <p className={`font-cormorant text-sm ${isDark ? "text-[#efe6d1]/70" : "text-[#10241a]/70"} tracking-wide`}>
               Please RSVP by letting us know if you can attend our wedding celebration.
             </p>
           </motion.div>

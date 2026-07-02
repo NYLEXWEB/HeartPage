@@ -621,7 +621,7 @@ export default function FriendTemplate({
   };
 
   return (
-    <div id="friend-website-root" className="bg-[#FAFDFE] selection:bg-sky-100 selection:text-slate-900 min-h-screen w-full relative overflow-x-hidden font-poppins">
+    <div id="friend-website-root" className={`bg-[#FAFDFE] selection:bg-sky-100 selection:text-slate-900 min-h-screen w-full relative overflow-x-hidden font-poppins ${theme === "dark" ? "dark" : ""}`}>
       
       {/* Dynamic Style tags for scoped styling */}
       <style dangerouslySetInnerHTML={{ __html: `
