@@ -21,7 +21,9 @@ import {
   Plus,
   Music,
   Volume2,
-  VolumeX
+  VolumeX,
+  Play,
+  Pause
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
@@ -101,6 +103,8 @@ export default function CreatePage() {
 
   const [isFormMusicPlaying, setIsFormMusicPlaying] = useState(false);
   const formAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [previewProgress, setPreviewProgress] = useState(0);
+  const [previewDuration, setPreviewDuration] = useState(0);
 
   // Check Maintenance Mode from system settings
   useEffect(() => {
@@ -184,6 +188,8 @@ export default function CreatePage() {
       formAudioRef.current = null;
       setIsFormMusicPlaying(false);
     }
+    setPreviewProgress(0);
+    setPreviewDuration(0);
   }, [activeCategory]);
 
   // Pause preview when step changes
@@ -204,6 +210,13 @@ export default function CreatePage() {
     };
   }, []);
 
+  const formatTime = (timeInSeconds: number) => {
+    if (isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return "0:00";
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  };
+
   const toggleFormMusicPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
     const trackSrc = PREVIEW_MUSIC_MAP[activeCategory];
@@ -216,6 +229,12 @@ export default function CreatePage() {
       // Listeners to keep state synced in case audio stops/pauses
       audio.onplay = () => setIsFormMusicPlaying(true);
       audio.onpause = () => setIsFormMusicPlaying(false);
+      audio.ontimeupdate = () => setPreviewProgress(audio.currentTime);
+      audio.onloadedmetadata = () => setPreviewDuration(audio.duration);
+      
+      if (audio.duration) {
+        setPreviewDuration(audio.duration);
+      }
     }
 
     if (isFormMusicPlaying) {
@@ -1190,41 +1209,59 @@ export default function CreatePage() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <button
-                              type="button"
-                              onClick={toggleFormMusicPreview}
-                              className={`w-full mt-2 py-3 px-4 rounded-xl border flex items-center justify-between transition-all duration-200 cursor-pointer ${
-                                isFormMusicPlaying 
-                                  ? "bg-sky-50 border-sky-200 text-sky-700 shadow-sm" 
-                                  : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                {isFormMusicPlaying ? (
-                                  <Volume2 className="w-4 h-4 text-sky-500 animate-pulse" />
-                                ) : (
-                                  <VolumeX className="w-4 h-4 text-slate-400" />
-                                )}
-                                <div className="text-left">
-                                  <span className="text-[11px] font-bold font-mono tracking-wide block">
-                                    {isFormMusicPlaying ? "Playing Soundtrack Preview" : "Listen to Soundtrack"}
-                                  </span>
-                                  <span className="text-[9px] text-slate-400 font-medium block">
-                                    {activeCategory === "couples" ? "Couple Theme" :
-                                     activeCategory === "friends" ? "Besties Acoustic Theme" :
-                                     activeCategory === "breakup" ? "Melancholic Piano Theme" :
-                                     activeCategory === "crush" ? "Crush Confession Theme" :
-                                     "Wedding & Birthday Ambient Theme"}
-                                  </span>
+                            <div className="w-full mt-2 p-4 rounded-2xl bg-white border border-sky-150 shadow-sm flex flex-col gap-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2.5">
+                                  <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-sky-50 text-sky-600 ${isFormMusicPlaying ? "animate-spin" : ""}`} style={{ animationDuration: "6s" }}>
+                                    <Music className="w-3.5 h-3.5" />
+                                  </div>
+                                  <div className="text-left">
+                                    <span className="text-[11px] font-bold font-mono tracking-wide text-slate-800 block">
+                                      Soundtrack Preview
+                                    </span>
+                                    <span className="text-[9px] text-slate-400 font-medium block">
+                                      {isFormMusicPlaying ? "Playing ambient theme" : "Ready to preview"}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={toggleFormMusicPreview}
+                                  className="w-8 h-8 rounded-full bg-sky-500 hover:bg-sky-600 text-white flex items-center justify-center transition-all duration-200 cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                                >
+                                  {isFormMusicPlaying ? (
+                                    <Pause className="w-3.5 h-3.5 fill-current" />
+                                  ) : (
+                                    <Play className="w-3.5 h-3.5 fill-current translate-x-0.5" />
+                                  )}
+                                </button>
+                              </div>
+
+                              {/* Progress bar and time stamps */}
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-3">
+                                  <input
+                                    type="range"
+                                    min="0"
+                                    max={previewDuration || 100}
+                                    value={previewProgress}
+                                    onChange={(e) => {
+                                      const newTime = parseFloat(e.target.value);
+                                      setPreviewProgress(newTime);
+                                      if (formAudioRef.current) {
+                                        formAudioRef.current.currentTime = newTime;
+                                      }
+                                    }}
+                                    className="w-full h-1 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-sky-500 focus:outline-none"
+                                  />
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] text-slate-400 font-mono font-bold">
+                                  <span>{formatTime(previewProgress)}</span>
+                                  <span>{formatTime(previewDuration)}</span>
                                 </div>
                               </div>
-                              
-                              <div className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                                isFormMusicPlaying ? "bg-sky-100 text-sky-600 animate-pulse" : "bg-slate-100 text-slate-500"
-                              }`}>
-                                {isFormMusicPlaying ? "Pause Preview" : "Play Preview"}
-                              </div>
-                            </button>
+                            </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
