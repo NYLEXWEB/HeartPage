@@ -12,6 +12,7 @@ interface CoupleTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  musicEnabled?: boolean;
 }
 
 export default function CoupleTemplate({
@@ -23,6 +24,7 @@ export default function CoupleTemplate({
   theme = "light",
   customFields = [],
   isPreview = false,
+  musicEnabled = true,
 }: CoupleTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -419,6 +421,36 @@ export default function CoupleTemplate({
       if (particlesFrameId) cancelAnimationFrame(particlesFrameId);
     };
   }, [startDate, images, isPreview]);
+
+  // Autoplay handler on first user interaction
+  useEffect(() => {
+    if (!musicEnabled) return;
+    
+    let hasInteracted = false;
+    const handleInteraction = () => {
+      const audio = audioRef.current;
+      if (!hasInteracted && audio) {
+        audio.play()
+          .then(() => {
+            setIsPlaying(true);
+            hasInteracted = true;
+          })
+          .catch((err) => {
+            console.log("Autoplay blocked by browser policy:", err);
+          });
+      }
+    };
+
+    window.addEventListener("click", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction);
+    window.addEventListener("scroll", handleInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
+    };
+  }, [musicEnabled]);
 
   // Audio Control Toggle
   const togglePlay = (e: React.MouseEvent) => {
@@ -886,36 +918,38 @@ export default function CoupleTemplate({
       </footer>
 
       {/* Floating Cinematic Music Player */}
-      <div id="ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/15 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/25 transition-all duration-300 hover-target">
-        {/* Vinyl Disc Graphic */}
-        <div className={`vinyl-disc w-9 h-9 rounded-full bg-[#1A1A1A] flex items-center justify-center relative overflow-hidden border border-gold/20 shadow-lg ${isPlaying ? 'playing' : ''}`}>
-          <div className="w-3.5 h-3.5 rounded-full bg-beige-light border border-gold/20 flex items-center justify-center">
-            <div className="w-1 h-1 rounded-full bg-dark"></div>
+      {musicEnabled && (
+        <div id="ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/15 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/25 transition-all duration-300 hover-target">
+          {/* Vinyl Disc Graphic */}
+          <div className={`vinyl-disc w-9 h-9 rounded-full bg-[#1A1A1A] flex items-center justify-center relative overflow-hidden border border-gold/20 shadow-lg ${isPlaying ? 'playing' : ''}`}>
+            <div className="w-3.5 h-3.5 rounded-full bg-beige-light border border-gold/20 flex items-center justify-center">
+              <div className="w-1 h-1 rounded-full bg-dark"></div>
+            </div>
           </div>
+          {/* Play Control Info */}
+          <div className="player-info flex flex-col pr-4 select-none max-w-0 overflow-hidden transition-all duration-500 ease-in-out whitespace-nowrap">
+            <span className="font-poppins text-[9px] text-muted tracking-wider uppercase font-medium">Ambient Music</span>
+            <span className="font-cormorant text-xs text-dark italic font-semibold">Love Story - Acoustic</span>
+          </div>
+          {/* Play/Pause Button */}
+          <button 
+            id="player-toggle" 
+            className="w-8 h-8 rounded-full bg-gold/15 hover:bg-gold/25 flex items-center justify-center text-gold-dark transition-all duration-300"
+            onClick={togglePlay}
+          >
+            {isPlaying ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" id="player-icon"><rect x="14" y="4" width="4" height="16" rx="1"></rect><rect x="6" y="4" width="4" height="16" rx="1"></rect></svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" id="player-icon"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
+            )}
+          </button>
+          
+          {/* Audio element with local mp3 background music */}
+          <audio id="bg-audio" ref={audioRef} loop preload="auto">
+            <source src="/Website Music/Couple.mp3" type="audio/mp3" />
+          </audio>
         </div>
-        {/* Play Control Info */}
-        <div className="player-info flex flex-col pr-4 select-none max-w-0 overflow-hidden transition-all duration-500 ease-in-out whitespace-nowrap">
-          <span className="font-poppins text-[9px] text-muted tracking-wider uppercase font-medium">Ambient Music</span>
-          <span className="font-cormorant text-xs text-dark italic font-semibold">Love Story - Acoustic</span>
-        </div>
-        {/* Play/Pause Button */}
-        <button 
-          id="player-toggle" 
-          className="w-8 h-8 rounded-full bg-gold/15 hover:bg-gold/25 flex items-center justify-center text-gold-dark transition-all duration-300"
-          onClick={togglePlay}
-        >
-          {isPlaying ? (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" id="player-icon"><rect x="14" y="4" width="4" height="16" rx="1"></rect><rect x="6" y="4" width="4" height="16" rx="1"></rect></svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" id="player-icon"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
-          )}
-        </button>
-        
-        {/* Audio element with premium Mixkit acoustic piano background music */}
-        <audio id="bg-audio" ref={audioRef} loop preload="auto">
-          <source src="https://assets.mixkit.co/music/preview/mixkit-serene-piano-1678.mp3" type="audio/mp3" />
-        </audio>
-      </div>
+      )}
 
       {/* Premium Cinematic Styles */}
       <style dangerouslySetInnerHTML={{ __html: `

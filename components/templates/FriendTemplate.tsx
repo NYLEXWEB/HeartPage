@@ -14,6 +14,7 @@ interface FriendTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  musicEnabled?: boolean;
 }
 
 export default function FriendTemplate({
@@ -25,6 +26,7 @@ export default function FriendTemplate({
   theme = "light",
   customFields = [],
   isPreview = false,
+  musicEnabled = true,
 }: FriendTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -596,6 +598,36 @@ export default function FriendTemplate({
       if (particlesFrameId) cancelAnimationFrame(particlesFrameId);
     };
   }, [startDate, images, isPreview]);
+
+  // Autoplay handler on first user interaction
+  useEffect(() => {
+    if (!musicEnabled) return;
+    
+    let hasInteracted = false;
+    const handleInteraction = () => {
+      const audio = audioRef.current;
+      if (!hasInteracted && audio) {
+        audio.play()
+          .then(() => {
+            setIsPlaying(true);
+            hasInteracted = true;
+          })
+          .catch((err) => {
+            console.log("Autoplay blocked by browser policy:", err);
+          });
+      }
+    };
+
+    window.addEventListener("click", handleInteraction);
+    window.addEventListener("touchstart", handleInteraction);
+    window.addEventListener("scroll", handleInteraction);
+
+    return () => {
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
+    };
+  }, [musicEnabled]);
 
   const toggleAudio = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -1372,32 +1404,34 @@ export default function FriendTemplate({
       </footer>
 
       {/* AMBIENT AUDIO PLAYER WIDGET */}
-      <div id="friend-ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/10 dark:bg-slate-950/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/20 dark:hover:bg-slate-950/30 transition-all duration-300 hover-target">
-        <div className={`w-9 h-9 rounded-full bg-[#1e293b] flex items-center justify-center relative overflow-hidden border border-sky-500/20 shadow-lg ${isPlaying ? 'vinyl-playing' : ''}`}>
-          <div className="w-3.5 h-3.5 rounded-full bg-slate-900 border border-sky-500/20 flex items-center justify-center">
-            <div className="w-1 h-1 rounded-full bg-sky-400"></div>
+      {musicEnabled && (
+        <div id="friend-ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/10 dark:bg-slate-950/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/20 dark:hover:bg-slate-950/30 transition-all duration-300 hover-target">
+          <div className={`w-9 h-9 rounded-full bg-[#1e293b] flex items-center justify-center relative overflow-hidden border border-sky-500/20 shadow-lg ${isPlaying ? 'vinyl-playing' : ''}`}>
+            <div className="w-3.5 h-3.5 rounded-full bg-slate-900 border border-sky-500/20 flex items-center justify-center">
+              <div className="w-1 h-1 rounded-full bg-sky-400"></div>
+            </div>
           </div>
+          <div className="player-meta flex flex-col pr-4 select-none max-w-0 overflow-hidden transition-all duration-500 ease-in-out whitespace-nowrap">
+            <span className="font-poppins text-[9px] text-sky-400 tracking-wider uppercase font-medium">Ambient Music</span>
+            <span className="font-luxury-serif text-xs text-white italic font-semibold">Joyful acoustic theme</span>
+          </div>
+          <button 
+            onClick={toggleAudio}
+            className="w-8 h-8 rounded-full bg-sky-500/10 hover:bg-sky-500/20 flex items-center justify-center text-sky-400 transition-all duration-300 cursor-pointer"
+          >
+            {isPlaying ? (
+              <Volume2 className="w-4 h-4 text-sky-400" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-sky-400" />
+            )}
+          </button>
+          
+          {/* Acoustic audio theme source */}
+          <audio ref={audioRef} loop preload="auto">
+            <source src="/Website Music/Besties.mp3" type="audio/mp3" />
+          </audio>
         </div>
-        <div className="player-meta flex flex-col pr-4 select-none max-w-0 overflow-hidden transition-all duration-500 ease-in-out whitespace-nowrap">
-          <span className="font-poppins text-[9px] text-sky-400 tracking-wider uppercase font-medium">Ambient Music</span>
-          <span className="font-luxury-serif text-xs text-white italic font-semibold">Joyful acoustic theme</span>
-        </div>
-        <button 
-          onClick={toggleAudio}
-          className="w-8 h-8 rounded-full bg-sky-500/10 hover:bg-sky-500/20 flex items-center justify-center text-sky-400 transition-all duration-300 cursor-pointer"
-        >
-          {isPlaying ? (
-            <Volume2 className="w-4 h-4 text-sky-400" />
-          ) : (
-            <VolumeX className="w-4 h-4 text-sky-400" />
-          )}
-        </button>
-        
-        {/* Acoustic audio theme source */}
-        <audio ref={audioRef} loop preload="auto">
-          <source src="https://assets.mixkit.co/music/preview/mixkit-beautiful-dream-interactive-acoustic-guitar-1583.mp3" type="audio/mp3" />
-        </audio>
-      </div>
+      )}
 
     </div>
   );

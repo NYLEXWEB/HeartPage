@@ -24,6 +24,7 @@ export interface IPayment extends Document {
     customFields?: { label: string; value: string }[];
     groomPhoto?: string;
     bridePhoto?: string;
+    musicEnabled?: boolean;
   };
   ipAddress?: string;
   userAgent?: string;
@@ -130,6 +131,11 @@ const PaymentSchema: Schema = new Schema(
       bridePhoto: {
         type: String,
         required: false,
+      },
+      musicEnabled: {
+        type: Boolean,
+        required: false,
+        default: true,
       },
     },
     ipAddress: {

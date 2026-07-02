@@ -66,6 +66,7 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
       customFields: validatedData.customFields || [],
       groomPhoto: (validatedData as any).groomPhoto,
       bridePhoto: (validatedData as any).bridePhoto,
+      musicEnabled: (validatedData as any).musicEnabled,
       expiresAt,
     });
 
@@ -112,6 +113,7 @@ export const getWebsiteBySlug = cache(async (slug: string) => {
       })),
       groomPhoto: website.groomPhoto || "",
       bridePhoto: website.bridePhoto || "",
+      musicEnabled: website.musicEnabled !== false,
       createdAt: website.createdAt.toISOString(),
       expiresAt: website.expiresAt.toISOString(),
     };

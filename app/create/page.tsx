@@ -18,7 +18,8 @@ import {
   Loader2,
   Image as ImageIcon,
   AlertCircle,
-  Plus
+  Plus,
+  Music
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
@@ -139,6 +140,7 @@ export default function CreatePage() {
       message: "",
       images: [],
       customFields: [],
+      musicEnabled: true,
     },
   });
 
@@ -1053,6 +1055,54 @@ export default function CreatePage() {
                       </div>
                     </div>
 
+                    {/* Background Music Option Toggle */}
+                    <div className="space-y-3 pt-4 border-t border-sky-100/50">
+                      <div className="flex justify-between items-center">
+                        <label className="text-xs text-slate-500 font-semibold font-mono">
+                          {(activeCategory === "wedding" || activeCategory === "birthday") ? "5" : "4"}. Enable Background Music
+                        </label>
+                      </div>
+                      <p className="text-[11px] text-slate-400 -mt-1 leading-relaxed">
+                        Play a matching romantic ambient sound track in the background when your page is opened.
+                      </p>
+
+                      <div 
+                        onClick={() => setValue("musicEnabled", !watch("musicEnabled"))}
+                        className={`flex items-center justify-between p-3.5 rounded-2xl border-2 cursor-pointer transition-all ${
+                          watch("musicEnabled")
+                            ? "bg-emerald-50/20 border-emerald-500/30 text-emerald-755"
+                            : "bg-slate-50/50 border-slate-200 text-slate-500"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                            watch("musicEnabled") ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"
+                          }`}>
+                            <Music className={`w-4 h-4 ${watch("musicEnabled") ? "animate-bounce" : ""}`} />
+                          </div>
+                          <div className="text-left">
+                            <span className="text-xs font-bold font-mono tracking-wide block">
+                              {watch("musicEnabled") ? "Background Music Enabled" : "Background Music Disabled"}
+                            </span>
+                            <span className="text-[9px] text-slate-400 font-medium block -mt-0.5">
+                              {watch("musicEnabled") 
+                                ? "Category specific ambient track will play" 
+                                : "No music will play on this page"}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Switch pill */}
+                        <div className={`w-10 h-6 rounded-full transition-all relative flex items-center p-0.5 ${
+                          watch("musicEnabled") ? "bg-emerald-500" : "bg-slate-200"
+                        }`}>
+                          <div className={`w-5 h-5 rounded-full bg-white shadow-sm transition-transform duration-200 transform ${
+                            watch("musicEnabled") ? "translate-x-4" : "translate-x-0"
+                          }`} />
+                        </div>
+                      </div>
+                    </div>
+
                   </div>
 
                   <button
@@ -1108,6 +1158,7 @@ export default function CreatePage() {
                         groomPhoto={formValues.groomPhoto}
                         bridePhoto={formValues.bridePhoto}
                         isPreview={true}
+                        musicEnabled={formValues.musicEnabled}
                       />
                     </div>
                   </div>
@@ -1218,6 +1269,48 @@ export default function CreatePage() {
                 </motion.div>
               </div>
 
+              {/* Background Music Toggle */}
+              <div className="w-full max-w-3xl bg-white border border-sky-100 rounded-3xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+                <div className="flex items-center gap-4 text-center sm:text-left">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
+                    formValues.musicEnabled
+                      ? "bg-emerald-50 text-emerald-500 border border-emerald-100"
+                      : "bg-slate-50 text-slate-400 border border-slate-100"
+                  }`}>
+                    <Music className={`w-6 h-6 ${formValues.musicEnabled ? "animate-bounce" : ""}`} />
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="text-lg font-bold text-slate-800 flex items-center justify-center sm:justify-start gap-1.5">
+                      Background Music
+                      {formValues.musicEnabled ? (
+                        <span className="text-[10px] font-mono font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 py-0.5 px-2 rounded-full uppercase tracking-wider">Active</span>
+                      ) : (
+                        <span className="text-[10px] font-mono font-bold text-slate-400 bg-slate-50 border border-slate-100 py-0.5 px-2 rounded-full uppercase tracking-wider">Disabled</span>
+                      )}
+                    </h4>
+                    <p className="text-slate-500 text-sm">
+                      Include a premium ambient background track corresponding to your category.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Premium Switch Widget */}
+                <button
+                  type="button"
+                  onClick={() => setValue("musicEnabled", !formValues.musicEnabled)}
+                  className={`w-14 h-8 rounded-full transition-all relative outline-none flex items-center p-1 cursor-pointer ${
+                    formValues.musicEnabled ? "bg-emerald-500 shadow-md shadow-emerald-500/20" : "bg-slate-200"
+                  }`}
+                >
+                  <motion.div
+                    layout
+                    className="w-6 h-6 rounded-full bg-white shadow-sm"
+                    animate={{ x: formValues.musicEnabled ? "24px" : "0px" }}
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                </button>
+              </div>
+
               {/* Navigation buttons */}
               <div className="flex gap-4 w-full max-w-md justify-center">
                 <button
@@ -1295,6 +1388,7 @@ export default function CreatePage() {
                   groomPhoto={formValues.groomPhoto}
                   bridePhoto={formValues.bridePhoto}
                   isPreview={true}
+                  musicEnabled={formValues.musicEnabled}
                 />
               </div>
             </motion.div>

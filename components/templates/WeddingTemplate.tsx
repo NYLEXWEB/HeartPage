@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 interface WeddingTemplateProps {
   yourName: string;
@@ -15,6 +16,7 @@ interface WeddingTemplateProps {
   groomPhoto?: string;
   bridePhoto?: string;
   isPreview?: boolean;
+  musicEnabled?: boolean;
 }
 
 export default function WeddingTemplate({
@@ -28,6 +30,7 @@ export default function WeddingTemplate({
   groomPhoto,
   bridePhoto,
   isPreview = false,
+  musicEnabled = true,
 }: WeddingTemplateProps) {
   const router = useRouter();
   const isDark = theme === "dark";
@@ -684,6 +687,7 @@ export default function WeddingTemplate({
           With love and gratitude
         </motion.p>
       </footer>
+      <BackgroundMusic category="wedding" enabled={musicEnabled} />
     </div>
   );
 }

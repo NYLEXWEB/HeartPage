@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles, Send, ArrowRight, Play, VolumeX, Flame } from "lucide-react";
 import { useRouter } from "next/navigation";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 interface CrushTemplateProps {
   yourName: string;
@@ -14,6 +15,7 @@ interface CrushTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  musicEnabled?: boolean;
 }
 
 interface HeartParticle {
@@ -32,6 +34,7 @@ export default function CrushTemplate({
   theme,
   customFields = [],
   isPreview = false,
+  musicEnabled = true,
 }: CrushTemplateProps) {
   const router = useRouter();
 
@@ -488,6 +491,7 @@ export default function CrushTemplate({
 
         </AnimatePresence>
       </div>
+      <BackgroundMusic category="crush" enabled={musicEnabled} />
     </div>
   );
 }

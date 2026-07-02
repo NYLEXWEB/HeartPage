@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 interface BirthdayTemplateProps {
   yourName: string;
@@ -14,6 +15,7 @@ interface BirthdayTemplateProps {
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
   birthdayPhoto?: string;
+  musicEnabled?: boolean;
 }
 
 export default function BirthdayTemplate({
@@ -26,6 +28,7 @@ export default function BirthdayTemplate({
   customFields = [],
   isPreview = false,
   birthdayPhoto,
+  musicEnabled = true,
 }: BirthdayTemplateProps) {
   const router = useRouter();
   const isDark = theme === "dark";
@@ -670,6 +673,7 @@ export default function BirthdayTemplate({
           Made with love, just for you
         </motion.p>
       </footer>
+      <BackgroundMusic category="birthday" enabled={musicEnabled} />
     </div>
   );
 }
