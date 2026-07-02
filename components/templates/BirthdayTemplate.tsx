@@ -16,6 +16,7 @@ interface BirthdayTemplateProps {
   isPreview?: boolean;
   birthdayPhoto?: string;
   musicEnabled?: boolean;
+  hideMusicPlayer?: boolean;
 }
 
 export default function BirthdayTemplate({
@@ -29,6 +30,7 @@ export default function BirthdayTemplate({
   isPreview = false,
   birthdayPhoto,
   musicEnabled = true,
+  hideMusicPlayer = false,
 }: BirthdayTemplateProps) {
   const router = useRouter();
   const isDark = theme === "dark";
@@ -673,7 +675,7 @@ export default function BirthdayTemplate({
           Made with love, just for you
         </motion.p>
       </footer>
-      <BackgroundMusic category="birthday" enabled={musicEnabled} />
+      <BackgroundMusic category="birthday" enabled={musicEnabled && !hideMusicPlayer} />
     </div>
   );
 }

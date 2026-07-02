@@ -1323,6 +1323,7 @@ export default function CreatePage() {
                         bridePhoto={formValues.bridePhoto}
                         isPreview={true}
                         musicEnabled={formValues.musicEnabled}
+                        hideMusicPlayer={true}
                       />
                     </div>
                   </div>

@@ -14,6 +14,7 @@ interface BreakupTemplateProps {
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
   musicEnabled?: boolean;
+  hideMusicPlayer?: boolean;
 }
 
 export default function BreakupTemplate({
@@ -26,6 +27,7 @@ export default function BreakupTemplate({
   customFields = [],
   isPreview = false,
   musicEnabled = true,
+  hideMusicPlayer = false,
 }: BreakupTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -502,7 +504,7 @@ export default function BreakupTemplate({
 
   // Autoplay handler on first user interaction
   useEffect(() => {
-    if (!musicEnabled) return;
+    if (!musicEnabled || hideMusicPlayer) return;
     
     let hasInteracted = false;
     const handleInteraction = () => {
@@ -1237,7 +1239,7 @@ export default function BreakupTemplate({
       </footer>
 
       {/* AMBIENT AUDIO PLAYER WIDGET */}
-      {musicEnabled && (
+      {musicEnabled && !hideMusicPlayer && (
         <div id="breakup-ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/10 dark:bg-slate-950/20 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/20 dark:hover:bg-slate-950/30 transition-all duration-300 hover-target">
           <div className={`w-9 h-9 rounded-full bg-[#1e293b] flex items-center justify-center relative overflow-hidden border border-slate-700 shadow-lg ${isPlaying ? 'vinyl-spinning' : ''}`}>
             <div className="w-3.5 h-3.5 rounded-full bg-slate-900 border border-slate-700 flex items-center justify-center">

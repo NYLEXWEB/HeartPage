@@ -13,6 +13,7 @@ interface CoupleTemplateProps {
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
   musicEnabled?: boolean;
+  hideMusicPlayer?: boolean;
 }
 
 export default function CoupleTemplate({
@@ -25,6 +26,7 @@ export default function CoupleTemplate({
   customFields = [],
   isPreview = false,
   musicEnabled = true,
+  hideMusicPlayer = false,
 }: CoupleTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -424,7 +426,7 @@ export default function CoupleTemplate({
 
   // Autoplay handler on first user interaction
   useEffect(() => {
-    if (!musicEnabled) return;
+    if (!musicEnabled || hideMusicPlayer) return;
     
     let hasInteracted = false;
     const handleInteraction = () => {
@@ -918,7 +920,7 @@ export default function CoupleTemplate({
       </footer>
 
       {/* Floating Cinematic Music Player */}
-      {musicEnabled && (
+      {musicEnabled && !hideMusicPlayer && (
         <div id="ambient-player" className="fixed bottom-6 right-6 z-[999] flex items-center gap-3 bg-white/15 backdrop-blur-md border border-white/20 p-2.5 rounded-full shadow-2xl hover:bg-white/25 transition-all duration-300 hover-target">
           {/* Vinyl Disc Graphic */}
           <div className={`vinyl-disc w-9 h-9 rounded-full bg-[#1A1A1A] flex items-center justify-center relative overflow-hidden border border-gold/20 shadow-lg ${isPlaying ? 'playing' : ''}`}>

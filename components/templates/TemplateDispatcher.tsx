@@ -18,6 +18,7 @@ interface TemplateDispatcherProps {
   bridePhoto?: string;
   isPreview?: boolean;
   musicEnabled?: boolean;
+  hideMusicPlayer?: boolean;
 }
 
 export default function TemplateDispatcher({
@@ -33,6 +34,7 @@ export default function TemplateDispatcher({
   bridePhoto,
   isPreview = false,
   musicEnabled = true,
+  hideMusicPlayer = false,
 }: TemplateDispatcherProps) {
   // Safe defaults
   const safeYourName = yourName || (
@@ -104,6 +106,7 @@ export default function TemplateDispatcher({
           customFields={customFields}
           isPreview={isPreview}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     case "friends":
@@ -118,6 +121,7 @@ export default function TemplateDispatcher({
           customFields={customFields}
           isPreview={isPreview}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     case "breakup":
@@ -132,6 +136,7 @@ export default function TemplateDispatcher({
           customFields={customFields}
           isPreview={isPreview}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     case "crush":
@@ -146,6 +151,7 @@ export default function TemplateDispatcher({
           customFields={customFields}
           isPreview={isPreview}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     case "birthday":
@@ -161,6 +167,7 @@ export default function TemplateDispatcher({
           isPreview={isPreview}
           birthdayPhoto={groomPhoto}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     case "wedding":
@@ -177,6 +184,7 @@ export default function TemplateDispatcher({
           bridePhoto={bridePhoto}
           isPreview={isPreview}
           musicEnabled={musicEnabled}
+          hideMusicPlayer={hideMusicPlayer}
         />
       );
     default:

@@ -16,6 +16,7 @@ interface CrushTemplateProps {
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
   musicEnabled?: boolean;
+  hideMusicPlayer?: boolean;
 }
 
 interface HeartParticle {
@@ -35,6 +36,7 @@ export default function CrushTemplate({
   customFields = [],
   isPreview = false,
   musicEnabled = true,
+  hideMusicPlayer = false,
 }: CrushTemplateProps) {
   const router = useRouter();
 
@@ -491,7 +493,7 @@ export default function CrushTemplate({
 
         </AnimatePresence>
       </div>
-      <BackgroundMusic category="crush" enabled={musicEnabled} />
+      <BackgroundMusic category="crush" enabled={musicEnabled && !hideMusicPlayer} />
     </div>
   );
 }
