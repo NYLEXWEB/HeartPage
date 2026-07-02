@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,9 @@ import {
   Image as ImageIcon,
   AlertCircle,
   Plus,
-  Music
+  Music,
+  Volume2,
+  VolumeX
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
@@ -76,6 +78,15 @@ const compressImage = (file: File): Promise<string> => {
   });
 };
 
+const PREVIEW_MUSIC_MAP = {
+  couples: "/Website Music/Couple.mp3",
+  friends: "/Website Music/Besties.mp3",
+  breakup: "/Website Music/Breakup.mp3",
+  crush: "/Website Music/Crush.mp3",
+  wedding: "/Website Music/Wedding and Birthday .mp3",
+  birthday: "/Website Music/Wedding and Birthday .mp3",
+};
+
 export default function CreatePage() {
   const router = useRouter();
   const [isMaintenance, setIsMaintenance] = useState<boolean | null>(null);
@@ -87,6 +98,9 @@ export default function CreatePage() {
     "idle" | "creating_order" | "processing" | "verifying" | "publishing"
   >("idle");
   const [uploading, setUploading] = useState(false);
+
+  const [isFormMusicPlaying, setIsFormMusicPlaying] = useState(false);
+  const formAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Check Maintenance Mode from system settings
   useEffect(() => {
@@ -151,6 +165,71 @@ export default function CreatePage() {
 
   // Watch fields for live preview
   const formValues = watch();
+
+  // Music preview audio manager for details step
+  useEffect(() => {
+    // If music is disabled, pause preview immediately
+    if (!formValues.musicEnabled) {
+      if (formAudioRef.current) {
+        formAudioRef.current.pause();
+        setIsFormMusicPlaying(false);
+      }
+    }
+  }, [formValues.musicEnabled]);
+
+  // Pause preview when activeCategory changes, so we don't play the wrong song or keep playing
+  useEffect(() => {
+    if (formAudioRef.current) {
+      formAudioRef.current.pause();
+      formAudioRef.current = null;
+      setIsFormMusicPlaying(false);
+    }
+  }, [activeCategory]);
+
+  // Pause preview when step changes
+  useEffect(() => {
+    if (formAudioRef.current) {
+      formAudioRef.current.pause();
+      setIsFormMusicPlaying(false);
+    }
+  }, [step]);
+
+  // Clean up preview audio on unmount
+  useEffect(() => {
+    return () => {
+      if (formAudioRef.current) {
+        formAudioRef.current.pause();
+        formAudioRef.current = null;
+      }
+    };
+  }, []);
+
+  const toggleFormMusicPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const trackSrc = PREVIEW_MUSIC_MAP[activeCategory];
+    
+    if (!formAudioRef.current) {
+      const audio = new Audio(trackSrc);
+      audio.loop = true;
+      formAudioRef.current = audio;
+      
+      // Listeners to keep state synced in case audio stops/pauses
+      audio.onplay = () => setIsFormMusicPlaying(true);
+      audio.onpause = () => setIsFormMusicPlaying(false);
+    }
+
+    if (isFormMusicPlaying) {
+      formAudioRef.current.pause();
+    } else {
+      formAudioRef.current.play()
+        .then(() => {
+          setIsFormMusicPlaying(true);
+        })
+        .catch(err => {
+          console.error("Form preview play failed:", err);
+        });
+    }
+  };
 
   const stableImages = useMemo(() => formValues.images || [], [formValues.images]);
   const stableCustomFields = useMemo(() => formValues.customFields || [], [formValues.customFields]);
@@ -1101,6 +1180,54 @@ export default function CreatePage() {
                           }`} />
                         </div>
                       </div>
+
+                      {/* Form Music Preview Button */}
+                      <AnimatePresence>
+                        {watch("musicEnabled") && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <button
+                              type="button"
+                              onClick={toggleFormMusicPreview}
+                              className={`w-full mt-2 py-3 px-4 rounded-xl border flex items-center justify-between transition-all duration-200 cursor-pointer ${
+                                isFormMusicPlaying 
+                                  ? "bg-sky-50 border-sky-200 text-sky-700 shadow-sm" 
+                                  : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                {isFormMusicPlaying ? (
+                                  <Volume2 className="w-4 h-4 text-sky-500 animate-pulse" />
+                                ) : (
+                                  <VolumeX className="w-4 h-4 text-slate-400" />
+                                )}
+                                <div className="text-left">
+                                  <span className="text-[11px] font-bold font-mono tracking-wide block">
+                                    {isFormMusicPlaying ? "Playing Soundtrack Preview" : "Listen to Soundtrack"}
+                                  </span>
+                                  <span className="text-[9px] text-slate-400 font-medium block">
+                                    {activeCategory === "couples" ? "Couple Theme" :
+                                     activeCategory === "friends" ? "Besties Acoustic Theme" :
+                                     activeCategory === "breakup" ? "Melancholic Piano Theme" :
+                                     activeCategory === "crush" ? "Crush Confession Theme" :
+                                     "Wedding & Birthday Ambient Theme"}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className={`px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                                isFormMusicPlaying ? "bg-sky-100 text-sky-600 animate-pulse" : "bg-slate-100 text-slate-500"
+                              }`}>
+                                {isFormMusicPlaying ? "Pause Preview" : "Play Preview"}
+                              </div>
+                            </button>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
 
                   </div>
