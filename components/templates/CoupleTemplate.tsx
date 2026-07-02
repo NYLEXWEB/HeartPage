@@ -217,24 +217,7 @@ export default function CoupleTemplate({
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // 1. Lenis Smooth Scroll Configuration (Only if not in preview and not on mobile to avoid scroll conflicts/lag)
-      if (!isPreview && !isMobile) {
-        lenisInstance = new Lenis({
-          duration: 1.2,
-          easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-          smoothWheel: true,
-          wheelMultiplier: 1.0,
-          infinite: false
-        });
 
-        lenisInstance.on('scroll', ScrollTrigger.update);
-
-        const tickerCallback = (time: number) => {
-          lenisInstance.raf(time * 1000);
-        };
-        gsap.ticker.add(tickerCallback);
-        gsap.ticker.lagSmoothing(0);
-      }
 
       // 2. Custom Cursor Follower Engine (Only on desktop)
       const cursor = document.getElementById('cursor');
@@ -283,20 +266,7 @@ export default function CoupleTemplate({
         mainContainer.addEventListener('mouseout', mouseOutRoot);
       }
 
-      // 3. Hero Parallax
-      const heroImg = document.getElementById('hero-img');
-      if (heroImg) {
-        gsap.to(heroImg, {
-          yPercent: 10,
-          ease: "none",
-          scrollTrigger: {
-            trigger: "#hero",
-            start: "top top",
-            end: "bottom top",
-            scrub: true
-          }
-        });
-      }
+
 
       // Preloader Engine
       const preloader = document.getElementById("preloader");
@@ -405,194 +375,7 @@ export default function CoupleTemplate({
         }
       }
 
-      // 5. Pinned Scroll Animation Section (GSAP)
-      const particlesCanvas = document.getElementById("particles-canvas") as HTMLCanvasElement | null;
-      if (particlesCanvas) {
-        const ptCtx = particlesCanvas.getContext("2d");
-        if (ptCtx) {
-          let scrollParticles: GoldenDustParticle[] = [];
-          let baseParticlesCount = isMobile ? 12 : 50;
-          let particleIntensity = 0;
-          let exploded = false;
 
-          resizeParticles = () => {
-            if (particlesCanvas.parentElement) {
-              particlesCanvas.width = particlesCanvas.parentElement.clientWidth;
-              particlesCanvas.height = particlesCanvas.parentElement.clientHeight;
-            }
-          };
-          window.addEventListener("resize", resizeParticles);
-          resizeParticles();
-
-          class GoldenDustParticle {
-            isBurst: boolean;
-            x!: number;
-            y!: number;
-            speedX!: number;
-            speedY!: number;
-            size!: number;
-            decay!: number;
-            color!: string;
-            opacity!: number;
-
-            constructor(isBurst = false) {
-              this.isBurst = isBurst;
-              this.reset();
-              if (!isBurst && particlesCanvas) {
-                this.y = Math.random() * particlesCanvas.height;
-              }
-            }
-
-            reset() {
-              if (particlesCanvas) {
-                if (this.isBurst) {
-                  this.x = particlesCanvas.width / 2;
-                  this.y = particlesCanvas.height / 2;
-                  const angle = Math.random() * Math.PI * 2;
-                  const speed = Math.random() * 8 + 3;
-                  this.speedX = Math.cos(angle) * speed;
-                  this.speedY = Math.sin(angle) * speed;
-                  this.size = Math.random() * 4 + 2;
-                  this.decay = Math.random() * 0.015 + 0.005;
-                  this.color = Math.random() > 0.5 ? "#D4AF37" : "#FFB7C5";
-                } else {
-                  this.x = Math.random() * particlesCanvas.width;
-                  this.y = particlesCanvas.height + 10;
-                  this.speedY = -(Math.random() * 1.5 + 0.5);
-                  this.speedX = Math.random() * 1.0 - 0.5;
-                  this.size = Math.random() * 3 + 1;
-                  this.decay = 0;
-                  this.color = "#D4AF37";
-                }
-              }
-              this.opacity = Math.random() * 0.8 + 0.2;
-            }
-
-            update() {
-              if (this.isBurst) {
-                this.x += this.speedX;
-                this.y += this.speedY;
-                this.speedX *= 0.96;
-                this.speedY *= 0.96;
-                this.opacity -= this.decay;
-              } else {
-                const currentSpeedY = this.speedY * (1 + particleIntensity * 4);
-                this.y += currentSpeedY;
-                this.x += this.speedX;
-
-                if (this.y < -10) {
-                  this.reset();
-                }
-              }
-            }
-
-            draw() {
-              if (this.opacity <= 0 || !ptCtx) return;
-              ptCtx.save();
-              ptCtx.globalAlpha = this.opacity;
-              ptCtx.fillStyle = this.color;
-              ptCtx.shadowBlur = this.isBurst ? 10 : 4;
-              ptCtx.shadowColor = this.color;
-              ptCtx.beginPath();
-              ptCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-              ptCtx.fill();
-              ptCtx.restore();
-            }
-          }
-
-          for (let i = 0; i < baseParticlesCount; i++) {
-            scrollParticles.push(new GoldenDustParticle(false));
-          }
-
-          const triggerSparkBurst = () => {
-            const burstCount = isMobile ? 30 : 120;
-            for (let i = 0; i < burstCount; i++) {
-              scrollParticles.push(new GoldenDustParticle(true));
-            }
-          };
-
-          const animateParticles = () => {
-            if (particlesCanvas) {
-              ptCtx.clearRect(0, 0, particlesCanvas.width, particlesCanvas.height);
-              scrollParticles = scrollParticles.filter(p => !p.isBurst || p.opacity > 0);
-              scrollParticles.forEach(p => {
-                p.update();
-                p.draw();
-              });
-              particlesFrameId = requestAnimationFrame(animateParticles);
-            }
-          };
-          animateParticles();
-
-          const updateScrollParticles = (progress: number) => {
-            particleIntensity = progress;
-            if (progress >= 0.74 && progress <= 0.78) {
-              if (!exploded) {
-                triggerSparkBurst();
-                exploded = true;
-              }
-            } else if (progress < 0.65 || progress > 0.85) {
-              exploded = false;
-            }
-          };
-
-          // GSAP Responsive Pinned Scroll Timeline Design
-          mmContext = gsap.matchMedia();
-
-          gsap.set(".heart-path", { strokeDashoffset: 1000 });
-          gsap.set(".heart-svg-container", { xPercent: -50, yPercent: -50, scale: 0.8 });
-          gsap.set(".scroll-couple-img", { xPercent: -50, yPercent: -50, scale: 0.9 });
-
-          mmContext.add({
-            isDesktop: "(min-width: 769px)",
-            isMobile: "(max-width: 768px)"
-          }, (context: any) => {
-            const { isDesktop } = context.conditions;
-
-            const initBoyX = isDesktop ? "-16vw" : "-35vw";
-            const initGirlX = isDesktop ? "16vw" : "35vw";
-            const targetBoyX = isDesktop ? "22vw" : "15vw";
-            const targetGirlX = isDesktop ? "-22vw" : "-15vw";
-
-            gsap.set(".scroll-character-boy", { x: initBoyX, scale: 0.95 });
-            gsap.set(".scroll-character-girl", { x: initGirlX, scale: 0.95 });
-
-            const scrollTimeline = gsap.timeline({
-              scrollTrigger: {
-                trigger: "#scroll-animation-container",
-                start: "top top",
-                end: "+=360%",
-                scrub: 1.2,
-                pin: true,
-                anticipatePin: 1,
-                // Add scroller option if in preview mode inside browser mock container
-                scroller: isPreview ? ".simulated-scrollable-container" : window,
-                onUpdate: (self: any) => {
-                  updateScrollParticles(self.progress);
-                }
-              }
-            });
-
-            scrollTimeline
-              .to(".scroll-character-boy", { x: targetBoyX, scale: 1.05, ease: "power1.inOut" }, 0)
-              .to(".scroll-character-girl", { x: targetGirlX, scale: 1.05, ease: "power1.inOut" }, 0)
-              .to(".scroll-glow", { opacity: 0.8, scale: 1.25, ease: "power1.inOut" }, 0)
-              .to(".scroll-bg-overlay", { opacity: 0.0, ease: "power1.inOut" }, 0)
-              .to(".scroll-character-boy, .scroll-character-girl", {
-                opacity: 0,
-                filter: "blur(12px)",
-                scale: 1.1,
-                ease: "power1.in"
-              }, 0.5)
-              .to(".heart-svg-container", { opacity: 1, scale: 1, ease: "power1.out" }, 0.52)
-              .to(".heart-path", { strokeDashoffset: 0, ease: "power1.inOut" }, 0.52)
-              .to(".heart-svg-container", { scale: 1.2, filter: "blur(8px)", opacity: 0, ease: "power1.in" }, 0.72)
-              .to(".scroll-couple-img", { opacity: 1, scale: 1, ease: "power2.out" }, 0.74)
-              .to(".scroll-title-text", { opacity: 1, y: 0, ease: "power2.out" }, 0.80)
-              .to({}, { duration: 0.1 });
-          });
-        }
-      }
     };
 
     init();
@@ -745,39 +528,31 @@ export default function CoupleTemplate({
         </div>
       </section>
 
-      {/* Pinned Scroll Animation Section (GSAP) */}
-      <div id="scroll-animation-container" className="scroll-container hover-target">
-        {/* Subtle glow behind the images */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full aurora-glow-1 opacity-0 scroll-glow pointer-events-none"></div>
-        <div className="absolute inset-0 bg-beige-light opacity-30 scroll-bg-overlay pointer-events-none"></div>
-
-        {/* Spark Particles Canvas specifically for scroll interactive effects */}
-        <canvas id="particles-canvas"></canvas>
-
-        <div className="scroll-pin-section">
-          {/* Boy on the left */}
-          <img src={boyImg} alt="Boy" className="scroll-character scroll-character-boy" />
-
-          {/* Girl on the right */}
-          <img src={girlImg} alt="Girl" className="scroll-character scroll-character-girl" />
-
-          {/* Heart outline SVG path */}
-          <div className="heart-svg-container flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-full h-full stroke-gold fill-none stroke-[0.5] filter drop-shadow-[0_0_15px_rgba(212,175,55,0.4)]">
-              <path className="heart-path" d="M 50,30 C 35,10 0,15 0,50 C 0,80 35,95 50,100 C 65,95 100,80 100,50 C 100,15 65,10 50,30 Z" />
-            </svg>
+      {/* Couple Journey Section (Replaces Scroll Animation) */}
+      <section className="py-24 px-4 relative z-20 overflow-hidden flex flex-col items-center justify-center border-t border-b border-gold/10 bg-beige-light/10">
+        <div className="max-w-4xl mx-auto text-center flex flex-col items-center">
+          {/* Couple Image */}
+          <div className="max-w-md md:max-w-xl w-full mb-8 overflow-hidden rounded-2xl border-4 border-white shadow-2xl bg-white/5 backdrop-blur-sm p-1">
+            <img 
+              src="/couple.png" 
+              alt="Couple" 
+              className="w-full h-auto object-cover rounded-xl"
+            />
           </div>
 
-          {/* Couple fading in at center */}
-          <img src={coupleImg} alt="Couple" className="scroll-couple-img" />
+          {/* Quote Title */}
+          <h2 className="serif-title text-4xl md:text-6xl text-gold font-normal mb-4 tracking-wide leading-tight">
+            Two Hearts. One Journey.
+          </h2>
 
-          {/* Romantic Cinematic Text */}
-          <div className="absolute bottom-16 text-center opacity-0 translate-y-8 scroll-title-text z-20">
-            <h2 className="serif-title text-4xl md:text-6xl text-gold-gradient font-normal mb-2 tracking-wide">Two Hearts. One Journey.</h2>
-            <p className="font-cormorant italic text-lg md:text-2xl text-muted font-light">Where time stands still, and love begins.</p>
-          </div>
+          {/* Quote Subtitle */}
+          <p className="font-cormorant italic text-xl md:text-3.5xl text-dark font-light max-w-2xl tracking-wide leading-relaxed">
+            "Where time stands still, and love begins."
+          </p>
+
+          <div className="w-24 h-[1px] bg-gold/30 mt-8"></div>
         </div>
-      </div>
+      </section>
 
       {/* Love Counter & Anniversary Countdown Section */}
       <section className="py-24 md:py-32 px-4 relative z-20 overflow-hidden">
