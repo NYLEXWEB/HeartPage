@@ -294,6 +294,7 @@ export async function getSettings() {
         },
         defaultExpiryDays: 7,
         maintenanceMode: false,
+        paymentEnabled: true,
         footerText: "© 2026 HeartPage. All rights reserved.",
       });
       await settings.save();
@@ -325,6 +326,7 @@ export async function updateSettings(data: any) {
       settings.socialLinks = data.socialLinks;
       settings.defaultExpiryDays = Number(data.defaultExpiryDays);
       settings.maintenanceMode = data.maintenanceMode;
+      settings.paymentEnabled = data.paymentEnabled;
       settings.footerText = data.footerText;
     }
 

@@ -11,6 +11,7 @@ export interface ISettings extends Document {
   };
   defaultExpiryDays: number;
   maintenanceMode: boolean;
+  paymentEnabled: boolean;
   footerText: string;
   createdAt: Date;
   updatedAt: Date;
@@ -46,6 +47,11 @@ const SettingsSchema: Schema = new Schema(
       type: Boolean,
       required: true,
       default: false,
+    },
+    paymentEnabled: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
     footerText: {
       type: String,

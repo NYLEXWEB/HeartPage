@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
+import { getSettings } from "@/actions/admin-dashboard";
 
 declare global {
   interface Window {
@@ -76,6 +77,7 @@ const compressImage = (file: File): Promise<string> => {
 
 export default function CreatePage() {
   const router = useRouter();
+  const [isMaintenance, setIsMaintenance] = useState<boolean | null>(null);
   const [step, setStep] = useState<"details" | "template" | "preview">("details");
   const [activeCategory, setActiveCategory] = useState<"couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding">("couples");
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -84,6 +86,24 @@ export default function CreatePage() {
     "idle" | "creating_order" | "processing" | "verifying" | "publishing"
   >("idle");
   const [uploading, setUploading] = useState(false);
+
+  // Check Maintenance Mode from system settings
+  useEffect(() => {
+    async function checkMaintenanceStatus() {
+      try {
+        const { success, settings } = await getSettings();
+        if (success && settings && settings.maintenanceMode) {
+          setIsMaintenance(true);
+        } else {
+          setIsMaintenance(false);
+        }
+      } catch (err) {
+        console.error("Error loading maintenance status:", err);
+        setIsMaintenance(false);
+      }
+    }
+    checkMaintenanceStatus();
+  }, []);
 
   // Load Razorpay Checkout SDK dynamically on mount
   useEffect(() => {
@@ -257,6 +277,15 @@ export default function CreatePage() {
           throw new Error(orderData.error || "Failed to create secure payment order.");
         }
 
+        // If payment is disabled by admin, bypass Razorpay and redirect directly to success screen
+        if (orderData.paymentEnabled === false) {
+          setPaymentStatus("publishing");
+          setTimeout(() => {
+            router.push(`/success/${orderData.slug}?paymentId=${orderData.paymentId}`);
+          }, 1500);
+          return;
+        }
+
         // 2. Open Razorpay Checkout
         setPaymentStatus("processing");
         if (!window.Razorpay) {
@@ -340,6 +369,75 @@ export default function CreatePage() {
     formValues.partnerName?.trim().length >= 2 &&
     formValues.message?.trim().length >= 5 &&
     (activeCategory !== "friends" || (formValues.relationshipDate && formValues.relationshipDate.trim().length >= 2));
+
+  if (isMaintenance === null) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#FAFDFE]">
+        <Loader2 className="w-8 h-8 animate-spin text-rose-500" />
+      </div>
+    );
+  }
+
+  if (isMaintenance) {
+    return (
+      <div className="bg-[#121110] text-[#FAF9F6] min-h-screen flex flex-col justify-center items-center px-4 relative overflow-hidden font-sans">
+        {/* Glowing background auroras */}
+        <div className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] rounded-full bg-rose-900/10 blur-[120px] pointer-events-none z-0"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[60vw] h-[60vw] rounded-full bg-amber-900/10 blur-[150px] pointer-events-none z-0"></div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="relative z-10 text-center max-w-lg w-full bg-zinc-950/60 backdrop-blur-xl border border-zinc-900 p-8 md:p-12 rounded-[2.5rem] shadow-2xl flex flex-col items-center"
+        >
+          {/* Animated Heart Icon with glowing concentric rings */}
+          <div className="relative mb-8">
+            <motion.div
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+              className="w-20 h-20 bg-rose-500/10 border border-rose-500/20 rounded-full flex items-center justify-center text-rose-500 shadow-[0_0_30px_rgba(239,68,68,0.1)]"
+            >
+              <Heart className="w-9 h-9 fill-rose-500/20" />
+            </motion.div>
+            <div className="absolute -inset-2 rounded-full border border-rose-500/5 animate-ping pointer-events-none"></div>
+          </div>
+
+          {/* Heading */}
+          <h1 className="text-3xl md:text-4xl text-white font-semibold tracking-tight mb-2">
+            Love is on Hold
+          </h1>
+          <p className="italic text-lg text-rose-300/80 mb-6">
+            Under Scheduled Maintenance
+          </p>
+
+          {/* Details */}
+          <p className="text-zinc-400 text-xs md:text-sm leading-relaxed mb-8">
+            HeartPage is currently undergoing scheduled platform upgrades to make your shared journeys even more magical. We will be back online shortly. Thank you for your patience!
+          </p>
+
+          {/* Contact or Social Action Button */}
+          <div className="w-full space-y-4">
+            <a 
+              href="/"
+              className="block w-full py-3.5 bg-zinc-100 hover:bg-white text-zinc-950 font-bold text-xs tracking-[0.2em] uppercase rounded-full shadow-md transition-all duration-300 text-center"
+            >
+              Go Back Home
+            </a>
+            
+            <p className="text-[10px] text-zinc-650 font-mono tracking-widest uppercase">
+              Need assistance? Email: support@heartpage.com
+            </p>
+          </div>
+        </motion.div>
+        
+        {/* Subtle footer */}
+        <div className="absolute bottom-6 text-[10px] text-zinc-550 font-mono uppercase tracking-widest">
+          HeartPage Platform Status
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#FAFDFE] text-slate-800 min-h-screen flex flex-col">

@@ -3,6 +3,7 @@
 import { connectToDatabase } from "@/lib/db";
 import { Website } from "@/models/Website";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
+import { cache } from "react";
 
 // Helper to generate a unique slug
 async function generateUniqueSlug(): Promise<string> {
@@ -80,7 +81,7 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
   }
 }
 
-export async function getWebsiteBySlug(slug: string) {
+export const getWebsiteBySlug = cache(async (slug: string) => {
   try {
     await connectToDatabase();
     
@@ -118,4 +119,4 @@ export async function getWebsiteBySlug(slug: string) {
     console.error(`Error loading website by slug ${slug}:`, error);
     return null;
   }
-}
+});

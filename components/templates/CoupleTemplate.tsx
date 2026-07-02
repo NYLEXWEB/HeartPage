@@ -487,7 +487,14 @@ export default function CoupleTemplate({
         <div className="absolute inset-0 z-0">
           <picture>
             <source srcSet={heroMobileImg} media="(max-width: 768px)" />
-            <img src={heroDesktopImg} alt="Hero Background" className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.85] saturate-[0.95]" id="hero-img" />
+            <img 
+              src={heroDesktopImg} 
+              alt="Hero Background" 
+              className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.85] saturate-[0.95]" 
+              id="hero-img" 
+              fetchPriority="high"
+              decoding="async"
+            />
           </picture>
           {/* Soft romantic overlay & lights */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-beige-light"></div>
@@ -549,6 +556,8 @@ export default function CoupleTemplate({
               src="/couple.png" 
               alt="Couple" 
               className="w-full h-auto object-cover rounded-xl"
+              loading="lazy"
+              decoding="async"
             />
           </div>
 
@@ -837,6 +846,8 @@ export default function CoupleTemplate({
                     src={img} 
                     alt={`Gallery ${idx + 1}`} 
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <span className="font-cormorant text-white italic text-lg">Moments #0{idx + 1}</span>

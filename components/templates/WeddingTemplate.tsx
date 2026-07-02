@@ -369,6 +369,8 @@ export default function WeddingTemplate({
                           src={groomPhoto} 
                           alt={yourName || "Groom"} 
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          loading="lazy"
+                          decoding="async"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
                       </div>
@@ -421,6 +423,8 @@ export default function WeddingTemplate({
                           src={bridePhoto} 
                           alt={partnerName || "Bride"} 
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                          loading="lazy"
+                          decoding="async"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
                       </div>
@@ -611,6 +615,8 @@ export default function WeddingTemplate({
                       src={img} 
                       alt={`Moment ${idx + 1}`} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                      loading="lazy"
+                      decoding="async"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0e1912]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center p-4">
                       <span className="font-cormorant text-[#f7f1e4] italic text-sm tracking-wider">Moment #0{idx + 1}</span>

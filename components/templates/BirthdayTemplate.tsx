@@ -375,6 +375,8 @@ export default function BirthdayTemplate({
                   src={birthdayPhoto} 
                   alt={partnerName || "Birthday Star"} 
                   className="w-full h-full object-cover select-none" 
+                  loading="lazy"
+                  decoding="async"
                 />
               </div>
               <div className="pt-5 pb-2 text-center">
@@ -609,6 +611,8 @@ export default function BirthdayTemplate({
                       src={img} 
                       alt={`Memory ${idx + 1}`} 
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className="mt-3 text-center">

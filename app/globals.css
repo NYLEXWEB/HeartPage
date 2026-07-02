@@ -27,11 +27,19 @@
   --font-cursive: var(--font-alex-brush);
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 4rem;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom Typography Utilities */

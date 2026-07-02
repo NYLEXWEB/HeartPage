@@ -921,7 +921,14 @@ export default function FriendTemplate({
         {/* Parallax Hero Background */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           {heroBg ? (
-            <img src={heroBg} alt="Hero Backdrop" className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.80] saturate-[0.90]" id="friend-hero-img" />
+            <img 
+              src={heroBg} 
+              alt="Hero Backdrop" 
+              className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.80] saturate-[0.90]" 
+              id="friend-hero-img" 
+              fetchPriority="high"
+              decoding="async"
+            />
           ) : (
             <div className="w-full h-full bg-gradient-to-tr from-sky-950 via-slate-900 to-indigo-950 scale-105" id="friend-hero-img" />
           )}
@@ -996,7 +1003,13 @@ export default function FriendTemplate({
           <div className="scroll-friend-avatar scroll-friend-left flex flex-col items-center">
             <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border-4 border-sky-400/80 p-1.5 bg-slate-900/60 shadow-2xl relative overflow-hidden flex items-center justify-center">
               {friend1Img ? (
-                <img src={friend1Img} alt={yourName} className="w-full h-full object-cover rounded-full" />
+                <img 
+                  src={friend1Img} 
+                  alt={yourName} 
+                  className="w-full h-full object-cover rounded-full" 
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className="w-full h-full rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center">
                   <span className="font-luxury-serif text-5xl md:text-7xl text-white font-semibold">{yourName.charAt(0).toUpperCase()}</span>
@@ -1010,7 +1023,13 @@ export default function FriendTemplate({
           <div className="scroll-friend-avatar scroll-friend-right flex flex-col items-center">
             <div className="w-44 h-44 md:w-56 md:h-56 rounded-full border-4 border-sky-400/80 p-1.5 bg-slate-900/60 shadow-2xl relative overflow-hidden flex items-center justify-center">
               {friend2Img ? (
-                <img src={friend2Img} alt={partnerName} className="w-full h-full object-cover rounded-full" />
+                <img 
+                  src={friend2Img} 
+                  alt={partnerName} 
+                  className="w-full h-full object-cover rounded-full" 
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className="w-full h-full rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
                   <span className="font-luxury-serif text-5xl md:text-7xl text-white font-semibold">{partnerName.charAt(0).toUpperCase()}</span>
@@ -1033,7 +1052,13 @@ export default function FriendTemplate({
             <div className="w-72 h-80 md:w-80 md:h-96 bg-white border border-slate-200 p-4 pb-10 shadow-2xl rotate-2 relative">
               <div className="w-full h-[85%] bg-slate-100 overflow-hidden relative border border-slate-100">
                 {collageImg ? (
-                  <img src={collageImg} alt="Friend Collage" className="w-full h-full object-cover" />
+                  <img 
+                    src={collageImg} 
+                    alt="Friend Collage" 
+                    className="w-full h-full object-cover" 
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-tr from-sky-400 via-indigo-500 to-amber-300 flex flex-col items-center justify-center text-center p-4">
                     <Award className="w-12 h-12 text-white mb-2 animate-bounce" />

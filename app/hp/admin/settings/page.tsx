@@ -28,6 +28,7 @@ const settingsFormSchema = z.object({
   }),
   defaultExpiryDays: z.number().min(1, "Minimum expiry is 1 day").max(365, "Maximum expiry is 365 days"),
   maintenanceMode: z.boolean(),
+  paymentEnabled: z.boolean(),
   footerText: z.string().min(5, "Footer text must be at least 5 characters"),
 });
 
@@ -65,6 +66,7 @@ export default function AdminSettingsPage() {
             },
             defaultExpiryDays: res.settings.defaultExpiryDays || 7,
             maintenanceMode: res.settings.maintenanceMode || false,
+            paymentEnabled: res.settings.paymentEnabled ?? true,
             footerText: res.settings.footerText,
           });
         } else {
@@ -298,6 +300,26 @@ export default function AdminSettingsPage() {
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 peer-checked:after:bg-white" />
+                </label>
+              </div>
+
+              {/* Payment Status (Razorpay Toggle) */}
+              <div className="p-4 bg-zinc-900/30 border border-zinc-900 rounded-2xl flex items-center justify-between">
+                <div className="space-y-0.5 pr-4">
+                  <span className="text-xs font-bold text-white font-mono block">PAYMENT REQUIREMENT</span>
+                  <span className="text-[9px] text-zinc-500 font-mono leading-normal block">
+                    If enabled, users must pay via Razorpay to generate links. If disabled, links are generated for free.
+                  </span>
+                </div>
+                
+                {/* Custom toggle slider */}
+                <label className="relative inline-flex items-center cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    {...register("paymentEnabled")}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-zinc-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-zinc-400 after:border-zinc-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500 peer-checked:after:bg-white" />
                 </label>
               </div>
 

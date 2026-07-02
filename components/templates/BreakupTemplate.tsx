@@ -811,7 +811,14 @@ export default function BreakupTemplate({
         {/* Hero Background Parallax Image */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           {heroBg ? (
-            <img src={heroBg} alt="Hero Backdrop" className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.70] saturate-[0.80]" id="breakup-hero-img" />
+            <img 
+              src={heroBg} 
+              alt="Hero Backdrop" 
+              className="w-full h-full object-cover scale-105 filter blur-[2px] brightness-[0.70] saturate-[0.80]" 
+              id="breakup-hero-img" 
+              fetchPriority="high"
+              decoding="async"
+            />
           ) : (
             <div className={`w-full h-full scale-105 ${isLight ? "bg-gradient-to-b from-slate-200 via-slate-100 to-slate-50" : "bg-gradient-to-b from-slate-950 via-slate-900 to-[#020617]"}`} id="breakup-hero-img" />
           )}
@@ -873,7 +880,13 @@ export default function BreakupTemplate({
           <div className="scroll-partner-avatar scroll-partner-left flex flex-col items-center">
             <div className={`w-44 h-44 md:w-56 md:h-56 rounded-full border-4 p-1.5 shadow-2xl relative overflow-hidden flex items-center justify-center ${isLight ? "border-slate-300 bg-white" : "border-slate-800 bg-slate-950/80"}`}>
               {partner1Img ? (
-                <img src={partner1Img} alt={yourName} className="w-full h-full object-cover rounded-full filter grayscale" />
+                <img 
+                  src={partner1Img} 
+                  alt={yourName} 
+                  className="w-full h-full object-cover rounded-full filter grayscale" 
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className={`w-full h-full rounded-full flex items-center justify-center ${isLight ? "bg-slate-100" : "bg-slate-800"}`}>
                   <span className={`font-luxury-serif text-5xl md:text-7xl font-semibold ${isLight ? "text-slate-650" : "text-slate-400"}`}>{yourName.charAt(0).toUpperCase()}</span>
@@ -887,7 +900,13 @@ export default function BreakupTemplate({
           <div className="scroll-partner-avatar scroll-partner-right flex flex-col items-center">
             <div className={`w-44 h-44 md:w-56 md:h-56 rounded-full border-4 p-1.5 shadow-2xl relative overflow-hidden flex items-center justify-center ${isLight ? "border-slate-300 bg-white" : "border-slate-800 bg-slate-950/80"}`}>
               {partner2Img ? (
-                <img src={partner2Img} alt={partnerName} className="w-full h-full object-cover rounded-full filter grayscale" />
+                <img 
+                  src={partner2Img} 
+                  alt={partnerName} 
+                  className="w-full h-full object-cover rounded-full filter grayscale" 
+                  loading="lazy"
+                  decoding="async"
+                />
               ) : (
                 <div className={`w-full h-full rounded-full flex items-center justify-center ${isLight ? "bg-slate-100" : "bg-slate-800"}`}>
                   <span className={`font-luxury-serif text-5xl md:text-7xl font-semibold ${isLight ? "text-slate-650" : "text-slate-400"}`}>{partnerName.charAt(0).toUpperCase()}</span>
@@ -912,7 +931,13 @@ export default function BreakupTemplate({
             <div className={`w-72 h-80 md:w-80 md:h-96 border p-4 pb-10 shadow-2xl rotate-[-2deg] relative ${isLight ? "bg-white border-slate-200" : "bg-[#18181b] border-slate-800"}`}>
               <div className={`w-full h-[85%] overflow-hidden relative border ${isLight ? "bg-slate-50 border-slate-100" : "bg-slate-900 border-slate-800"}`}>
                 {sunsetImg ? (
-                  <img src={sunsetImg} alt="Sunset Memory" className="w-full h-full object-cover filter grayscale" />
+                  <img 
+                    src={sunsetImg} 
+                    alt="Sunset Memory" 
+                    className="w-full h-full object-cover filter grayscale" 
+                    loading="lazy"
+                    decoding="async"
+                  />
                 ) : (
                   <div className={`w-full h-full flex flex-col items-center justify-center text-center p-4 ${isLight ? "bg-gradient-to-tr from-slate-100 via-slate-50 to-slate-200" : "bg-gradient-to-tr from-slate-950 via-slate-900 to-rose-950"}`}>
                     <Sunset className={`w-12 h-12 mb-2 animate-pulse ${isLight ? "text-slate-650" : "text-rose-500/60"}`} />
@@ -1144,6 +1169,8 @@ export default function BreakupTemplate({
                     src={img} 
                     alt={`Gallery ${idx + 1}`} 
                     className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-105 filter grayscale-[30%]" 
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <span className="font-luxury-serif text-white italic text-lg">Record #0{idx + 1}</span>

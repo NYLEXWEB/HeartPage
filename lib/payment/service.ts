@@ -62,6 +62,48 @@ export async function createPendingPayment(params: CreatePendingParams): Promise
   return payment;
 }
 
+/**
+ * Creates a free/bypassed payment log in the database and publishes the website immediately.
+ */
+export async function createFreePaymentAndPublish(params: Omit<CreatePendingParams, "razorpayOrderId">): Promise<{ payment: IPayment; website: IWebsite }> {
+  await connectToDatabase();
+
+  const paymentId = `HP_PAY_FREE_${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
+  const dummyOrderId = `free_order_${crypto.randomBytes(6).toString("hex")}`;
+
+  const payment = new Payment({
+    paymentId,
+    razorpayOrderId: dummyOrderId,
+    razorpayPaymentId: `free_payment_${crypto.randomBytes(6).toString("hex")}`,
+    amount: 0,
+    currency: "INR",
+    status: "Paid",
+    verificationStatus: "Verified",
+    webhookStatus: "Processed",
+    websiteSlug: params.slug,
+    category: params.category,
+    theme: params.theme,
+    customerName: params.customerName,
+    websiteData: {
+      yourName: params.yourName,
+      partnerName: params.partnerName,
+      relationshipDate: params.relationshipDate,
+      message: params.message,
+      images: params.images,
+      customFields: params.customFields || [],
+      groomPhoto: params.groomPhoto,
+      bridePhoto: params.bridePhoto,
+    },
+    ipAddress: params.ipAddress,
+    userAgent: params.userAgent,
+    verificationResult: "Bypassed (Free mode enabled by Admin)",
+  });
+
+  await payment.save();
+  const website = await publishWebsiteFromPayment(payment);
+  return { payment, website };
+}
+
 interface ProcessSuccessfulParams {
   razorpayOrderId: string;
   razorpayPaymentId: string;

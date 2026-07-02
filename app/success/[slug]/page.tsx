@@ -35,6 +35,7 @@ function SuccessPageContent() {
   const searchParams = useSearchParams();
   const slug = params.slug as string;
   const paymentId = searchParams.get("paymentId") || "N/A";
+  const isFree = paymentId.includes("FREE") || paymentId === "N/A";
   
   const [shareUrl, setShareUrl] = useState("");
   const [copied, setCopied] = useState(false);
@@ -167,14 +168,21 @@ function SuccessPageContent() {
         <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-2.5 text-xs">
           <div className="flex justify-between items-center pb-2 border-b border-slate-100">
             <span className="text-slate-400 font-medium">Transaction Status</span>
-            <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-550 animate-pulse" />
-              Paid &amp; Verified
-            </span>
+            {isFree ? (
+              <span className="bg-sky-50 border border-sky-100 text-sky-600 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" />
+                Free &amp; Active
+              </span>
+            ) : (
+              <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 font-mono uppercase tracking-wider text-[10px]">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-550 animate-pulse" />
+                Paid &amp; Verified
+              </span>
+            )}
           </div>
           <div className="flex justify-between items-center font-mono">
-            <span className="text-slate-400 font-medium font-sans">Payment Reference</span>
-            <span className="text-slate-750 font-bold select-all tracking-wider">{paymentId}</span>
+            <span className="text-slate-400 font-medium font-sans font-semibold">Payment Reference</span>
+            <span className="text-slate-750 font-bold select-all tracking-wider">{isFree ? "Free (Bypassed)" : paymentId}</span>
           </div>
         </div>
 
