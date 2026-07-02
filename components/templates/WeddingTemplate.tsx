@@ -288,13 +288,13 @@ export default function WeddingTemplate({
         </motion.div>
 
         <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-7xl text-[#e4c988] mb-3">
-          {yourName || "Bride"}
+          {yourName || "Groom"}
         </motion.h1>
         <motion.div {...reveal} className="font-display italic text-2xl md:text-3xl text-[#efe6d1]/80 my-1">
           and
         </motion.div>
         <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-7xl text-[#e4c988] mb-8">
-          {partnerName || "Groom"}
+          {partnerName || "Bride"}
         </motion.h1>
 
         <motion.div {...reveal} className="w-16 gold-line mb-8" />
@@ -316,63 +316,117 @@ export default function WeddingTemplate({
       {/* BRIDE & GROOM PHOTOS SECTION */}
       {/* ============================================================ */}
       {(groomPhoto || bridePhoto) && (
-        <section className="relative px-6 py-20 bg-[#faf5eb] border-b border-[#ebdcb9]/40 z-20">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-center gap-12 md:gap-24 text-center">
-            
-            {/* Bride */}
-            {bridePhoto && (
-              <motion.div 
-                {...revealScale}
-                className="flex flex-col items-center"
-              >
-                <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-[3px] border-[#c9a24b] p-1.5 shadow-xl bg-white">
-                  <div className="w-full h-full rounded-full overflow-hidden relative">
-                    <img 
-                      src={bridePhoto} 
-                      alt={yourName || "Bride"} 
-                      className="w-full h-full object-cover"
-                    />
+        <section className="relative px-6 py-28 md:py-36 bg-[#faf8f2] border-b border-[#ebdcb9]/30 z-20 overflow-hidden">
+          {/* Subtle elegant pattern details */}
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[radial-gradient(#c9a24b_1.5px,transparent_1.5px)] bg-[size:24px_24px]" />
+          
+          <div className="max-w-5xl mx-auto relative flex flex-col items-center">
+            {/* Optional Section Title */}
+            <motion.div {...reveal} className="text-center mb-16 md:mb-20">
+              <span className="font-mono tracking-[0.3em] text-[10px] uppercase text-[#a9853a] font-bold block mb-3">Introducing</span>
+              <h2 className="font-display text-3xl md:text-5xl text-[#10241a] font-normal tracking-wide">
+                The Groom &amp; The Bride
+              </h2>
+              <div className="w-12 h-[1px] bg-[#c9a24b] mx-auto mt-4" />
+            </motion.div>
+
+            <div className="w-full flex flex-col md:flex-row items-center justify-center gap-16 md:gap-12 lg:gap-20">
+              
+              {/* Groom Card */}
+              {groomPhoto && (
+                <motion.div 
+                  {...revealScale}
+                  className="relative flex flex-col items-center group w-full max-w-[280px] z-10"
+                >
+                  {/* Huge Decorative Letter in Background */}
+                  <div className="absolute -top-14 -left-8 font-display text-[160px] text-[#e8dfc7]/40 pointer-events-none select-none font-light z-0 leading-none">
+                    {yourName ? yourName.charAt(0).toUpperCase() : 'G'}
                   </div>
-                </div>
-                <h3 className="font-display text-2xl text-[#10241a] mt-6 tracking-wide">
-                  {yourName || "Bride"}
-                </h3>
-                <span className="font-cormorant italic text-[#a9853a] text-sm tracking-wider mt-1">The Bride</span>
-              </motion.div>
-            )}
 
-            {/* Heart Divider (Only shown if both photos exist) */}
-            {bridePhoto && groomPhoto && (
-              <motion.div 
-                {...reveal}
-                className="hidden md:flex items-center text-[#c9a24b] text-4xl"
-              >
-                ❦
-              </motion.div>
-            )}
-
-            {/* Groom */}
-            {groomPhoto && (
-              <motion.div 
-                {...revealScale}
-                className="flex flex-col items-center"
-              >
-                <div className="relative w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden border-[3px] border-[#c9a24b] p-1.5 shadow-xl bg-white">
-                  <div className="w-full h-full rounded-full overflow-hidden relative">
-                    <img 
-                      src={groomPhoto} 
-                      alt={partnerName || "Groom"} 
-                      className="w-full h-full object-cover"
-                    />
+                  {/* Layered Floating Gold Frame */}
+                  <div className="relative w-64 h-80 z-10">
+                    {/* Offset Golden Wire Frame */}
+                    <div className="absolute inset-0 border border-[#c9a24b] rounded-t-[130px] rounded-b-[20px] translate-x-3.5 translate-y-3.5 opacity-60 group-hover:translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500 ease-out" />
+                    
+                    {/* Main Image Frame (Arch) */}
+                    <div className="absolute inset-0 rounded-t-[130px] rounded-b-[20px] overflow-hidden bg-white p-2 shadow-2xl border border-[#c9a24b]/20 group-hover:scale-[1.01] transition-transform duration-500 ease-out">
+                      <div className="w-full h-full rounded-t-[120px] rounded-b-[12px] overflow-hidden relative">
+                        <img 
+                          src={groomPhoto} 
+                          alt={yourName || "Groom"} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <h3 className="font-display text-2xl text-[#10241a] mt-6 tracking-wide">
-                  {partnerName || "Groom"}
-                </h3>
-                <span className="font-cormorant italic text-[#a9853a] text-sm tracking-wider mt-1">The Groom</span>
-              </motion.div>
-            )}
 
+                  {/* Details */}
+                  <div className="relative z-10 mt-8 space-y-1 text-center">
+                    <span className="font-mono tracking-[0.25em] text-[10px] text-[#a9853a] uppercase font-bold block">
+                      — The Groom
+                    </span>
+                    <h3 className="font-display text-3xl text-[#10241a] font-medium tracking-wide">
+                      {yourName || "Groom"}
+                    </h3>
+                    <div className="w-8 h-[1px] bg-[#c9a24b]/40 mx-auto my-2" />
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Staggered Ampersand Divider */}
+              {bridePhoto && groomPhoto && (
+                <motion.div 
+                  {...reveal}
+                  className="hidden md:flex items-center justify-center font-display italic text-[110px] lg:text-[130px] text-[#c9a24b]/25 select-none z-10 shrink-0 self-center -translate-y-6"
+                >
+                  &amp;
+                </motion.div>
+              )}
+
+              {/* Bride Card */}
+              {bridePhoto && (
+                <motion.div 
+                  {...revealScale}
+                  className="relative flex flex-col items-center group w-full max-w-[280px] z-10 md:mt-14"
+                >
+                  {/* Huge Decorative Letter in Background */}
+                  <div className="absolute -top-14 -right-8 font-display text-[160px] text-[#e8dfc7]/40 pointer-events-none select-none font-light z-0 leading-none">
+                    {partnerName ? partnerName.charAt(0).toUpperCase() : 'B'}
+                  </div>
+
+                  {/* Layered Floating Gold Frame */}
+                  <div className="relative w-64 h-80 z-10">
+                    {/* Offset Golden Wire Frame */}
+                    <div className="absolute inset-0 border border-[#c9a24b] rounded-t-[130px] rounded-b-[20px] -translate-x-3.5 translate-y-3.5 opacity-60 group-hover:-translate-x-1.5 group-hover:translate-y-1.5 transition-transform duration-500 ease-out" />
+                    
+                    {/* Main Image Frame (Arch) */}
+                    <div className="absolute inset-0 rounded-t-[130px] rounded-b-[20px] overflow-hidden bg-white p-2 shadow-2xl border border-[#c9a24b]/20 group-hover:scale-[1.01] transition-transform duration-500 ease-out">
+                      <div className="w-full h-full rounded-t-[120px] rounded-b-[12px] overflow-hidden relative">
+                        <img 
+                          src={bridePhoto} 
+                          alt={partnerName || "Bride"} 
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-60" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Details */}
+                  <div className="relative z-10 mt-8 space-y-1 text-center">
+                    <span className="font-mono tracking-[0.25em] text-[10px] text-[#a9853a] uppercase font-bold block">
+                      — The Bride
+                    </span>
+                    <h3 className="font-display text-3xl text-[#10241a] font-medium tracking-wide">
+                      {partnerName || "Bride"}
+                    </h3>
+                    <div className="w-8 h-[1px] bg-[#c9a24b]/40 mx-auto my-2" />
+                  </div>
+                </motion.div>
+              )}
+
+            </div>
           </div>
         </section>
       )}

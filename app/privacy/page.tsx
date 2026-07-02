@@ -65,70 +65,155 @@ export default function PrivacyPage() {
 
           <div className="prose prose-slate prose-sm max-w-none space-y-6 text-sm md:text-base leading-relaxed text-slate-650">
             <p>
-              Your privacy is extremely important to us. This Privacy Policy details the types of information we collect, how we process it, and our strict data deletion policies.
+              At <strong>{siteTitle}</strong>, we value your privacy and are committed to protecting your personal information.
             </p>
 
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                1. No Account Creation
+                1. Information We Collect
               </h2>
-              <p>
-                {siteTitle} does not require you to create an account, register an email address, or set a password. We do not ask for any personal identifiers beyond the names and messages you voluntarily submit to generate a customized web page.
-              </p>
-            </section>
-
-            <section className="space-y-2">
-              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                2. Information We Collect
-              </h2>
-              <p>
-                We only collect and store data that is explicitly entered into our website creation forms:
-              </p>
-              <ul className="list-disc list-inside space-y-1 pl-4 text-sm">
-                <li><strong>Creator Name &amp; Partner/Celebrant Name</strong>: To customize titles and headings.</li>
-                <li><strong>Personal Messages</strong>: The text you write to customize the digital letter or card.</li>
-                <li><strong>Dates</strong>: Relationship milestones, birthdays, or wedding event dates to run timers and countdowns.</li>
-                <li><strong>Images</strong>: Base64 compressed image strings uploaded to customize your layout.</li>
+              <p>We may collect:</p>
+              <ul className="list-disc list-inside pl-4 space-y-1 text-sm">
+                <li>Name</li>
+                <li>Email address</li>
+                <li>Phone number</li>
+                <li>Uploaded images</li>
+                <li>User-generated content</li>
+                <li>Payment information (processed through third-party payment providers)</li>
+                <li>Device information</li>
+                <li>Browser information</li>
+                <li>IP address</li>
+                <li>Usage analytics</li>
               </ul>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                3. Strict 7-Day Auto-Deletion (TTL)
+                2. How We Use Information
+              </h2>
+              <p>We use collected information to:</p>
+              <ul className="list-disc list-inside pl-4 space-y-1 text-sm">
+                <li>Create personalized websites.</li>
+                <li>Process payments.</li>
+                <li>Deliver purchased services.</li>
+                <li>Improve platform performance.</li>
+                <li>Provide customer support.</li>
+                <li>Prevent fraud and abuse.</li>
+                <li>Comply with legal obligations.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                3. User Content
               </h2>
               <p>
-                To maintain a secure and lightweight environment, we use a automated database TTL (Time-to-Live) index. <strong>Every single record, including names, dates, text, and images, is completely and permanently wiped from our server database exactly 7 days after it is created.</strong>
-              </p>
-              <p>
-                Once a record is deleted, it is unrecoverable and the public slug will return a 404 Not Found error.
+                Users retain ownership of all uploaded content. However, users grant us permission to process, display, and store such content for providing our services.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                4. Payment Processing
+                4. Payment Information
               </h2>
               <p>
-                When you perform a transaction on {siteTitle}, your payment credentials are submitted directly to our secure third-party gateway (e.g., Razorpay). We do not store, process, or view credit/debit card details, bank information, or other billing secrets on our servers.
+                Payment transactions are processed through third-party payment providers. We do not store complete payment card information on our servers.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                5. Third-Party Links
+                5. Data Security
               </h2>
               <p>
-                Some generated templates may include buttons that redirect users to external apps (like WhatsApp) to send RSVP replies. This Privacy Policy only governs {siteTitle}. We do not control or take responsibility for the privacy practices of external platforms.
+                We implement commercially reasonable security measures to protect user information. However, no method of transmission or storage is completely secure, and we cannot guarantee absolute security.
               </p>
             </section>
 
             <section className="space-y-2">
               <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
-                6. Contact Information
+                6. Cookies and Tracking
+              </h2>
+              <p>We may use cookies and analytics technologies to:</p>
+              <ul className="list-disc list-inside pl-4 space-y-1 text-sm">
+                <li>Improve user experience.</li>
+                <li>Analyze website traffic.</li>
+                <li>Monitor platform performance.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                7. Data Retention
               </h2>
               <p>
-                If you have any questions or concern regarding the privacy of your details, please reach out to us at: <span className="font-semibold text-[#4ba3f7]">{settings?.contactEmail || "hello@heartpage.com"}</span>.
+                We retain user information only as long as necessary to provide services, comply with legal obligations, resolve disputes, and enforce agreements.
               </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                8. Third-Party Services
+              </h2>
+              <p>We may share information with trusted third-party providers including:</p>
+              <ul className="list-disc list-inside pl-4 space-y-1 text-sm">
+                <li>Payment processors.</li>
+                <li>Hosting providers.</li>
+                <li>Analytics providers.</li>
+                <li>Cloud storage services.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                9. Children&apos;s Privacy
+              </h2>
+              <p>
+                Our services are not intended for children under 13 years of age.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                10. Limitation of Liability
+              </h2>
+              <p>
+                We shall not be liable for unauthorized access, cyber-attacks, data breaches, service interruptions, or losses beyond our reasonable control.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                11. User Rights
+              </h2>
+              <p>Users may request:</p>
+              <ul className="list-disc list-inside pl-4 space-y-1 text-sm">
+                <li>Access to their information.</li>
+                <li>Correction of information.</li>
+                <li>Deletion of information.</li>
+                <li>Withdrawal of consent where applicable.</li>
+              </ul>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                12. Changes to this Policy
+              </h2>
+              <p>
+                We reserve the right to update this Privacy Policy at any time. Continued use of the platform constitutes acceptance of any revised policy.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="text-lg font-bold text-slate-900 font-luxury-serif border-b border-sky-50 pb-1">
+                13. Contact Us
+              </h2>
+              <p>If you have any questions regarding this Privacy Policy, please contact:</p>
+              <div className="bg-sky-50/50 p-4 rounded-xl border border-sky-100/50 text-sm space-y-1">
+                <p><strong>Email:</strong> <a href="mailto:buildwithnylex@gmail.com" className="text-sky-600 hover:underline">buildwithnylex@gmail.com</a></p>
+                <p><strong>Company:</strong> Nylex</p>
+                <p><strong>Location:</strong> Kerala, India</p>
+              </div>
             </section>
           </div>
         </div>

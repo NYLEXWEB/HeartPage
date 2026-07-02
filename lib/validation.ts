@@ -73,8 +73,8 @@ export const birthdaySchema = z.object({
 export const weddingSchema = z.object({
   category: z.literal("wedding"),
   theme: z.enum(["light", "dark"]),
-  yourName: z.string().min(2, "Groom/Bride's name must be at least 2 characters"),
-  partnerName: z.string().min(2, "Partner's name must be at least 2 characters"),
+  yourName: z.string().min(2, "Groom's name must be at least 2 characters"),
+  partnerName: z.string().min(2, "Bride's name must be at least 2 characters"),
   relationshipDate: z.string().min(2, "Wedding date is required"),
   message: z.string().min(5, "Wedding message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),

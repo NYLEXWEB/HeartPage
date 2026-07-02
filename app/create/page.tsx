@@ -466,11 +466,11 @@ export default function CreatePage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-1.5">
                         <label className="text-xs text-slate-500 font-semibold font-mono">
-                          {activeCategory === "wedding" ? "Groom / Bride Name" : "Your Name"}
+                          {activeCategory === "wedding" ? "Groom Name" : "Your Name"}
                         </label>
                         <input
                           type="text"
-                          placeholder="Your Name"
+                          placeholder={activeCategory === "wedding" ? "Groom Name" : "Your Name"}
                           {...register("yourName")}
                           className={`w-full bg-white border rounded-xl px-4 py-3 text-sm focus:outline-none transition-all text-slate-800 placeholder-slate-400 ${
                             errors.yourName
@@ -504,7 +504,7 @@ export default function CreatePage() {
                             : activeCategory === "crush"
                             ? "Crush's Name"
                             : activeCategory === "wedding"
-                            ? "Partner's Name"
+                            ? "Bride Name"
                             : "Celebrant's Name"}
                         </label>
                         <input
@@ -519,7 +519,7 @@ export default function CreatePage() {
                               : activeCategory === "crush"
                               ? "Crush's Name"
                               : activeCategory === "wedding"
-                              ? "Partner's Name"
+                              ? "Bride Name"
                               : "Celebrant's Name"
                           }
                           {...register("partnerName")}
