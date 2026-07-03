@@ -62,7 +62,7 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
       partnerName: validatedData.partnerName,
       relationshipDate: validatedData.relationshipDate,
       message: validatedData.message,
-      images: [],
+      images: validatedData.images || [],
       customFields: validatedData.customFields || [],
       groomPhoto: (validatedData as any).groomPhoto,
       bridePhoto: (validatedData as any).bridePhoto,

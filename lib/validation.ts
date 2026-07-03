@@ -24,7 +24,7 @@ export const friendsSchema = z.object({
   theme: z.enum(["light", "dark"]),
   yourName: z.string().min(2, "Your name must be at least 2 characters"),
   partnerName: z.string().min(2, "Friend's name must be at least 2 characters"),
-  relationshipDate: z.string().min(2, "Friendship date is required"),
+  relationshipDate: z.string().optional(),
   message: z.string().min(5, "Friendship message must be at least 5 characters"),
   images: z.array(z.string()).max(2, "You can upload a maximum of 2 photos").optional(),
   customFields: z.array(customFieldSchema).optional(),

@@ -1355,6 +1355,46 @@ export default function FriendTemplate({
         </div>
       </section>
 
+      {/* DYNAMIC GALLERY SECTION */}
+      {images && images.length > 0 && (
+        <section className="py-24 md:py-32 px-4 relative z-20 border-t border-sky-500/10 bg-sky-50/5 dark:bg-sky-950/5">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-16">
+              <span className="font-luxury-serif italic text-2xl text-sky-500 tracking-wider mb-2 block">Captured Moments</span>
+              <h2 className="font-luxury-serif text-4xl md:text-6xl text-slate-900 dark:text-white font-normal tracking-wide">Our Gallery</h2>
+              <p className="font-poppins text-[10px] text-slate-500 dark:text-slate-400 tracking-widest uppercase mt-2">
+                A collection of our favorite photos together
+              </p>
+              <div className="w-24 h-[1px] bg-sky-500/30 mx-auto mt-6"></div>
+            </div>
+
+            <div className={`grid gap-6 ${
+              images.length === 1 
+                ? "grid-cols-1 max-w-xl mx-auto" 
+                : "grid-cols-1 sm:grid-cols-2 max-w-3xl mx-auto"
+            }`}>
+              {images.map((img, idx) => (
+                <div 
+                  key={idx} 
+                  className="friend-glass-card overflow-hidden rounded-2xl border shadow-xl aspect-[4/5] relative group hover-target"
+                >
+                  <img 
+                    src={img} 
+                    alt={`Gallery ${idx + 1}`} 
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" 
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                    <span className="font-luxury-serif text-white italic text-lg">Memories #0{idx + 1}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* BEST FRIENDS INTERACTIVE BADGE */}
       <section className="container mx-auto px-4 py-16 text-center relative z-20">
         <motion.div
