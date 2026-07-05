@@ -70,6 +70,29 @@ export default function FriendTemplate({
 
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : "S"}&${partnerName ? partnerName.charAt(0).toUpperCase() : "T"}`;
 
+  const particles = useMemo(() => {
+    return Array.from({ length: 25 }).map((_, i) => {
+      const size = Math.random() * 6 + 3; // 3px to 9px
+      const left = Math.random() * 100; // 0% to 100%
+      const delay = Math.random() * -20; // negative delay so they start immediately
+      const duration = Math.random() * 15 + 15; // 15s to 30s
+      const drift = Math.random() * 80 - 40; // -40px to 40px
+      const maxOpacity = Math.random() * 0.25 + 0.15; // 0.15 to 0.4
+      return {
+        id: i,
+        style: {
+          width: `${size}px`,
+          height: `${size}px`,
+          left: `${left}%`,
+          animationDelay: `${delay}s`,
+          "--duration": `${duration}s`,
+          "--drift": `${drift}px`,
+          "--max-opacity": maxOpacity,
+        } as React.CSSProperties,
+      };
+    });
+  }, []);
+
   // Live friendship counter + next-anniversary countdown (functional, not a scroll effect)
   useEffect(() => {
     const updateCounters = () => {
@@ -175,6 +198,12 @@ export default function FriendTemplate({
       id="friend-website-root"
       className={`min-h-screen w-full relative overflow-x-hidden font-poppins selection:bg-[#2F6F62]/20 ${theme === "dark" ? "dark" : ""}`}
     >
+      {/* Floating Particles Background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {particles.map((p) => (
+          <div key={p.id} className="fw-particle" style={p.style} />
+        ))}
+      </div>
       <style dangerouslySetInnerHTML={{
         __html: `
 :root {
@@ -285,8 +314,34 @@ export default function FriendTemplate({
         .fw-vinyl { animation: fw-spin 12s linear infinite; }
         @keyframes fw-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
+        @keyframes fw-float-particle {
+          0% {
+            transform: translateY(105vh) translateX(0) scale(0.5);
+            opacity: 0;
+          }
+          15% {
+            opacity: var(--max-opacity, 0.4);
+          }
+          85% {
+            opacity: var(--max-opacity, 0.4);
+          }
+          100% {
+            transform: translateY(-10vh) translateX(var(--drift, 40px)) scale(1.2);
+            opacity: 0;
+          }
+        }
+        .fw-particle {
+          position: absolute;
+          border-radius: 50%;
+          background: var(--teal);
+          pointer-events: none;
+          animation: fw-float-particle var(--duration, 20s) linear infinite;
+          opacity: 0;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .fw-vinyl { animation: none; }
+          .fw-particle { display: none; }
         }
       `}} />
 
