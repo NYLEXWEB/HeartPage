@@ -210,6 +210,85 @@ export default function CreatePage() {
     };
   }, []);
 
+  // Scroll to top on step changes so the header/floating actions are visible
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    // Keep track of original inline styles to restore them later
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlHeight = document.documentElement.style.height;
+    const originalBodyHeight = document.body.style.height;
+    const originalHtmlScrollBehavior = document.documentElement.style.scrollBehavior;
+    const originalBodyScrollBehavior = document.body.style.scrollBehavior;
+
+    const lockScroll = () => {
+      document.documentElement.style.scrollBehavior = "auto";
+      document.body.style.scrollBehavior = "auto";
+      document.documentElement.style.overflow = "hidden";
+      document.documentElement.style.height = "100%";
+      document.body.style.overflow = "hidden";
+      document.body.style.height = "100%";
+    };
+
+    const unlockScroll = () => {
+      document.documentElement.style.scrollBehavior = originalHtmlScrollBehavior;
+      document.body.style.scrollBehavior = originalBodyScrollBehavior;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+      document.documentElement.style.height = originalHtmlHeight;
+      document.body.style.overflow = originalBodyOverflow;
+      document.body.style.height = originalBodyHeight;
+    };
+
+    const scrollToTop = () => {
+      try {
+        window.scrollTo({ top: 0, behavior: "instant" as any });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
+      
+      try {
+        document.documentElement.scrollTo({ top: 0, behavior: "instant" as any });
+      } catch (e) {
+        if (document.documentElement) {
+          document.documentElement.scrollTop = 0;
+        }
+      }
+      
+      try {
+        document.body.scrollTo({ top: 0, behavior: "instant" as any });
+      } catch (e) {
+        if (document.body) {
+          document.body.scrollTop = 0;
+        }
+      }
+    };
+
+    // Lock scrollability and snap to top immediately
+    lockScroll();
+    scrollToTop();
+
+    // Enforce lock and top scroll positioning during the transition window (700ms)
+    let handle: number;
+    const startTime = Date.now();
+    const run = () => {
+      scrollToTop();
+      if (Date.now() - startTime < 700) {
+        handle = requestAnimationFrame(run);
+      } else {
+        unlockScroll();
+        scrollToTop();
+      }
+    };
+
+    run();
+
+    return () => {
+      cancelAnimationFrame(handle);
+      unlockScroll();
+    };
+  }, [step]);
+
   const formatTime = (timeInSeconds: number) => {
     if (isNaN(timeInSeconds) || !isFinite(timeInSeconds)) return "0:00";
     const minutes = Math.floor(timeInSeconds / 60);
@@ -547,6 +626,14 @@ export default function CreatePage() {
           <div className="flex items-center gap-4">
             <button
               onClick={() => {
+                try {
+                  window.scrollTo({ top: 0, behavior: "instant" as any });
+                } catch (e) {
+                  window.scrollTo(0, 0);
+                }
+                if (document.documentElement) document.documentElement.scrollTop = 0;
+                if (document.body) document.body.scrollTop = 0;
+
                 if (step === "details") router.push("/");
                 if (step === "template") setStep("details");
                 if (step === "preview") setStep("template");
@@ -1480,14 +1567,32 @@ export default function CreatePage() {
               <div className="flex gap-4 w-full max-w-md justify-center">
                 <button
                   type="button"
-                  onClick={() => setStep("details")}
+                  onClick={() => {
+                    try {
+                      window.scrollTo({ top: 0, behavior: "instant" as any });
+                    } catch (e) {
+                      window.scrollTo(0, 0);
+                    }
+                    if (document.documentElement) document.documentElement.scrollTop = 0;
+                    if (document.body) document.body.scrollTop = 0;
+                    setStep("details");
+                  }}
                   className="flex-1 py-4 border border-sky-150 hover:bg-sky-50 text-slate-500 hover:text-slate-900 rounded-xl text-sm font-semibold transition-colors cursor-pointer"
                 >
                   Back to Details
                 </button>
                 <button
                   type="button"
-                  onClick={() => setStep("preview")}
+                  onClick={() => {
+                    try {
+                      window.scrollTo({ top: 0, behavior: "instant" as any });
+                    } catch (e) {
+                      window.scrollTo(0, 0);
+                    }
+                    if (document.documentElement) document.documentElement.scrollTop = 0;
+                    if (document.body) document.body.scrollTop = 0;
+                    setStep("preview");
+                  }}
                   className="flex-1 py-4 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl text-sm font-bold transition-all shadow-md shadow-sky-500/10 hover:scale-[1.02] flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   Verify Full Preview <ArrowRight className="w-4 h-4" />
@@ -1504,9 +1609,36 @@ export default function CreatePage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="flex-1 flex flex-col min-h-[calc(100vh-64px)] relative"
+              onAnimationComplete={() => {
+                const scrollToTop = () => {
+                  try {
+                    window.scrollTo({ top: 0, behavior: "instant" as any });
+                  } catch (e) {
+                    window.scrollTo(0, 0);
+                  }
+                  if (document.documentElement) {
+                    document.documentElement.scrollTop = 0;
+                  }
+                  if (document.body) {
+                    document.body.scrollTop = 0;
+                  }
+                };
+                scrollToTop();
+                // Execute a sequence of scrolls to override any dynamic layout adjustments on mobile
+                const t1 = setTimeout(scrollToTop, 50);
+                const t2 = setTimeout(scrollToTop, 150);
+                const t3 = setTimeout(scrollToTop, 300);
+                const t4 = setTimeout(scrollToTop, 500);
+                return () => {
+                  clearTimeout(t1);
+                  clearTimeout(t2);
+                  clearTimeout(t3);
+                  clearTimeout(t4);
+                };
+              }}
             >
               {/* Floating controls banner */}
-              <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 border border-sky-150 px-6 py-4 rounded-2xl flex items-center gap-6 shadow-2xl backdrop-blur-md max-w-xl w-[90%] sm:w-auto">
+              <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 bg-white/95 border border-sky-150 px-6 py-4 rounded-2xl flex items-center gap-6 shadow-2xl backdrop-blur-md max-w-xl w-[90%] sm:w-auto">
                 <span className="text-xs uppercase font-mono tracking-widest text-slate-400 font-bold shrink-0 hidden md:inline">
                   Full Page Verification
                 </span>
@@ -1532,7 +1664,7 @@ export default function CreatePage() {
                       </>
                     ) : (
                       <>
-                        Publish HeartPage <Sparkles className="w-3.5 h-3.5" />
+                        Generate Link <Sparkles className="w-3.5 h-3.5" />
                       </>
                     )}
                   </button>

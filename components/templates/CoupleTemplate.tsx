@@ -12,6 +12,7 @@ interface CoupleTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
 }
@@ -27,6 +28,7 @@ export default function CoupleTemplate({
   isPreview = false,
   musicEnabled = true,
   hideMusicPlayer = false,
+  isFullPreview = false,
 }: CoupleTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -474,7 +476,7 @@ export default function CoupleTemplate({
       
       {/* Live Preview Banner */}
       {isPreview && (
-        <div className="sticky top-0 z-[10000] w-full bg-amber-500 text-white text-center py-1.5 text-xs font-semibold uppercase tracking-widest shadow-md">
+        <div className={`sticky ${isFullPreview ? "top-16" : "top-0"} z-[10000] w-full bg-amber-500 text-white text-center py-1.5 text-xs font-semibold uppercase tracking-widest shadow-md`}>
           Live Preview Mode
         </div>
       )}
