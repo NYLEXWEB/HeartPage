@@ -259,15 +259,24 @@ export default function WeddingTemplate({
           background-image: url("/wedding%20hero%20section.png");
           background-size: cover;
           background-position: center;
-          opacity: 0.28;
-          mix-blend-mode: luminosity;
+          opacity: 0.85;
           z-index: 0;
           pointer-events: none;
+        }
+        .wedding-hero-bg::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to bottom, rgba(36, 26, 40, 0.55) 0%, rgba(24, 15, 28, 0.8) 100%);
         }
         @media (max-width: 768px) {
           .wedding-hero-bg {
             background-image: url("/wedding%20hero%20section%20mobile.png");
           }
+        }
+
+        .wedding-text-shadow {
+          text-shadow: 0 2px 14px rgba(24, 15, 28, 0.75), 0 1px 2px rgba(24, 15, 28, 0.5);
         }
       `,
         }}
@@ -286,54 +295,56 @@ export default function WeddingTemplate({
         <div className="grain" />
         <div className="wedding-hero-bg" />
 
-        <motion.p
-          {...reveal}
-          className="font-mono tracking-[0.3em] text-[10px] md:text-[11px] text-[var(--rose)] uppercase mb-10"
-        >
-          Together with their families
-        </motion.p>
+        <div className="relative z-10 flex flex-col items-center justify-center text-center w-full max-w-4xl">
+          <motion.p
+            {...reveal}
+            className="font-mono tracking-[0.3em] text-[10px] md:text-[11px] text-[var(--rose)] uppercase mb-10 wedding-text-shadow"
+          >
+            Together with their families
+          </motion.p>
 
-        {/* Two threads becoming one — signature motif */}
-        <motion.div
-          {...revealScale}
-          className="relative w-[240px] md:w-[340px] h-[90px] md:h-[120px] mb-10"
-          style={{
-            transform: `translateY(${parallaxY}px) scale(${parallaxScale})`,
-            opacity: parallaxOpacity,
-          }}
-        >
-          <svg viewBox="0 0 340 120" className="thread-draw w-full h-full" fill="none">
-            <path
-              d="M10 20 C 120 20, 150 60, 170 60 S 220 100, 330 100"
-              stroke="var(--brass-soft)"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M10 100 C 120 100, 150 60, 170 60 S 220 20, 330 20"
-              stroke="var(--brass)"
-              strokeWidth="1.4"
-            />
-            <circle cx="170" cy="60" r="3" fill="var(--brass-soft)" />
-          </svg>
-        </motion.div>
+          {/* Two threads becoming one — signature motif */}
+          <motion.div
+            {...revealScale}
+            className="relative w-[240px] md:w-[340px] h-[90px] md:h-[120px] mb-10"
+            style={{
+              transform: `translateY(${parallaxY}px) scale(${parallaxScale})`,
+              opacity: parallaxOpacity,
+            }}
+          >
+            <svg viewBox="0 0 340 120" className="thread-draw w-full h-full" fill="none">
+              <path
+                d="M10 20 C 120 20, 150 60, 170 60 S 220 100, 330 100"
+                stroke="var(--brass-soft)"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M10 100 C 120 100, 150 60, 170 60 S 220 20, 330 20"
+                stroke="var(--brass)"
+                strokeWidth="1.4"
+              />
+              <circle cx="170" cy="60" r="3" fill="var(--brass-soft)" />
+            </svg>
+          </motion.div>
 
-        <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-8xl leading-[0.95] text-[#f3ece1] text-center">
-          {yourName || "Groom"}
-        </motion.h1>
-        <motion.div {...reveal} className="font-script text-3xl md:text-4xl text-[var(--brass-soft)] my-2">
-          and
-        </motion.div>
-        <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-8xl leading-[0.95] text-[#f3ece1] mb-10 text-center">
-          {partnerName || "Bride"}
-        </motion.h1>
+          <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-8xl leading-[0.95] text-[#f3ece1] text-center wedding-text-shadow">
+            {yourName || "Groom"}
+          </motion.h1>
+          <motion.div {...reveal} className="font-script text-3xl md:text-4xl text-[var(--brass-soft)] my-2 wedding-text-shadow">
+            and
+          </motion.div>
+          <motion.h1 {...reveal} className="font-display font-normal text-5xl md:text-8xl leading-[0.95] text-[#f3ece1] mb-10 text-center wedding-text-shadow">
+            {partnerName || "Bride"}
+          </motion.h1>
 
-        <motion.div {...reveal} className="w-16 brass-line mb-8" />
+          <motion.div {...reveal} className="w-16 brass-line mb-8" />
 
-        <motion.p {...reveal} className="font-mono text-xs md:text-sm tracking-[0.3em] uppercase text-[var(--rose)]">
-          {formattedDate}
-        </motion.p>
+          <motion.p {...reveal} className="font-mono text-xs md:text-sm tracking-[0.3em] uppercase text-[var(--rose)] wedding-text-shadow">
+            {formattedDate}
+          </motion.p>
+        </div>
 
-        <a href="#message-section" className="absolute bottom-10 flex flex-col items-center gap-2 text-[#f3ece1]/60 group">
+        <a href="#message-section" className="absolute bottom-10 flex flex-col items-center gap-2 text-[#f3ece1]/60 group z-10">
           <span className="font-mono text-[9px] tracking-[0.3em] uppercase">Scroll</span>
           <span className="w-px h-10 bg-[var(--brass)]/50 group-hover:h-14 transition-all duration-500" />
         </a>
