@@ -964,7 +964,7 @@ export default function CoupleTemplate({
           
           {/* Audio element with local mp3 background music */}
           <audio id="bg-audio" ref={audioRef} loop preload="auto">
-            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Couple.mp3"} type="audio/mpeg" />
+            <source src={selectedMusic ? `/Website Music/${encodeURIComponent(selectedMusic)}` : "/Website Music/Couple.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

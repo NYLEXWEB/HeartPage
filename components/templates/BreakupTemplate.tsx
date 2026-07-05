@@ -1278,7 +1278,7 @@ export default function BreakupTemplate({
           
           {/* Acoustic audio theme source */}
           <audio ref={audioRef} loop preload="auto">
-            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Breakup.mp3"} type="audio/mpeg" />
+            <source src={selectedMusic ? `/Website Music/${encodeURIComponent(selectedMusic)}` : "/Website Music/Breakup.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

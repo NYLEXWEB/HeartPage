@@ -1485,7 +1485,7 @@ export default function FriendTemplate({
           
           {/* Acoustic audio theme source */}
           <audio ref={audioRef} loop preload="auto">
-            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Besties.mp3"} type="audio/mpeg" />
+            <source src={selectedMusic ? `/Website Music/${encodeURIComponent(selectedMusic)}` : "/Website Music/Besties.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

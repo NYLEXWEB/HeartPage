@@ -23,7 +23,7 @@ export default function BackgroundMusic({ category, enabled, selectedMusic }: Ba
   const [hasInteracted, setHasInteracted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const src = selectedMusic ? `/Website Music/${selectedMusic}` : MUSIC_MAP[category];
+  const src = selectedMusic ? `/Website Music/${encodeURIComponent(selectedMusic)}` : MUSIC_MAP[category];
 
   useEffect(() => {
     if (!enabled) return;

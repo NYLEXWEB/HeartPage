@@ -322,7 +322,7 @@ export default function CreatePage() {
   const toggleFormMusicPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
     const customMusic = watch("selectedMusic");
-    const trackSrc = customMusic ? `/Website Music/${customMusic}` : PREVIEW_MUSIC_MAP[activeCategory];
+    const trackSrc = customMusic ? `/Website Music/${encodeURIComponent(customMusic)}` : PREVIEW_MUSIC_MAP[activeCategory];
     
     if (!formAudioRef.current || formAudioRef.current.src !== window.location.origin + trackSrc) {
       if (formAudioRef.current) {
@@ -1325,7 +1325,85 @@ export default function CreatePage() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="w-full mt-2 p-4 rounded-2xl bg-white border border-sky-150 shadow-sm flex flex-col gap-3">
+                            <div className="w-full mt-2 p-4 rounded-2xl bg-white border border-sky-150 shadow-sm flex flex-col gap-4">
+                              {/* Music Selector Grid */}
+                              <div className="space-y-2">
+                                <label className="text-[10px] text-slate-400 font-bold font-mono uppercase tracking-wider block">
+                                  Select Soundtrack
+                                </label>
+                                <div className="max-h-56 overflow-y-auto border border-sky-100/70 rounded-2xl p-2 bg-slate-50/50 space-y-1.5 scrollbar-thin">
+                                  {/* Default Category Track Option */}
+                                  <div
+                                    onClick={() => setValue("selectedMusic", "")}
+                                    className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
+                                      !watch("selectedMusic")
+                                        ? "bg-white border-sky-400 shadow-sm text-sky-700 font-bold"
+                                        : "bg-transparent border-transparent hover:bg-slate-100 text-slate-655"
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                                        !watch("selectedMusic") ? "bg-sky-50 text-sky-500" : "bg-slate-200/70 text-slate-400"
+                                      }`}>
+                                        <Music className="w-3.5 h-3.5" />
+                                      </div>
+                                      <div className="text-left">
+                                        <span className="text-xs block">
+                                          Default Theme Track
+                                        </span>
+                                        <span className="text-[9px] text-slate-400 block font-normal -mt-0.5">
+                                          Original soundtrack matching {activeCategory}
+                                        </span>
+                                      </div>
+                                    </div>
+                                    {!watch("selectedMusic") && (
+                                      <span className="text-[9px] bg-sky-50 border border-sky-100 text-sky-600 px-1.5 py-0.5 rounded font-mono font-bold">
+                                        Active
+                                      </span>
+                                    )}
+                                  </div>
+
+                                  {/* Dynamic Music Tracks */}
+                                  {availableMusic.map((track) => {
+                                    const isSelected = watch("selectedMusic") === track.filename;
+                                    return (
+                                      <div
+                                        key={track.filename}
+                                        onClick={() => setValue("selectedMusic", track.filename)}
+                                        className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer transition-all ${
+                                          isSelected
+                                            ? "bg-white border-sky-400 shadow-sm text-sky-700 font-bold"
+                                            : "bg-transparent border-transparent hover:bg-slate-100 text-slate-655"
+                                        }`}
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                                            isSelected ? "bg-sky-50 text-sky-500" : "bg-slate-200/70 text-slate-400"
+                                          }`}>
+                                            <Music className="w-3.5 h-3.5" />
+                                          </div>
+                                          <div className="text-left">
+                                            <span className="text-xs block truncate max-w-[180px]">
+                                              {track.displayName}
+                                            </span>
+                                            <span className="text-[9px] text-slate-400 block font-normal -mt-0.5 uppercase font-mono tracking-wider">
+                                              Custom audio file
+                                            </span>
+                                          </div>
+                                        </div>
+                                        {isSelected && (
+                                          <span className="text-[9px] bg-sky-50 border border-sky-100 text-sky-600 px-1.5 py-0.5 rounded font-mono font-bold">
+                                            Active
+                                          </span>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+
+                              <div className="w-full h-[1px] bg-sky-100/50" />
+
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2.5">
                                   <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-sky-50 text-sky-600 ${isFormMusicPlaying ? "animate-spin" : ""}`} style={{ animationDuration: "6s" }}>
@@ -1440,6 +1518,7 @@ export default function CreatePage() {
                         isPreview={true}
                         musicEnabled={formValues.musicEnabled}
                         hideMusicPlayer={true}
+                        selectedMusic={formValues.selectedMusic}
                       />
                     </div>
                   </div>
@@ -1920,6 +1999,7 @@ export default function CreatePage() {
                   bridePhoto={formValues.bridePhoto}
                   isPreview={true}
                   musicEnabled={formValues.musicEnabled}
+                  selectedMusic={formValues.selectedMusic}
                 />
               </div>
             </motion.div>
