@@ -31,7 +31,7 @@ import {
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
-import { getSettings } from "@/actions/admin-dashboard";
+import { getSettings } from "@/actions/settings";
 
 declare global {
   interface Window {

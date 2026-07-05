@@ -18,7 +18,7 @@ import {
   Gift,
   Mail
 } from "lucide-react";
-import { getActiveAnnouncement, getSettings } from "@/actions/admin-dashboard";
+import { getActiveAnnouncement, getSettings } from "@/actions/settings";
 
 // FAQ Item Component
 function FAQItem({ question, answer }: { question: string; answer: string }) {

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Heart, ArrowLeft, Shield } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getSettings } from "@/actions/admin-dashboard";
+import { getSettings } from "@/actions/settings";
 
 export default function TermsPage() {
   const [settings, setSettings] = useState<any | null>(null);

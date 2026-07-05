@@ -9,6 +9,8 @@ import { Announcement, IAnnouncement } from "@/models/Announcement";
 import { Payment } from "@/models/Payment";
 import { Pricing } from "@/models/Pricing";
 import mongoose from "mongoose";
+import { getSettings as getSettingsAction, getActiveAnnouncement as getActiveAnnouncementAction } from "./settings";
+
 
 // Helper to check authentication
 async function verifyAdminAuth(): Promise<boolean> {
@@ -277,34 +279,7 @@ export async function extendExpiry(id: string, days: number) {
 // ----------------------------------------------------
 
 export async function getSettings() {
-  try {
-    await connectToDatabase();
-    let settings = await Settings.findOne();
-    
-    if (!settings) {
-      // Seed default settings
-      settings = new Settings({
-        siteName: "HeartPage",
-        logo: "",
-        contactEmail: "hello@heartpage.com",
-        socialLinks: {
-          instagram: "https://instagram.com/heartpage",
-          twitter: "https://twitter.com/heartpage",
-          facebook: "https://facebook.com/heartpage",
-        },
-        defaultExpiryDays: 5,
-        maintenanceMode: false,
-        paymentEnabled: true,
-        footerText: "© 2026 HeartPage. All rights reserved.",
-      });
-      await settings.save();
-    }
-    
-    return { success: true, settings: JSON.parse(JSON.stringify(settings)) };
-  } catch (error: any) {
-    console.error("Failed to load settings:", error);
-    return { success: false, error: error.message || "Failed to load global preferences." };
-  }
+  return getSettingsAction();
 }
 
 export async function updateSettings(data: any) {
@@ -352,13 +327,7 @@ export async function getAnnouncements() {
 }
 
 export async function getActiveAnnouncement() {
-  try {
-    await connectToDatabase();
-    const announcement = await Announcement.findOne({ isActive: true });
-    return { success: true, announcement: announcement ? JSON.parse(JSON.stringify(announcement)) : null };
-  } catch (error: any) {
-    return { success: false, error: error.message };
-  }
+  return getActiveAnnouncementAction();
 }
 
 export async function createAnnouncement(data: any) {
