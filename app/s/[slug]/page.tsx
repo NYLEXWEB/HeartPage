@@ -84,6 +84,7 @@ export default async function PublicWebsitePage({ params }: PageProps) {
       bridePhoto={website.bridePhoto}
       isPreview={false}
       musicEnabled={website.musicEnabled}
+      selectedMusic={website.selectedMusic}
     />
   );
 }

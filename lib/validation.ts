@@ -17,6 +17,7 @@ export const couplesSchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const friendsSchema = z.object({
@@ -31,6 +32,7 @@ export const friendsSchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const breakupSchema = z.object({
@@ -45,6 +47,7 @@ export const breakupSchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const crushSchema = z.object({
@@ -59,6 +62,7 @@ export const crushSchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const birthdaySchema = z.object({
@@ -73,6 +77,7 @@ export const birthdaySchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const weddingSchema = z.object({
@@ -87,6 +92,7 @@ export const weddingSchema = z.object({
   groomPhoto: z.string().optional(),
   bridePhoto: z.string().optional(),
   musicEnabled: z.boolean().optional(),
+  selectedMusic: z.string().optional(),
 });
 
 export const websiteFormSchema = z.discriminatedUnion("category", [

@@ -25,6 +25,7 @@ export interface IPayment extends Document {
     groomPhoto?: string;
     bridePhoto?: string;
     musicEnabled?: boolean;
+    selectedMusic?: string;
   };
   ipAddress?: string;
   userAgent?: string;
@@ -136,6 +137,10 @@ const PaymentSchema: Schema = new Schema(
         type: Boolean,
         required: false,
         default: true,
+      },
+      selectedMusic: {
+        type: String,
+        required: false,
       },
     },
     ipAddress: {

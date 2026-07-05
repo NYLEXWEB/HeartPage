@@ -109,6 +109,23 @@ export default function CreatePage() {
   const formAudioRef = useRef<HTMLAudioElement | null>(null);
   const [previewProgress, setPreviewProgress] = useState(0);
   const [previewDuration, setPreviewDuration] = useState(0);
+  const [availableMusic, setAvailableMusic] = useState<{ filename: string; displayName: string }[]>([]);
+
+  // Load dynamic music tracks from public directory
+  useEffect(() => {
+    async function loadMusic() {
+      try {
+        const res = await fetch("/api/music");
+        const data = await res.json();
+        if (data.success && data.files) {
+          setAvailableMusic(data.files);
+        }
+      } catch (err) {
+        console.error("Failed to load music files:", err);
+      }
+    }
+    loadMusic();
+  }, []);
 
   // Check Maintenance Mode from system settings
   useEffect(() => {
@@ -163,6 +180,7 @@ export default function CreatePage() {
       images: [],
       customFields: [],
       musicEnabled: true,
+      selectedMusic: "",
     },
   });
 
@@ -185,7 +203,8 @@ export default function CreatePage() {
     }
   }, [formValues.musicEnabled]);
 
-  // Pause preview when activeCategory changes, so we don't play the wrong song or keep playing
+  // Pause preview when activeCategory or selectedMusic changes, so we don't play the wrong song
+  const watchedSelectedMusic = watch("selectedMusic");
   useEffect(() => {
     if (formAudioRef.current) {
       formAudioRef.current.pause();
@@ -194,7 +213,7 @@ export default function CreatePage() {
     }
     setPreviewProgress(0);
     setPreviewDuration(0);
-  }, [activeCategory]);
+  }, [activeCategory, watchedSelectedMusic]);
 
   // Pause preview when step changes
   useEffect(() => {
@@ -302,9 +321,13 @@ export default function CreatePage() {
 
   const toggleFormMusicPreview = (e: React.MouseEvent) => {
     e.stopPropagation();
-    const trackSrc = PREVIEW_MUSIC_MAP[activeCategory];
+    const customMusic = watch("selectedMusic");
+    const trackSrc = customMusic ? `/Website Music/${customMusic}` : PREVIEW_MUSIC_MAP[activeCategory];
     
-    if (!formAudioRef.current) {
+    if (!formAudioRef.current || formAudioRef.current.src !== window.location.origin + trackSrc) {
+      if (formAudioRef.current) {
+        formAudioRef.current.pause();
+      }
       const audio = new Audio(trackSrc);
       audio.loop = true;
       formAudioRef.current = audio;
@@ -420,6 +443,8 @@ export default function CreatePage() {
   // Sync form category with active tab state
   useEffect(() => {
     setValue("category", activeCategory, { shouldValidate: true });
+    // Reset custom music when switching category to avoid playing unrelated song
+    setValue("selectedMusic", "");
   }, [activeCategory, setValue]);
 
   // Submit flow

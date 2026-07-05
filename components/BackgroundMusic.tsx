@@ -6,6 +6,7 @@ import { Volume2, VolumeX } from "lucide-react";
 interface BackgroundMusicProps {
   category: "couples" | "friends" | "breakup" | "crush" | "birthday" | "wedding";
   enabled: boolean;
+  selectedMusic?: string;
 }
 
 const MUSIC_MAP = {
@@ -17,12 +18,12 @@ const MUSIC_MAP = {
   birthday: "/Website Music/Wedding and Birthday .mp3",
 };
 
-export default function BackgroundMusic({ category, enabled }: BackgroundMusicProps) {
+export default function BackgroundMusic({ category, enabled, selectedMusic }: BackgroundMusicProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const src = MUSIC_MAP[category];
+  const src = selectedMusic ? `/Website Music/${selectedMusic}` : MUSIC_MAP[category];
 
   useEffect(() => {
     if (!enabled) return;

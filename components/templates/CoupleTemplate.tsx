@@ -15,6 +15,7 @@ interface CoupleTemplateProps {
   isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
+  selectedMusic?: string;
 }
 
 export default function CoupleTemplate({
@@ -29,6 +30,7 @@ export default function CoupleTemplate({
   musicEnabled = true,
   hideMusicPlayer = false,
   isFullPreview = false,
+  selectedMusic,
 }: CoupleTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -470,6 +472,18 @@ export default function CoupleTemplate({
       setIsPlaying(false);
     }
   };
+
+  // Reload audio on selectedMusic change (essential for dynamic preview updates)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.load();
+      if (isPlaying) {
+        audio.play().catch((err) => console.log("Audio failed to auto-resume on song switch:", err));
+      }
+    }
+  }, [selectedMusic]);
+
 
   return (
     <div id="couple-website-root" className="bg-beige-light selection:bg-pink-light selection:text-dark min-h-screen w-full relative overflow-x-hidden font-poppins">
@@ -950,7 +964,7 @@ export default function CoupleTemplate({
           
           {/* Audio element with local mp3 background music */}
           <audio id="bg-audio" ref={audioRef} loop preload="auto">
-            <source src="/Website Music/Couple.mp3" type="audio/mp3" />
+            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Couple.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

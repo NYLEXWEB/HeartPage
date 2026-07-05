@@ -19,6 +19,7 @@ export interface IWebsite extends Document {
   groomPhoto?: string; // Base64 data URL
   bridePhoto?: string; // Base64 data URL
   musicEnabled?: boolean;
+  selectedMusic?: string;
   createdAt: Date;
   expiresAt: Date;
 }
@@ -92,6 +93,10 @@ const WebsiteSchema: Schema = new Schema(
       type: Boolean,
       required: false,
       default: true,
+    },
+    selectedMusic: {
+      type: String,
+      required: false,
     },
     createdAt: {
       type: Date,

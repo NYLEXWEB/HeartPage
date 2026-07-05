@@ -17,6 +17,7 @@ interface FriendTemplateProps {
   isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
+  selectedMusic?: string;
 }
 
 export default function FriendTemplate({
@@ -31,6 +32,7 @@ export default function FriendTemplate({
   musicEnabled = true,
   hideMusicPlayer = false,
   isFullPreview = false,
+  selectedMusic,
 }: FriendTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -646,6 +648,17 @@ export default function FriendTemplate({
       setIsPlaying(false);
     }
   };
+
+  // Reload audio on selectedMusic change
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.load();
+      if (isPlaying) {
+        audio.play().catch((err) => console.log("Audio failed to auto-resume on song switch:", err));
+      }
+    }
+  }, [selectedMusic]);
 
   const handleBadgeCelebration = () => {
     confetti({
@@ -1472,7 +1485,7 @@ export default function FriendTemplate({
           
           {/* Acoustic audio theme source */}
           <audio ref={audioRef} loop preload="auto">
-            <source src="/Website Music/Besties.mp3" type="audio/mp3" />
+            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Besties.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

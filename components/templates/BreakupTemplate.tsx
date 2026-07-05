@@ -16,6 +16,7 @@ interface BreakupTemplateProps {
   isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
+  selectedMusic?: string;
 }
 
 export default function BreakupTemplate({
@@ -30,6 +31,7 @@ export default function BreakupTemplate({
   musicEnabled = true,
   hideMusicPlayer = false,
   isFullPreview = false,
+  selectedMusic,
 }: BreakupTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -547,6 +549,17 @@ export default function BreakupTemplate({
       setIsPlaying(false);
     }
   };
+
+  // Reload audio on selectedMusic change
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.load();
+      if (isPlaying) {
+        audio.play().catch((err) => console.log("Audio failed to auto-resume on song switch:", err));
+      }
+    }
+  }, [selectedMusic]);
 
   return (
     <div id="breakup-website-root" className={`min-h-screen w-full relative overflow-x-hidden font-poppins transition-colors duration-550 ${isLight ? "bg-slate-50 text-slate-800" : "bg-[#020617] text-slate-300 dark"}`}>
@@ -1265,7 +1278,7 @@ export default function BreakupTemplate({
           
           {/* Acoustic audio theme source */}
           <audio ref={audioRef} loop preload="auto">
-            <source src="/Website Music/Breakup.mp3" type="audio/mp3" />
+            <source src={selectedMusic ? `/Website Music/${selectedMusic}` : "/Website Music/Breakup.mp3"} type="audio/mpeg" />
           </audio>
         </div>
       )}

@@ -18,6 +18,7 @@ interface CreatePendingParams {
   groomPhoto?: string;
   bridePhoto?: string;
   musicEnabled?: boolean;
+  selectedMusic?: string;
   amount: number;
   razorpayOrderId: string;
   ipAddress?: string;
@@ -54,6 +55,7 @@ export async function createPendingPayment(params: CreatePendingParams): Promise
       groomPhoto: params.groomPhoto,
       bridePhoto: params.bridePhoto,
       musicEnabled: params.musicEnabled,
+      selectedMusic: params.selectedMusic,
     },
     ipAddress: params.ipAddress,
     userAgent: params.userAgent,
@@ -96,6 +98,7 @@ export async function createFreePaymentAndPublish(params: Omit<CreatePendingPara
       groomPhoto: params.groomPhoto,
       bridePhoto: params.bridePhoto,
       musicEnabled: params.musicEnabled,
+      selectedMusic: params.selectedMusic,
     },
     ipAddress: params.ipAddress,
     userAgent: params.userAgent,
@@ -273,7 +276,7 @@ async function publishWebsiteFromPayment(payment: IPayment): Promise<IWebsite> {
     return existingWebsite;
   }
 
-  const { yourName, partnerName, relationshipDate, message, images, customFields, groomPhoto, bridePhoto, musicEnabled } = payment.websiteData;
+  const { yourName, partnerName, relationshipDate, message, images, customFields, groomPhoto, bridePhoto, musicEnabled, selectedMusic } = payment.websiteData;
   const expiresAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000); // 5 Days expiry
 
   const website = new Website({
@@ -290,6 +293,7 @@ async function publishWebsiteFromPayment(payment: IPayment): Promise<IWebsite> {
     groomPhoto,
     bridePhoto,
     musicEnabled: musicEnabled !== false,
+    selectedMusic: selectedMusic || "",
     expiresAt,
   });
 

@@ -18,6 +18,7 @@ interface WeddingTemplateProps {
   isPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
+  selectedMusic?: string;
 }
 
 export default function WeddingTemplate({
@@ -33,6 +34,7 @@ export default function WeddingTemplate({
   isPreview = false,
   musicEnabled = true,
   hideMusicPlayer = false,
+  selectedMusic,
 }: WeddingTemplateProps) {
   const router = useRouter();
   const isDark = theme === "dark";
@@ -689,7 +691,7 @@ export default function WeddingTemplate({
           With love and gratitude
         </motion.p>
       </footer>
-      <BackgroundMusic category="wedding" enabled={musicEnabled && !hideMusicPlayer} />
+      <BackgroundMusic category="wedding" enabled={musicEnabled && !hideMusicPlayer} selectedMusic={selectedMusic} />
     </div>
   );
 }

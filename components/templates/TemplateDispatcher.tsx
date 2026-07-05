@@ -20,6 +20,7 @@ interface TemplateDispatcherProps {
   isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
+  selectedMusic?: string;
 }
 
 export default function TemplateDispatcher({
@@ -37,6 +38,7 @@ export default function TemplateDispatcher({
   isFullPreview = false,
   musicEnabled = true,
   hideMusicPlayer = false,
+  selectedMusic,
 }: TemplateDispatcherProps) {
   // Safe defaults
   const safeYourName = yourName || (
@@ -110,6 +112,7 @@ export default function TemplateDispatcher({
           isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     case "friends":
@@ -126,6 +129,7 @@ export default function TemplateDispatcher({
           isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     case "breakup":
@@ -142,6 +146,7 @@ export default function TemplateDispatcher({
           isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     case "crush":
@@ -157,6 +162,7 @@ export default function TemplateDispatcher({
           isPreview={isPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     case "birthday":
@@ -173,6 +179,7 @@ export default function TemplateDispatcher({
           birthdayPhoto={groomPhoto}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     case "wedding":
@@ -190,6 +197,7 @@ export default function TemplateDispatcher({
           isPreview={isPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
+          selectedMusic={selectedMusic}
         />
       );
     default:
