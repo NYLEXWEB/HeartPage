@@ -1969,15 +1969,16 @@ export default function CreatePage() {
                     type="button"
                     onClick={handleSubmit(onFormSubmit)}
                     disabled={isSubmitting}
-                    className="px-6 py-2 bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white rounded-xl text-xs font-bold transition-all shadow-md shadow-sky-500/10 flex items-center justify-center gap-1.5 disabled:opacity-75 cursor-pointer w-full sm:w-auto"
+                    className="relative group overflow-hidden px-8 py-3 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 hover:from-sky-600 hover:via-indigo-600 hover:to-purple-700 text-white rounded-2xl text-sm font-extrabold transition-all shadow-lg shadow-indigo-500/35 hover:shadow-indigo-500/50 hover:scale-[1.03] active:scale-95 ring-4 ring-sky-500/20 hover:ring-indigo-500/30 flex items-center justify-center gap-2 disabled:opacity-75 cursor-pointer w-full sm:w-auto"
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...
+                        <Loader2 className="w-4 h-4 animate-spin" /> Generating...
                       </>
                     ) : (
                       <>
-                        Generate Link <Sparkles className="w-3.5 h-3.5" />
+                        <span>Generate Link</span>
+                        <Sparkles className="w-4.5 h-4.5 text-amber-300 fill-amber-300 animate-pulse" />
                       </>
                     )}
                   </button>
