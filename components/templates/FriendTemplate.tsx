@@ -70,7 +70,7 @@ export default function FriendTemplate({
 
   const initials = `${yourName ? yourName.charAt(0).toUpperCase() : "S"}&${partnerName ? partnerName.charAt(0).toUpperCase() : "T"}`;
 
-  // Live friendship counter + next-anniversary countdown
+  // Live friendship counter + next-anniversary countdown (functional, not a scroll effect)
   useEffect(() => {
     const updateCounters = () => {
       const now = new Date();
@@ -178,20 +178,20 @@ export default function FriendTemplate({
       <style dangerouslySetInnerHTML={{
         __html: `
 :root {
-  --paper: ${theme === "dark" ? "#160D0F" : "#F4EFE7"};
-  --paper-raised: ${theme === "dark" ? "#211315" : "#FFFCF7"};
+  --paper: ${theme === "dark" ? "#0C0A0B" : "#F4EFE7"};
+  --paper-raised: ${theme === "dark" ? "#181415" : "#FFFCF7"};
 
-  --ink: ${theme === "dark" ? "#F8F0E5" : "#241719"};
-  --ink-soft: ${theme === "dark" ? "#B9A5A8" : "#756568"};
+  --ink: ${theme === "dark" ? "#FFFFFF" : "#241719"};
+  --ink-soft: ${theme === "dark" ? "#A5999A" : "#756568"};
 
   --line: ${theme === "dark"
-    ? "rgba(214,179,106,0.16)"
+    ? "rgba(229,161,62,0.16)"
     : "rgba(104,31,43,0.14)"};
 
-  --teal: #681F2B;
+  --teal: ${theme === "dark" ? "#E5A13E" : "#681F2B"};
 
   --teal-soft: ${theme === "dark"
-    ? "rgba(104,31,43,0.30)"
+    ? "rgba(229,161,62,0.12)"
     : "#F1E2E3"};
 
   --marigold: #B8924A;
@@ -267,6 +267,14 @@ export default function FriendTemplate({
           transition: transform 0.45s ease;
         }
         .fw-envelope-wrapper.open .fw-envelope-flap { transform: translateZ(0px) rotateX(180deg); }
+        .fw-letter-paper {
+          position: absolute; width: 290px; max-width: 82vw; height: 185px;
+          background: #ffffff !important;
+          left: 15px; bottom: 10px; padding: 22px; box-sizing: border-box;
+          overflow: hidden; border: 1px solid var(--line);
+          transform: translateZ(1px);
+          transition: transform 0.4s ease 0s, height 0.4s ease 0s;
+        }
         .fw-envelope-wrapper.open .fw-letter-paper {
           transform: translateZ(5px) translateY(-135px) scale(1.04);
           height: 250px;
@@ -290,27 +298,32 @@ export default function FriendTemplate({
 
       {/* HERO */}
       <section className="relative w-full min-h-[92vh] flex flex-col justify-center items-center px-4 py-24">
-        {/* Responsive Hero Background Images */}
-        <div 
-          className="absolute inset-0 -z-20 bg-cover bg-center hidden md:block" 
-          style={{ backgroundImage: "url('/friends hero section.png')" }} 
-        />
-        <div 
-          className="absolute inset-0 -z-20 bg-cover bg-center block md:hidden" 
-          style={{ backgroundImage: "url('/friends hero section mobile.png')" }} 
-        />
-        
-        {/* Soft color backdrop matching the theme's paper color for readability */}
-        <div 
-          className="absolute inset-0 -z-10 opacity-75" 
-          style={{ backgroundColor: "var(--paper)" }} 
-        />
-
-        <div className="absolute inset-0 -z-10" style={{
-          background: theme === "dark"
-            ? "radial-gradient(ellipse 70% 55% at 50% 0%, rgba(47,111,98,0.22), transparent 60%)"
-            : "radial-gradient(ellipse 70% 55% at 50% 0%, rgba(47,111,98,0.10), transparent 60%)",
-        }} />
+        {/* Responsive Background Images */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* Desktop Image */}
+          <img 
+            src="/friends%20hero%20section.png" 
+            alt="Hero Background Desktop" 
+            className="hidden md:block w-full h-full object-cover opacity-75" 
+            loading="eager"
+            decoding="async"
+          />
+          {/* Mobile Image */}
+          <img 
+            src="/friends%20hero%20section%20mobile.png" 
+            alt="Hero Background Mobile" 
+            className="block md:hidden w-full h-full object-cover opacity-75" 
+            loading="eager"
+            decoding="async"
+          />
+          {/* Subtle gradient overlay to ensure text readability and fade into the page background color */}
+          <div 
+            className="absolute inset-0" 
+            style={{
+              background: `linear-gradient(to bottom, transparent 40%, var(--paper) 95%)`
+            }}
+          />
+        </div>
 
         <motion.div
           initial="hidden"
@@ -335,7 +348,9 @@ export default function FriendTemplate({
           <motion.a
             variants={fadeUp}
             href="#friend-certificate"
-            className="px-8 py-3.5 rounded-full text-xs font-semibold tracking-[0.2em] uppercase text-white transition-all duration-300 mb-16"
+            className={`px-8 py-3.5 rounded-full text-xs font-semibold tracking-[0.2em] uppercase transition-all duration-300 mb-16 border-none ${
+              theme === "dark" ? "text-slate-900 font-bold" : "text-white"
+            }`}
             style={{ backgroundColor: "var(--teal)" }}
           >
             See the certificate
@@ -360,7 +375,7 @@ export default function FriendTemplate({
         </motion.div>
       </section>
 
-      {/* SIGNATURE ELEMENT — FRIENDSHIP CERTIFICATE */}
+      {/* SIGNATURE ELEMENT — FRIENDSHIP CERTIFICATE (replaces the old pinned scroll sequence) */}
       <section id="friend-certificate" className="py-20 md:py-28 px-4">
         <div className="max-w-3xl mx-auto text-center mb-14">
           <span className="fw-eyebrow mb-2 block">Official Documentation</span>
@@ -378,7 +393,7 @@ export default function FriendTemplate({
             <svg viewBox="0 0 120 120" width="72" height="72" className="fw-seal">
               <circle cx="60" cy="60" r="54" fill="var(--teal)" />
               <circle cx="60" cy="60" r="54" fill="none" stroke="var(--marigold)" strokeWidth="2" strokeDasharray="4 5" />
-              <text x="60" y="66" textAnchor="middle" fontSize="26" fontWeight="700" fill="white">{initials}</text>
+              <text x="60" y="66" textAnchor="middle" fontSize="26" fontWeight="700" fill={theme === "dark" ? "var(--paper)" : "white"}>{initials}</text>
             </svg>
           </div>
 
@@ -474,14 +489,14 @@ export default function FriendTemplate({
                   className="fw-letter-paper italic flex flex-col justify-between"
                   onClick={(e) => { if (envelopeOpen) e.stopPropagation(); }}
                 >
-                  <div className="text-xs not-italic pb-2 mb-2 flex justify-between font-mono" style={{ borderBottom: "1px solid var(--line)", color: "var(--teal)" }}>
+                  <div className="text-xs not-italic pb-2 mb-2 flex justify-between font-mono" style={{ borderBottom: "1px solid rgba(104,31,43,0.14)", color: "#681F2B" }}>
                     <span>To my partner in crime</span>
                     <span>{new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
                   </div>
-                  <p className="text-sm md:text-base leading-relaxed line-clamp-6 md:line-clamp-none overflow-y-auto" style={{ color: "var(--ink-soft)" }}>
+                  <p className="text-sm md:text-base leading-relaxed line-clamp-6 md:line-clamp-none overflow-y-auto" style={{ color: "#241719" }}>
                     {message}
                   </p>
-                  <div className="text-right text-xs not-italic pt-2 mt-2 font-mono" style={{ borderTop: "1px solid var(--line)", color: "var(--teal)" }}>
+                  <div className="text-right text-xs not-italic pt-2 mt-2 font-mono" style={{ borderTop: "1px solid rgba(104,31,43,0.14)", color: "#681F2B" }}>
                     <span>Your favorite chaos, {yourName}</span>
                   </div>
                 </div>
@@ -493,7 +508,9 @@ export default function FriendTemplate({
             <div className="mt-6 flex justify-center">
               <a
                 href={`/create?category=friends&yourName=${encodeURIComponent(partnerName)}&partnerName=${encodeURIComponent(yourName)}&relationshipDate=${encodeURIComponent(relationshipDate || "")}&isReply=true`}
-                className="px-6 py-2.5 text-white text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 flex items-center gap-2"
+                className={`px-6 py-2.5 text-xs font-semibold tracking-wider uppercase rounded-full transition-all duration-300 flex items-center gap-2 decoration-none ${
+                  theme === "dark" ? "text-slate-900 font-bold" : "text-white"
+                }`}
                 style={{ backgroundColor: "var(--teal)" }}
               >
                 <Mail className="w-3.5 h-3.5" />
@@ -587,15 +604,15 @@ export default function FriendTemplate({
 
       {/* BADGE */}
       <section className="py-16 px-4 text-center">
-        <motion.div initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="max-w-xl mx-auto">
+        <motion.div initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} className="max-w-xl mx-auto flex justify-center">
           <button
             onClick={handleBadgeCelebration}
-            className="fw-card fw-hover px-10 py-10 rounded-full font-semibold text-xl md:text-2xl uppercase tracking-wider cursor-pointer flex flex-col items-center justify-center gap-2"
+            className="fw-card fw-hover px-10 py-10 rounded-full font-semibold text-xl md:text-2xl uppercase tracking-wider cursor-pointer flex flex-col items-center justify-center gap-2 border-none"
           >
             <PenLine className="w-8 h-8" style={{ color: "var(--marigold)" }} />
             <span style={{ color: "var(--ink-soft)" }}>Certified</span>
             <span style={{ color: "var(--teal)" }} className="text-2xl md:text-3xl">Besties</span>
-            <span className="text-[10px] uppercase tracking-widest mt-1 text-white px-3 py-1 rounded-full" style={{ backgroundColor: "var(--marigold)" }}>Tap to celebrate</span>
+            <span className="text-[10px] uppercase tracking-widest mt-1 text-white px-3 py-1 rounded-full border-none" style={{ backgroundColor: "var(--marigold)" }}>Tap to celebrate</span>
           </button>
         </motion.div>
       </section>
@@ -612,7 +629,7 @@ export default function FriendTemplate({
             "A single loyal friend is worth more than ten thousand relatives."
           </p>
           <div className="my-6">
-            <a href="/create" className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[11px] tracking-wider uppercase transition-all duration-300" style={{ border: "1px solid var(--teal)", color: "var(--teal)" }}>
+            <a href="/create" className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[11px] tracking-wider uppercase transition-all duration-300 decoration-none" style={{ border: "1px solid var(--teal)", color: "var(--teal)" }}>
               Create your own page
             </a>
           </div>
@@ -631,7 +648,7 @@ export default function FriendTemplate({
               <div className="w-1 h-1 rounded-full" style={{ backgroundColor: "var(--teal)" }} />
             </div>
           </div>
-          <button onClick={toggleAudio} className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300" style={{ background: "var(--teal-soft)", color: "var(--teal)" }}>
+          <button onClick={toggleAudio} className="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 border-none cursor-pointer" style={{ background: "var(--teal-soft)", color: "var(--teal)" }}>
             {isPlaying ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
           <audio ref={audioRef} loop preload="auto">
