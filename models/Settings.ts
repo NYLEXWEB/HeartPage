@@ -41,7 +41,7 @@ const SettingsSchema: Schema = new Schema(
     defaultExpiryDays: {
       type: Number,
       required: true,
-      default: 7,
+      default: 5,
     },
     maintenanceMode: {
       type: Boolean,

@@ -328,7 +328,7 @@ export default function LandingPage() {
 
             {/* Description */}
             <p className="text-slate-550 text-sm sm:text-base leading-relaxed pt-2 font-medium">
-              Choose a relationship category, type your message, upload photos, and share a premium, bespoke mini website. No login, no complexity. Deletes automatically in 7 days.
+              Choose a relationship category, type your message, upload photos, and share a premium, bespoke mini website. No login, no complexity. Deletes automatically in 5 days.
             </p>
 
             {/* Action Buttons */}
@@ -365,8 +365,8 @@ export default function LandingPage() {
                   <Clock className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-xs sm:text-sm font-bold text-slate-800">Active for 7 Days</h4>
-                  <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 leading-normal">Your page stays live for a whole week.</p>
+                  <h4 className="text-xs sm:text-sm font-bold text-slate-800">Active for 5 Days</h4>
+                  <p className="text-[10px] sm:text-xs text-slate-400 mt-0.5 leading-normal">Your page stays live for 5 days.</p>
                 </div>
               </div>
 
@@ -661,7 +661,7 @@ export default function LandingPage() {
               { step: "01", title: "Select Category", desc: "Choose Couples, Besties, Crush, Birthday, or Breakup." },
               { step: "02", title: "Enter Details", desc: "Fill in names, dates, custom letter, and upload photos." },
               { step: "03", title: "Pick Style", desc: "Select from beautifully designed Light or Dark themes." },
-              { step: "04", title: "Generate & Share", desc: "Instantly launch your link. Keep it active for 7 days." },
+              { step: "04", title: "Generate & Share", desc: "Instantly launch your link. Keep it active for 5 days." },
             ].map((item, idx) => (
               <div key={idx} className="relative z-10 flex flex-col space-y-4 p-6 bg-white border border-sky-100 rounded-2xl shadow-sm">
                 <span className="text-xs font-mono font-bold text-sky-600 bg-sky-50 border border-sky-100 w-8 h-8 rounded-full flex items-center justify-center">
@@ -738,8 +738,8 @@ export default function LandingPage() {
               answer="Yes, creating and sharing pages is 100% free. There are no premium lockouts, subscription models, or hidden costs. We built this as a dedicated sandbox for sharing quick, memorable spaces."
             />
             <FAQItem
-              question="Why do pages delete after 7 days?"
-              answer="HeartPage is built to host temporary memories without clutter. Using MongoDB TTL (Time to Live) indexes, your pages are automatically cleared from our servers after exactly 168 hours (7 days) from creation. This keeps our database lightweight and respects privacy."
+              question="Why do pages delete after 5 days?"
+              answer="HeartPage is built to host temporary memories without clutter. Using MongoDB TTL (Time to Live) indexes, your pages are automatically cleared from our servers after exactly 120 hours (5 days) from creation. This keeps our database lightweight and respects privacy."
             />
             <FAQItem
               question="Do I need to sign up or log in?"
@@ -765,7 +765,7 @@ export default function LandingPage() {
             Ready to Build Your Space?
           </h2>
           <p className="text-white/85 max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-            Create a custom, dynamic website for someone special right now. No signup required. Active online for 7 days.
+            Create a custom, dynamic website for someone special right now. No signup required. Active online for 5 days.
           </p>
           <div className="pt-4">
             <Link
@@ -787,7 +787,7 @@ export default function LandingPage() {
             <span className="font-bold text-slate-900 font-luxury-serif">{siteTitle}</span>
           </div>
           <p>{settings?.footerText || `© ${new Date().getFullYear()} HeartPage. Built for sharing special moments.`}</p>
-          <p className="text-[10px] text-slate-400 font-medium">All data automatically deletes after 7 days via TTL indexing.</p>
+          <p className="text-[10px] text-slate-400 font-medium">All data automatically deletes after 5 days via TTL indexing.</p>
           <div className="flex justify-center items-center gap-4 text-[11px] font-semibold text-slate-400 pt-2">
             <Link href="/privacy" className="hover:text-sky-500 hover:underline transition-colors">Privacy Policy</Link>
             <span className="text-slate-350 select-none">•</span>

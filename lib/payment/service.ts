@@ -274,7 +274,7 @@ async function publishWebsiteFromPayment(payment: IPayment): Promise<IWebsite> {
   }
 
   const { yourName, partnerName, relationshipDate, message, images, customFields, groomPhoto, bridePhoto, musicEnabled } = payment.websiteData;
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 Days expiry
+  const expiresAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000); // 5 Days expiry
 
   const website = new Website({
     slug: payment.websiteSlug,

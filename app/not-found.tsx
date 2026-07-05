@@ -39,13 +39,13 @@ export default function NotFound() {
             This space has expired or does not exist.
           </h2>
           <p className="text-zinc-500 text-sm leading-relaxed max-w-sm mx-auto">
-            To keep HeartPage clean and secure, all personalized pages are automatically deleted after exactly 7 days. It is possible this link has reached its expiration limit.
+            To keep HeartPage clean and secure, all personalized pages are automatically deleted after exactly 5 days. It is possible this link has reached its expiration limit.
           </p>
         </div>
 
         {/* Info expiration badge */}
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-950 border border-zinc-900 text-zinc-500 text-xs font-medium font-mono">
-          <Clock className="w-3.5 h-3.5" /> 7-DAY TTL INDEX AUTO-DELETE
+          <Clock className="w-3.5 h-3.5" /> 5-DAY TTL INDEX AUTO-DELETE
         </div>
 
         {/* CTA Buttons */}

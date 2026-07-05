@@ -50,7 +50,7 @@ export default function AdminWebsitesPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [extendExpiryId, setExtendExpiryId] = useState<string | null>(null);
-  const [extendDays, setExtendDays] = useState(7);
+  const [extendDays, setExtendDays] = useState(5);
   const [isExtending, setIsExtending] = useState(false);
 
   // Copy feedback state
@@ -340,7 +340,7 @@ export default function AdminWebsitesPage() {
                           <button
                             onClick={() => {
                               setExtendExpiryId(web._id);
-                              setExtendDays(7);
+                              setExtendDays(5);
                             }}
                             className="p-2 hover:bg-zinc-900 hover:text-white rounded-lg transition-colors cursor-pointer border border-zinc-900 hover:border-zinc-800 text-zinc-400"
                             title="Extend Expiry Date"
@@ -478,7 +478,7 @@ export default function AdminWebsitesPage() {
                   className="w-full bg-zinc-900 border border-zinc-800 focus:border-rose-500/80 rounded-xl px-4 py-3 text-xs focus:outline-none text-white font-mono"
                 >
                   <option value={1}>1 Day Extension</option>
-                  <option value={7}>7 Days Extension (Default)</option>
+                  <option value={5}>5 Days Extension (Default)</option>
                   <option value={14}>14 Days Extension</option>
                   <option value={30}>30 Days Extension</option>
                   <option value={90}>90 Days Extension</option>

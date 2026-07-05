@@ -1235,7 +1235,7 @@ export default function BreakupTemplate({
             </a>
           </div>
           <p className="font-mono text-[10px] text-slate-500 tracking-widest uppercase">
-            Logged via HeartPage &middot; 7D TTL Active
+            Logged via HeartPage &middot; 5D TTL Active
           </p>
         </div>
       </footer>

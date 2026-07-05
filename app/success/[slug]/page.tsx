@@ -91,7 +91,7 @@ function SuccessPageContent() {
       try {
         await navigator.share({
           title: "Check out my HeartPage!",
-          text: "I created a personalized website on HeartPage. Take a look before it expires in 7 days!",
+          text: "I created a personalized website on HeartPage. Take a look before it expires in 5 days!",
           url: shareUrl,
         });
       } catch (err) {
@@ -215,7 +215,7 @@ function SuccessPageContent() {
         {/* Additional Expiry Ticker */}
         <div className="flex items-center justify-center gap-2 text-xs text-slate-400 font-medium pt-2 border-t border-sky-100">
           <Clock className="w-4 h-4 text-sky-550 animate-pulse" />
-          <span>Expires in 7 days (auto-clears from database)</span>
+          <span>Expires in 5 days (auto-clears from database)</span>
         </div>
       </motion.div>
 

@@ -292,7 +292,7 @@ export async function getSettings() {
           twitter: "https://twitter.com/heartpage",
           facebook: "https://facebook.com/heartpage",
         },
-        defaultExpiryDays: 7,
+        defaultExpiryDays: 5,
         maintenanceMode: false,
         paymentEnabled: true,
         footerText: "© 2026 HeartPage. All rights reserved.",

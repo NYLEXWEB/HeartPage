@@ -23,7 +23,11 @@ import {
   Volume2,
   VolumeX,
   Play,
-  Pause
+  Pause,
+  Sun,
+  Moon,
+  Smile,
+  Sunset
 } from "lucide-react";
 import { websiteFormSchema, WebsiteInput } from "@/lib/validation";
 import TemplateDispatcher from "@/components/templates/TemplateDispatcher";
@@ -1442,81 +1446,286 @@ export default function CreatePage() {
 
               {/* Theme Selector Cards */}
               <div className="grid md:grid-cols-2 gap-8 w-full max-w-3xl">
-                {/* Light Theme Card */}
+                {/* Day Vibe (Light Theme) Card */}
                 <motion.div
                   whileHover={{ y: -8, scale: 1.02 }}
                   onClick={() => setValue("theme", "light")}
-                  className={`border-2 rounded-3xl p-6 cursor-pointer flex flex-col justify-between h-[300px] transition-all relative overflow-hidden bg-white shadow-sm ${
+                  className={`border-2 rounded-[2rem] cursor-pointer flex flex-col transition-all duration-300 relative overflow-hidden bg-white shadow-sm hover:shadow-md ${
                     formValues.theme === "light"
-                      ? "border-sky-500"
-                      : "border-sky-100 hover:border-sky-300"
+                      ? "border-sky-500 shadow-sky-500/10"
+                      : "border-sky-100 hover:border-sky-200"
                   }`}
                 >
-                  <div className="relative z-10 flex justify-between items-start">
-                    <span className="font-mono text-xs uppercase tracking-wider text-slate-400 font-bold">Theme Style</span>
-                    {formValues.theme === "light" && (
-                      <span className="bg-sky-500 text-white rounded-full p-1.5 shadow-md">
-                        <Check className="w-4 h-4" />
-                      </span>
-                    )}
+                  {/* Top visual mockup container */}
+                  <div className="h-48 w-full bg-gradient-to-b from-sky-50/50 via-rose-50/30 to-white flex justify-center items-end pt-4 overflow-hidden relative border-b border-slate-105">
+                    {/* Badge */}
+                    <div className="absolute top-4 right-4 bg-amber-100 text-amber-600 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider flex items-center gap-1 shadow-sm">
+                      <Sun className="w-3 h-3 text-amber-500" /> Day Vibe
+                    </div>
+
+                    {/* Miniature Phone Mockup */}
+                    <div className={`w-[130px] h-[160px] bg-white rounded-t-2xl shadow-lg border flex flex-col relative overflow-hidden transition-all duration-300 ${
+                      formValues.theme === "light" ? "border-sky-300 scale-105" : "border-slate-100"
+                    }`}>
+                      {/* status bar */}
+                      <div className="h-3 px-2 flex justify-between items-center bg-slate-50/80 border-b border-slate-100/50">
+                        <span className="text-[6px] font-bold text-slate-400">9:41</span>
+                        <div className="flex gap-0.5">
+                          <span className="w-1 h-1 rounded-full bg-slate-300" />
+                          <span className="w-1.5 h-0.5 bg-slate-300 rounded-sm" />
+                        </div>
+                      </div>
+                      {/* mini header */}
+                      <div className="h-4 px-2 bg-slate-50/20 border-b border-slate-100/30 flex items-center justify-center">
+                        <div className="w-10 h-1.5 bg-slate-200/60 rounded-full" />
+                      </div>
+                      {/* mockup content */}
+                      <div className="flex-1 p-2 flex flex-col justify-center items-center relative overflow-hidden bg-rose-50/30">
+                        {activeCategory === "couples" ? (
+                          <>
+                            <span className="text-[8px] font-luxury font-bold text-pink-600 tracking-wide text-center truncate w-full px-1">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Alex"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Jordan"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-pink-105 flex items-center justify-center shadow-sm">
+                              <Heart className="w-2.5 h-2.5 text-pink-500 fill-pink-500" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-300/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-200/60 rounded-full" />
+                          </>
+                        ) : activeCategory === "friends" ? (
+                          <>
+                            <span className="text-[8px] font-sans font-black text-sky-600 tracking-tight text-center uppercase truncate w-full px-1">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Sam"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Taylor"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-yellow-100 flex items-center justify-center border border-yellow-200 shadow-sm">
+                              <Smile className="w-2.5 h-2.5 text-yellow-600" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-300/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-200/60 rounded-full" />
+                          </>
+                        ) : activeCategory === "breakup" ? (
+                          <>
+                            <span className="text-[8px] font-serif italic text-slate-800 text-center truncate w-full px-1">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Riley"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Casey"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200 shadow-sm">
+                              <Sunset className="w-2.5 h-2.5 text-slate-500" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-300/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-200/60 rounded-full" />
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-[8px] font-luxury text-slate-800 text-center truncate w-full px-1">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Wisher"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Recipient"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-sky-100 flex items-center justify-center shadow-sm">
+                              <Sparkles className="w-2.5 h-2.5 text-sky-500" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-300/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-200/60 rounded-full" />
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 space-y-2">
-                    <h3 className="text-3xl font-luxury font-extrabold text-slate-900">Light Theme</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">
-                      {activeCategory === "couples"
-                        ? "Blush pink backgrounds, rose gold filters, and highly delicate romantic shadows."
-                        : activeCategory === "friends"
-                        ? "Bright neon yellow, turquoise, and violet sticker popups with deep drop shadows."
-                        : activeCategory === "wedding"
-                        ? "Elegant champagne, gold flourishes, soft cream panels, and classic luxury script."
-                        : "Clean slate-white grid backing, dark charcoal text, and quiet silver overlays."}
-                    </p>
-                  </div>
+                  {/* Info Panel */}
+                  <div className="p-6 flex flex-col justify-between flex-1 space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-slate-900">Light Theme</h3>
+                        {formValues.theme === "light" && (
+                          <span className="bg-sky-500 text-white rounded-full p-1 shadow-md">
+                            <Check className="w-3.5 h-3.5" />
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-550 text-xs leading-relaxed">
+                        {activeCategory === "couples"
+                          ? "Blush pink backgrounds, rose gold filters, and highly delicate romantic shadows."
+                          : activeCategory === "friends"
+                          ? "Bright neon yellow, turquoise, and violet sticker popups with deep drop shadows."
+                          : activeCategory === "wedding"
+                          ? "Elegant champagne, gold flourishes, soft cream panels, and classic luxury script."
+                          : "Clean slate-white grid backing, dark charcoal text, and quiet silver overlays."}
+                      </p>
+                    </div>
 
-                  <div className="relative z-10 flex gap-2">
-                    <span className="w-4 h-4 rounded-full bg-slate-50 border border-slate-200" />
-                    <span className="w-4 h-4 rounded-full bg-pink-100" />
-                    <span className="w-4 h-4 rounded-full bg-sky-100" />
+                    {/* Color indicators */}
+                    <div className="flex justify-between items-center pt-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Palette</span>
+                      <div className="flex gap-1.5">
+                        {activeCategory === "couples" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-pink-100 border border-slate-200" title="Rose Gold" />
+                            <span className="w-3 h-3 rounded-full bg-[#FAFDFE] border border-slate-200" title="Beige Cream" />
+                            <span className="w-3 h-3 rounded-full bg-rose-50 border border-slate-200" title="Blush Pink" />
+                          </>
+                        ) : activeCategory === "friends" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-yellow-300 border border-slate-200" title="Neon Yellow" />
+                            <span className="w-3 h-3 rounded-full bg-sky-400 border border-slate-200" title="Sky Blue" />
+                            <span className="w-3 h-3 rounded-full bg-indigo-500 border border-slate-200" title="Violet" />
+                          </>
+                        ) : activeCategory === "wedding" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-[#FAF5E6] border border-slate-200" title="Champagne" />
+                            <span className="w-3 h-3 rounded-full bg-amber-400 border border-slate-200" title="Luxury Gold" />
+                            <span className="w-3 h-3 rounded-full bg-white border border-slate-200" title="Pure Ivory" />
+                          </>
+                        ) : (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-slate-50 border border-slate-200" title="Slate White" />
+                            <span className="w-3 h-3 rounded-full bg-slate-200 border border-slate-200" title="Silver Gray" />
+                            <span className="w-3 h-3 rounded-full bg-white border border-slate-200" title="Pure White" />
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
 
-                {/* Dark Theme Card */}
+                {/* Night Vibe (Dark Theme) Card */}
                 <motion.div
                   whileHover={{ y: -8, scale: 1.02 }}
                   onClick={() => setValue("theme", "dark")}
-                  className={`border-2 rounded-3xl p-6 cursor-pointer flex flex-col justify-between h-[300px] transition-all relative overflow-hidden bg-white shadow-sm ${
+                  className={`border-2 rounded-[2rem] cursor-pointer flex flex-col transition-all duration-300 relative overflow-hidden bg-white shadow-sm hover:shadow-md ${
                     formValues.theme === "dark"
-                      ? "border-sky-500"
-                      : "border-sky-100 hover:border-sky-300"
+                      ? "border-sky-500 shadow-sky-500/10"
+                      : "border-sky-100 hover:border-sky-200"
                   }`}
                 >
-                  <div className="relative z-10 flex justify-between items-start">
-                    <span className="font-mono text-xs uppercase tracking-wider text-slate-400 font-bold">Theme Style</span>
-                    {formValues.theme === "dark" && (
-                      <span className="bg-sky-500 text-white rounded-full p-1.5 shadow-md">
-                        <Check className="w-4 h-4" />
-                      </span>
-                    )}
+                  {/* Top visual mockup container */}
+                  <div className="h-48 w-full bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 flex justify-center items-end pt-4 overflow-hidden relative border-b border-slate-800">
+                    {/* Badge */}
+                    <div className="absolute top-4 right-4 bg-indigo-950 border border-indigo-900 text-indigo-300 px-2.5 py-1 rounded-full text-[10px] font-mono font-bold tracking-wider flex items-center gap-1 shadow-sm">
+                      <Moon className="w-3 h-3 text-indigo-400 fill-indigo-400" /> Night Vibe
+                    </div>
+
+                    {/* Miniature Phone Mockup */}
+                    <div className={`w-[130px] h-[160px] bg-slate-950 rounded-t-2xl shadow-lg border flex flex-col relative overflow-hidden transition-all duration-300 ${
+                      formValues.theme === "dark" ? "border-sky-500 scale-105" : "border-slate-900"
+                    }`}>
+                      {/* status bar */}
+                      <div className="h-3 px-2 flex justify-between items-center bg-slate-900/80 border-b border-slate-900/50">
+                        <span className="text-[6px] font-bold text-slate-500">9:41</span>
+                        <div className="flex gap-0.5">
+                          <span className="w-1 h-1 rounded-full bg-slate-700" />
+                          <span className="w-1.5 h-0.5 bg-slate-700 rounded-sm" />
+                        </div>
+                      </div>
+                      {/* mini header */}
+                      <div className="h-4 px-2 bg-slate-900/20 border-b border-slate-900/30 flex items-center justify-center">
+                        <div className="w-10 h-1.5 bg-slate-800/60 rounded-full" />
+                      </div>
+                      {/* mockup content */}
+                      <div className="flex-1 p-2 flex flex-col justify-center items-center relative overflow-hidden bg-slate-900">
+                        {/* Glow ambient meshes */}
+                        <div className="absolute top-1/4 left-1/4 w-10 h-10 rounded-full bg-pink-500/10 blur-md pointer-events-none" />
+                        
+                        {activeCategory === "couples" ? (
+                          <>
+                            <span className="text-[8px] font-luxury font-bold text-pink-300 tracking-wide text-center truncate w-full px-1 drop-shadow-[0_0_4px_rgba(244,63,94,0.4)]">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Alex"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Jordan"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-pink-950 flex items-center justify-center border border-pink-900 shadow-sm">
+                              <Heart className="w-2.5 h-2.5 text-pink-400 fill-pink-550" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-700/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-800/60 rounded-full" />
+                          </>
+                        ) : activeCategory === "friends" ? (
+                          <>
+                            <span className="text-[8px] font-sans font-black text-sky-300 tracking-tight text-center uppercase truncate w-full px-1 drop-shadow-[0_0_4px_rgba(56,189,248,0.4)]">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Sam"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Taylor"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center border border-sky-800 shadow-sm">
+                              <Smile className="w-2.5 h-2.5 text-sky-400" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-700/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-800/60 rounded-full" />
+                          </>
+                        ) : activeCategory === "breakup" ? (
+                          <>
+                            <span className="text-[8px] font-serif italic text-slate-300 text-center truncate w-full px-1 drop-shadow-[0_0_4px_rgba(148,163,184,0.2)]">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Riley"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Casey"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800 shadow-sm">
+                              <Sunset className="w-2.5 h-2.5 text-slate-400" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-700/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-800/60 rounded-full" />
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-[8px] font-luxury text-sky-200 text-center truncate w-full px-1 drop-shadow-[0_0_4px_rgba(14,165,233,0.3)]">
+                              {formValues.yourName ? formValues.yourName.substring(0, 8) : "Wisher"} &amp; {formValues.partnerName ? formValues.partnerName.substring(0, 8) : "Recipient"}
+                            </span>
+                            <div className="mt-1 w-5 h-5 rounded-full bg-slate-900 flex items-center justify-center border border-slate-850 shadow-sm">
+                              <Sparkles className="w-2.5 h-2.5 text-sky-400" />
+                            </div>
+                            <div className="mt-2 w-12 h-1 bg-slate-700/60 rounded-full" />
+                            <div className="mt-1 w-16 h-0.5 bg-slate-800/60 rounded-full" />
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="relative z-10 space-y-2">
-                    <h3 className="text-3xl font-luxury font-extrabold text-slate-900">Dark Theme</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">
-                      {activeCategory === "couples"
-                        ? "Deep plum and black mesh gradients, glowing text shadows, and golden rose icons."
-                        : activeCategory === "friends"
-                        ? "Dark stone backdrop offset with vibrant purple, mustard yellow, and cyan stickers."
-                        : activeCategory === "wedding"
-                        ? "Deep warm amber, shimmering gold stars, rich mahogany overlays, and glowing rings."
-                        : "Cinematic midnight indigo mesh, slate grays, and blurred photographic filters."}
-                    </p>
-                  </div>
+                  {/* Info Panel */}
+                  <div className="p-6 flex flex-col justify-between flex-1 space-y-3">
+                    <div className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-xl font-bold text-slate-900">Dark Theme</h3>
+                        {formValues.theme === "dark" && (
+                          <span className="bg-sky-500 text-white rounded-full p-1 shadow-md">
+                            <Check className="w-3.5 h-3.5" />
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-slate-550 text-xs leading-relaxed">
+                        {activeCategory === "couples"
+                          ? "Deep plum and black mesh gradients, glowing text shadows, and golden rose icons."
+                          : activeCategory === "friends"
+                          ? "Dark stone backdrop offset with vibrant purple, mustard yellow, and cyan stickers."
+                          : activeCategory === "wedding"
+                          ? "Deep warm amber, shimmering gold stars, rich mahogany overlays, and glowing rings."
+                          : "Cinematic midnight indigo mesh, slate grays, and blurred photographic filters."}
+                      </p>
+                    </div>
 
-                  <div className="relative z-10 flex gap-2">
-                    <span className="w-4 h-4 rounded-full bg-slate-950" />
-                    <span className="w-4 h-4 rounded-full bg-rose-950" />
-                    <span className="w-4 h-4 rounded-full bg-sky-950" />
+                    {/* Color indicators */}
+                    <div className="flex justify-between items-center pt-2">
+                      <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400">Palette</span>
+                      <div className="flex gap-1.5">
+                        {activeCategory === "couples" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-[#180825] border border-slate-800" title="Plum Black" />
+                            <span className="w-3 h-3 rounded-full bg-[#F43F5E] border border-slate-800" title="Rose Glow" />
+                            <span className="w-3 h-3 rounded-full bg-[#E2E8F0]/20 border border-slate-800" title="Silver Frost" />
+                          </>
+                        ) : activeCategory === "friends" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-[#0F172A] border border-slate-800" title="Dark Slate" />
+                            <span className="w-3 h-3 rounded-full bg-violet-650 border border-slate-800" title="Vibrant Purple" />
+                            <span className="w-3 h-3 rounded-full bg-cyan-400 border border-slate-800" title="Cyan Spark" />
+                          </>
+                        ) : activeCategory === "wedding" ? (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-[#1e140a] border border-slate-800" title="Warm Mahogany" />
+                            <span className="w-3 h-3 rounded-full bg-[#fbbf24] border border-slate-800" title="Shimer Gold" />
+                            <span className="w-3 h-3 rounded-full bg-slate-900 border border-slate-800" title="Amber Dark" />
+                          </>
+                        ) : (
+                          <>
+                            <span className="w-3 h-3 rounded-full bg-[#020617] border border-slate-800" title="Midnight Indigo" />
+                            <span className="w-3 h-3 rounded-full bg-[#1E293B] border border-slate-800" title="Deep Slate" />
+                            <span className="w-3 h-3 rounded-full bg-[#64748B] border border-slate-800" title="Slate Gray" />
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               </div>

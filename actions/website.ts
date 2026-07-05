@@ -50,8 +50,8 @@ export async function createWebsite(data: WebsiteInput): Promise<ActionResponse>
     // 3. Generate unique slug
     const slug = await generateUniqueSlug();
 
-    // 4. Calculate expiration date (7 days from now)
-    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    // 4. Calculate expiration date (5 days from now)
+    const expiresAt = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000);
 
     // 5. Create new website
     const newWebsite = new Website({
