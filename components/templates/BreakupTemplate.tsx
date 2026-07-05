@@ -13,6 +13,7 @@ interface BreakupTemplateProps {
   theme: "light" | "dark";
   customFields?: { label: string; value: string }[];
   isPreview?: boolean;
+  isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
 }
@@ -28,6 +29,7 @@ export default function BreakupTemplate({
   isPreview = false,
   musicEnabled = true,
   hideMusicPlayer = false,
+  isFullPreview = false,
 }: BreakupTemplateProps) {
   // Helper to parse potential links
   const getLinkUrl = (val: string) => {
@@ -805,7 +807,7 @@ export default function BreakupTemplate({
 
       {/* Live Preview Mode header banner */}
       {isPreview && (
-        <div className="sticky top-0 z-[10000] w-full bg-slate-500 text-white text-center py-1.5 text-xs font-semibold uppercase tracking-widest shadow-md">
+        <div className={`sticky ${isFullPreview ? "top-16" : "top-0"} z-[10000] w-full bg-slate-500 text-white text-center py-1.5 text-xs font-semibold uppercase tracking-widest shadow-md`}>
           Live Preview Mode
         </div>
       )}

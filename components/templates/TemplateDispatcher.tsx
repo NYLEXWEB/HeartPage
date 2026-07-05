@@ -17,6 +17,7 @@ interface TemplateDispatcherProps {
   groomPhoto?: string;
   bridePhoto?: string;
   isPreview?: boolean;
+  isFullPreview?: boolean;
   musicEnabled?: boolean;
   hideMusicPlayer?: boolean;
 }
@@ -33,6 +34,7 @@ export default function TemplateDispatcher({
   groomPhoto,
   bridePhoto,
   isPreview = false,
+  isFullPreview = false,
   musicEnabled = true,
   hideMusicPlayer = false,
 }: TemplateDispatcherProps) {
@@ -105,6 +107,7 @@ export default function TemplateDispatcher({
           theme={theme}
           customFields={customFields}
           isPreview={isPreview}
+          isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
         />
@@ -120,6 +123,7 @@ export default function TemplateDispatcher({
           theme={theme}
           customFields={customFields}
           isPreview={isPreview}
+          isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
         />
@@ -135,6 +139,7 @@ export default function TemplateDispatcher({
           theme={theme}
           customFields={customFields}
           isPreview={isPreview}
+          isFullPreview={isFullPreview}
           musicEnabled={musicEnabled}
           hideMusicPlayer={hideMusicPlayer}
         />
