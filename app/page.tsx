@@ -18,7 +18,7 @@ import {
   Gift,
   Mail
 } from "lucide-react";
-import { getActiveAnnouncement, getSettings } from "@/actions/settings";
+import { getActiveAnnouncement, getSettings, incrementPlatformVisits } from "@/actions/settings";
 
 // FAQ Item Component
 function FAQItem({ question, answer }: { question: string; answer: string }) {
@@ -30,7 +30,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
         className="w-full flex justify-between items-center text-left py-2 font-luxury font-bold text-slate-900 hover:text-sky-600 transition-colors duration-200"
       >
         <span className="text-base md:text-lg">{isOpen ? "•" : ""} {question}</span>
-        <ChevronDown className={`w-5 h-5 text-sky-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-sky-600" : ""}`} />
+        <ChevronDown className={`w-5 h-5 text-sky-400 transition-transform duration-300 ${isOpen ? "rotate-180 text-sky-650" : ""}`} />
       </button>
       <motion.div
         initial={false}
@@ -53,6 +53,9 @@ export default function LandingPage() {
   useEffect(() => {
     async function loadPublicData() {
       try {
+        // Increment visitor count to main platform
+        await incrementPlatformVisits();
+
         const annRes = await getActiveAnnouncement();
         if (annRes.success && annRes.announcement) {
           setAnnouncement(annRes.announcement);

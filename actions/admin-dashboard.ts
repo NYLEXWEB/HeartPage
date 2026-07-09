@@ -47,6 +47,16 @@ export async function getDashboardStats() {
     const createdToday = await Website.countDocuments({ createdAt: { $gte: startOfToday } });
     const createdThisWeek = await Website.countDocuments({ createdAt: { $gte: startOfWeek } });
 
+    // Calculate total page views/clicks across all websites
+    const totalViewsResult = await Website.aggregate([
+      { $group: { _id: null, total: { $sum: "$views" } } }
+    ]);
+    const totalViews = totalViewsResult[0]?.total || 0;
+
+    // Get total platform traffic visits to main website
+    const settingsDoc = await Settings.findOne().select("platformVisits").lean();
+    const platformVisits = settingsDoc ? (settingsDoc as any).platformVisits || 0 : 0;
+
     // Financial queries
     const paymentStatsRaw = await Payment.aggregate([
       {
@@ -114,7 +124,7 @@ export async function getDashboardStats() {
     const recentWebsites = await Website.find()
       .sort({ createdAt: -1 })
       .limit(5)
-      .select("slug category theme yourName partnerName createdAt expiresAt");
+      .select("slug category theme yourName partnerName createdAt expiresAt views");
 
     // Storage estimation (Atlas Free tier is 512MB, we calculate text bytes size)
     const allWebsitesForStorage = await Website.find().select("message yourName partnerName slug");
@@ -134,6 +144,8 @@ export async function getDashboardStats() {
         expiredWebsites,
         createdToday,
         createdThisWeek,
+        totalViews,
+        platformVisits,
         categories,
         themes,
         mostSelectedTemplate,

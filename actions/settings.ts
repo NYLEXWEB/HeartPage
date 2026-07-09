@@ -24,6 +24,7 @@ export async function getSettings() {
         maintenanceMode: false,
         paymentEnabled: true,
         footerText: "© 2026 HeartPage. All rights reserved.",
+        platformVisits: 0,
       });
       await settings.save();
     }
@@ -41,6 +42,21 @@ export async function getActiveAnnouncement() {
     const announcement = await Announcement.findOne({ isActive: true });
     return { success: true, announcement: announcement ? JSON.parse(JSON.stringify(announcement)) : null };
   } catch (error: any) {
+    return { success: false, error: error.message };
+  }
+}
+
+export async function incrementPlatformVisits() {
+  try {
+    await connectToDatabase();
+    await Settings.findOneAndUpdate(
+      {},
+      { $inc: { platformVisits: 1 } },
+      { upsert: true, new: true }
+    );
+    return { success: true };
+  } catch (error: any) {
+    console.error("Failed to increment platform visits:", error);
     return { success: false, error: error.message };
   }
 }

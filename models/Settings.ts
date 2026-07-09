@@ -13,6 +13,7 @@ export interface ISettings extends Document {
   maintenanceMode: boolean;
   paymentEnabled: boolean;
   footerText: string;
+  platformVisits: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,6 +58,11 @@ const SettingsSchema: Schema = new Schema(
       type: String,
       required: true,
       default: "© 2026 HeartPage. All rights reserved.",
+    },
+    platformVisits: {
+      type: Number,
+      required: true,
+      default: 0,
     },
   },
   {

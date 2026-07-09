@@ -87,11 +87,15 @@ export const getWebsiteBySlug = cache(async (slug: string) => {
   try {
     await connectToDatabase();
     
-    // Find website by slug, ensuring it hasn't expired (though TTL handles this, it is safe to check here too)
-    const website = await Website.findOne({
-      slug,
-      expiresAt: { $gt: new Date() }
-    }).lean();
+    // Increment view count on visit and retrieve updated website document
+    const website = await Website.findOneAndUpdate(
+      {
+        slug,
+        expiresAt: { $gt: new Date() }
+      },
+      { $inc: { views: 1 } },
+      { new: true }
+    ).lean();
 
     if (!website) {
       return null;
@@ -118,6 +122,7 @@ export const getWebsiteBySlug = cache(async (slug: string) => {
       selectedMusic: website.selectedMusic || "",
       createdAt: website.createdAt.toISOString(),
       expiresAt: website.expiresAt.toISOString(),
+      views: website.views || 0,
     };
   } catch (error) {
     console.error(`Error loading website by slug ${slug}:`, error);

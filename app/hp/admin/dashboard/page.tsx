@@ -14,7 +14,9 @@ import {
   TrendingUp,
   Sparkles,
   Settings as SettingsIcon,
-  Megaphone
+  Megaphone,
+  Eye,
+  Globe
 } from "lucide-react";
 import Link from "next/link";
 
@@ -24,6 +26,8 @@ interface DashboardData {
   expiredWebsites: number;
   createdToday: number;
   createdThisWeek: number;
+  totalViews: number;
+  platformVisits: number;
   categories: { couples: number; friends: number; breakup: number };
   themes: { light: number; dark: number };
   mostSelectedTemplate: string;
@@ -37,6 +41,7 @@ interface DashboardData {
     partnerName: string;
     createdAt: string;
     expiresAt: string;
+    views?: number;
   }>;
   totalRevenue: number;
   todayRevenue: number;
@@ -138,7 +143,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* STAT CARDS GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-6">
         
         {/* Total Websites */}
         <motion.div
@@ -172,6 +177,40 @@ export default function AdminDashboardPage() {
             <span className="text-xs text-emerald-400 font-bold">({activePercent}%)</span>
           </div>
           <p className="text-[10px] text-zinc-500 mt-2">Awaiting automatic TTL deletion</p>
+        </motion.div>
+
+        {/* Platform Visits (Main SaaS site views) */}
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/5 rounded-full blur-2xl" />
+          <div className="flex items-center justify-between text-zinc-500">
+            <span className="text-xs font-bold uppercase tracking-wider font-mono">Main Site Visits</span>
+            <Globe className="w-4 h-4 text-sky-400" />
+          </div>
+          <div className="mt-4 flex items-baseline gap-2">
+            <span className="text-4xl font-extrabold text-white font-mono">{data.platformVisits || 0}</span>
+            <span className="text-[10px] text-[#4ba3f7] font-mono tracking-widest font-bold">TRAFFIC</span>
+          </div>
+          <p className="text-[10px] text-zinc-500 mt-2">Views of the main landing page</p>
+        </motion.div>
+
+        {/* Total Link Clicks */}
+        <motion.div
+          whileHover={{ y: -2 }}
+          className="p-6 bg-zinc-950 border border-zinc-900 rounded-3xl relative overflow-hidden shadow-xl"
+        >
+          <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl" />
+          <div className="flex items-center justify-between text-zinc-500">
+            <span className="text-xs font-bold uppercase tracking-wider font-mono">Total Clicks</span>
+            <Eye className="w-4 h-4 text-indigo-400" />
+          </div>
+          <div className="mt-4 flex items-baseline gap-2">
+            <span className="text-4xl font-extrabold text-white font-mono">{data.totalViews || 0}</span>
+            <span className="text-[10px] text-zinc-500 font-mono tracking-widest">VISITS</span>
+          </div>
+          <p className="text-[10px] text-zinc-500 mt-2">Combined visitor traffic on links</p>
         </motion.div>
 
         {/* Created Today */}
@@ -443,6 +482,7 @@ export default function AdminDashboardPage() {
                   <th className="py-3 px-4 rounded-l-xl">Slug / Path</th>
                   <th className="py-3 px-4">Category</th>
                   <th className="py-3 px-4">Names</th>
+                  <th className="py-3 px-4">Clicks</th>
                   <th className="py-3 px-4 rounded-r-xl text-right">Created At</th>
                 </tr>
               </thead>
@@ -469,6 +509,12 @@ export default function AdminDashboardPage() {
                       <td className="py-3.5 px-4 truncate max-w-[150px]">
                         {web.yourName} &amp; {web.partnerName}
                       </td>
+                      <td className="py-3.5 px-4">
+                        <span className="flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                          <span>{web.views || 0}</span>
+                        </span>
+                      </td>
                       <td className="py-3.5 px-4 text-right text-zinc-500">
                         {new Date(web.createdAt).toLocaleDateString(undefined, {
                           month: "short",
@@ -481,7 +527,7 @@ export default function AdminDashboardPage() {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="py-8 text-center text-zinc-600">
+                    <td colSpan={5} className="py-8 text-center text-zinc-600">
                       No websites created yet.
                     </td>
                   </tr>

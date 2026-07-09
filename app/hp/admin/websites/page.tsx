@@ -16,7 +16,8 @@ import {
   AlertTriangle,
   Loader2,
   Check,
-  Clock
+  Clock,
+  Eye
 } from "lucide-react";
 import Link from "next/link";
 
@@ -29,6 +30,7 @@ interface WebsiteItem {
   partnerName: string;
   createdAt: string;
   expiresAt: string;
+  views?: number;
 }
 
 export default function AdminWebsitesPage() {
@@ -252,6 +254,7 @@ export default function AdminWebsitesPage() {
                 <th className="py-4 px-5">Theme</th>
                 <th className="py-4 px-5">Creator</th>
                 <th className="py-4 px-5">Partner</th>
+                <th className="py-4 px-5">Clicks</th>
                 <th className="py-4 px-5">Expiry (Days)</th>
                 <th className="py-4 px-5">Status</th>
                 <th className="py-4 px-5 text-right">Actions</th>
@@ -303,6 +306,12 @@ export default function AdminWebsitesPage() {
                       </td>
                       <td className="py-4 px-5 max-w-[100px] truncate">
                         {web.partnerName}
+                      </td>
+                      <td className="py-4 px-5 font-medium">
+                        <span className="flex items-center gap-1.5">
+                          <Eye className="w-3.5 h-3.5 text-zinc-500" />
+                          <span>{web.views || 0}</span>
+                        </span>
                       </td>
                       <td className="py-4 px-5 font-medium">
                         <span className="flex items-center gap-1.5">
